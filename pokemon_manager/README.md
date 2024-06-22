@@ -1,16 +1,62 @@
-# pokemon_manager
+<p align="center">
+  <img src="https://github.com/DrRetro2033/Pokemon-Manager/assets/86109384/1940527b-ad54-46b6-a371-ed560df0df4f" width="600" height="300" border="0"/>
+</p>
+<p align="center"> View, organize, and manage your Pokémon. </p>
 
-A new Flutter project.
+What is Pokémon Manager?
+-
+Pokémon Manager is alternative to [PKHeX](https://github.com/kwsch/PKHeX). The goal of this project is to make a more user friendly yet more feature rich way to store your Pokémon. 
 
-## Getting Started
+What happened to the Godot Engine version of Pokémon Manager?
+-
+That version of Pokémon Manager is now outdated and was archived. That version was messy, confusing, and had many workarounds. While I am proud of that version, I have grown a lot since that time, and have been learning from my mistakes. Some important lessons I learned was:
 
-This project is a starting point for a Flutter application.
+1. Document everything. Do not let comments and docstrings go to the wayside.
+2. OOP (Object Oriented Programming) is a friend, and use it a lot more.
+3. Fragment code into files. For example, enumerators should be in there own file rather than being strewn around multiple objects and classes.
+4. Keep the frontend (The GUI and Menu logic) and the backend (Pokémon, Trainers, and vital functions) separated from each other. 
+5. Always focus on the backend before the frontend.
+## Goals/Planned Features:
+### Backend:
+ - [ ] Convertion between different generations.
+ - [ ] Import/Export
+    - [ ] Import and Export from and to Pokémon Showdown.
+    - [ ] Exporting a single Pokémon or the entire library.
+ - [ ] Trainer Support.
+ - [ ] Sharing.
+ - [ ] SQL Database to store Pokémon.
+    - [ ] The ability to restore a Pokémon in a save file.
+ - [ ] File Support.
+    - [ ] Encryption and Decryption.
+    - [ ] Ability to edit files easily.
+    - [ ] PKM File support.
+        - [ ] pk1
+        - [ ] pk2
+        - [ ] pk3
+        - [ ] pk4
+        - [ ] pk5
+        - [ ] pk6
+        - [ ] pk7
+        - [ ] pk8
+        - [ ] pk9
+    - [ ] Save File support.
+        - [ ] sav
+### Frontend:
+ - [ ] Experience Calculator.
+ - [ ] Clean and Compact Pokémon Preview.
+ - [ ] Stats chart with Base, IV, and EVs shown in total.
+ - [ ] Drag and Droping.
 
-A few resources to get you started if this is your first Flutter project:
+### General:
+ - [ ] Mobile Support:
+    - [ ] Android.
+    - [ ] IOS (Maybe)
+ - [ ] PokéDex Entries.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Contributing:
+Please feel free to contribute in anyway possible! Just remember to format your code using dart's built-in formatter. You can also support this project by contributing to [PokéAPI](https://github.com/PokeAPI/pokeapi)!
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Contributors:
+[<img src="https://github.com/{{ contributor }}.png" width="60px;"/><br /><sub><ahref="https://github.com/{{ DrRetro2033 }}">{{ DrRetro2033 }}</a></sub>](https://github.com/{{ DrRetro2033 }}/{{ repository }}
+## Copyrights:
+Pokémon, its character names, related images, and other content referenced in this material are the property of their respective owners including but not limited to Nintendo, Creatures Inc., and Game Freak. All rights to the Pokémon franchise, including any related names, logos, or images, are reserved by their respective copyright holders. This material is intended for educational and informational purposes only and is not intended to infringe on any copyrights or trademarks. Pokémon and all related media are trademarks and copyright of their respective owners.
