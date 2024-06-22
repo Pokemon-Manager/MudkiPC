@@ -30,10 +30,11 @@ jobs:
       
       - name: Setup Flutter SDK
         uses: flutter-actions/setup-flutter@v3.6
-      
+      - name: Get Packages
+        run: flutter pub get
       # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
-        run: flutter pub get | dart analyze 
+        run: dart analyze 
       
       # Your project will need to have tests in test/ and a dependency on
       # package:test for this step to succeed. Note that Flutter projects will
