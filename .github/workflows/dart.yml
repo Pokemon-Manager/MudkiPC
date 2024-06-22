@@ -28,8 +28,7 @@ jobs:
         run: flutter pub get
 
       - name: Run format check
-        run: flutter format --set-exit-if-changed .
+        run: dart format --set-exit-if-changed .
 
-      - name: Display formatting diff
-        if: failure()
-        run: git diff
+      - name: Analyze
+        run: dart analyze
