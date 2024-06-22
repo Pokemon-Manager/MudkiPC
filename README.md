@@ -52,7 +52,12 @@ That version of Pokémon Manager is now outdated. That version was messy, confus
  - [ ] PokéDex Entries.
 
 ## Contributing:
-Please feel free to contribute in anyway possible! Just remember to format your code using dart's built-in formatter. You can also support this project by contributing to [PokéAPI](https://github.com/PokeAPI/pokeapi)!
+Please feel free to contribute in anyway possible! Just remember to format your code using Dart's built-in formatter. You can also support this project by contributing to [PokéAPI](https://github.com/PokeAPI/pokeapi).
+
+## Credits:
+  - [PokéAPI](https://github.com/PokeAPI/pokeapi).
+  - [Project Pokémon.](https://projectpokemon.org/) for documentation on save data.
+  - [PKHeX](https://github.com/kwsch/PKHeX) for the structure and pointers of every save file.
 
 ## Copyrights:
 Pokémon, its character names, related images, and other content referenced in this material are the property of their respective owners including but not limited to Nintendo, Creatures Inc., and Game Freak. All rights to the Pokémon franchise, including any related names, logos, or images, are reserved by their respective copyright holders. This material is intended for educational and informational purposes only and is not intended to infringe on any copyrights or trademarks. Pokémon and all related media are trademarks and copyright of their respective owners.
