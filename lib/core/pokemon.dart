@@ -1,14 +1,15 @@
 import 'package:pokemon_manager/core/species.dart';
 import 'package:pokemon_manager/core/stats.dart';
+
 /// # Pokémon
-/// ## A class that represents a Pokémon from a Game. Extends the Species class. 
-/// 
+/// ## A class that represents a Pokémon from a Game. Extends the Species class.
+///
 /// ### Variables:
-/// - [nickName] is the name of the Pokémon. If the Pokémon has no nickname, this will be the same as the species name. 
+/// - [nickName] is the name of the Pokémon. If the Pokémon has no nickname, this will be the same as the species name.
 /// - [species] is the species of the pokemon.
 /// - [ivStats] is the IVs of the Pokémon.
 /// - [evStats] is the EVs of the Pokémon.
-/// 
+///
 /// ### Functions:
 /// - [setNickname] sets the nickname of the pokemon.
 /// - [getNickname] gets the nickname of the pokemon.
@@ -23,8 +24,20 @@ import 'package:pokemon_manager/core/stats.dart';
 class Pokemon {
   String nickName = "";
   int gender = 0;
-  Stats ivStats = Stats(hp: 0, attack: 0, defense: 0, specialAttack: 0, specialDefense: 0, speed: 0);
-  Stats evStats = Stats(hp: 0, attack: 0, defense: 0, specialAttack: 0, specialDefense: 0, speed: 0);
+  Stats ivStats = Stats(
+      hp: 0,
+      attack: 0,
+      defense: 0,
+      specialAttack: 0,
+      specialDefense: 0,
+      speed: 0);
+  Stats evStats = Stats(
+      hp: 0,
+      attack: 0,
+      defense: 0,
+      specialAttack: 0,
+      specialDefense: 0,
+      speed: 0);
   Species species;
   Pokemon({required this.species});
 
@@ -66,7 +79,7 @@ class Pokemon {
   void resetNickname() {
     nickName = "";
   }
-  
+
   /// Gets the nickname of the pokemon.
   /// @returns - The nickname of the pokemon. If the pokemon has no nickname, this will be the same as the species name.
   String getNickname() {
@@ -108,7 +121,7 @@ class Pokemon {
   void setEvStats(Stats evStats) {
     this.evStats = evStats;
   }
-  
+
   Stats getEvStats() {
     return evStats;
   }
