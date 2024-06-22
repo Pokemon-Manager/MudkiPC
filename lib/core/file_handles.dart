@@ -27,7 +27,7 @@ class FileHandle {
     datablocks.add(datablock);
   }
 
-  void removeDatablock(Datablock datablock) {
+  void removeDatablock(Datablock datablock) { 
     datablocks.remove(datablock);
   }
 
@@ -47,7 +47,7 @@ class FileHandle {
   void divideIntoDatablocks() {
     return;
   }
-
+  
   /// # parseDatablocks()
   /// ## A function that calls [divideIntoDatablocks] and calls the [parse] function of each datablock in the file.
   /// This function does not return anything.

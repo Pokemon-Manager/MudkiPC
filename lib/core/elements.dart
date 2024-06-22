@@ -1,12 +1,13 @@
+
 import 'package:flutter/foundation.dart';
 
 /// # Typing
 /// ## A class that represents the typing of a [Species] or [Move].
-///
+/// 
 /// Try to always use [isSingleType] to check if the typing is single or dual, before trying to access type2.
 /// Example:
 /// ```dart
-/// if (typing.isSingleType()) {
+/// if (typing.isSingleType()) { 
 ///   // then it means that type2 is null
 /// }
 /// else {
@@ -22,7 +23,7 @@ class Typing {
   bool isSingleType() {
     return type2 == null;
   }
-
+  
   TypeElement getType1() {
     return type1;
   }
@@ -38,10 +39,10 @@ class Typing {
   factory Typing.fromJson(List<dynamic> json) {
     if (json.length == 1) {
       return Typing(type1: TypeElement.fromJson(json[0]));
-    } else {
-      return Typing(
-          type1: TypeElement.fromJson(json[0]),
-          type2: TypeElement.fromJson(json[1]));
+    }
+    
+    else {
+      return Typing(type1: TypeElement.fromJson(json[0]), type2: TypeElement.fromJson(json[1]));
     }
   }
 }
@@ -51,27 +52,8 @@ abstract class TypeElement {
   List<Type> get resistTo;
   List<Type> get immuneTo;
 
-  static List<Type> get allTypes => [
-        Normal,
-        Fire,
-        Water,
-        Electric,
-        Grass,
-        Ice,
-        Fighting,
-        Poison,
-        Ground,
-        Flying,
-        Psychic,
-        Bug,
-        Rock,
-        Ghost,
-        Dragon,
-        Dark,
-        Steel,
-        Fairy
-      ];
-
+  static List<Type> get allTypes => [Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel, Fairy];
+  
   factory TypeElement.fromJson(Map<String, dynamic> json) {
     switch (json['type']['name']) {
       case 'normal':
@@ -112,7 +94,7 @@ abstract class TypeElement {
         return Fairy();
       default:
         throw Exception('Unknown type: ${json['name']}');
-    }
+      }
   }
 
   static bool isWeakTo(Type type, TypeElement element) {
@@ -134,7 +116,7 @@ abstract class TypeElement {
 /// - Fighting
 /// ### Resist To:
 /// - Ghost
-class Normal implements TypeElement {
+class Normal implements TypeElement  {
   @override
   List<Type> get weakTo => [Fighting];
   @override
@@ -232,7 +214,7 @@ class Grass implements TypeElement {
 /// - Steel
 /// ### Resist To:
 /// - Ice
-class Ice implements TypeElement {
+class Ice implements TypeElement { 
   @override
   List<Type> get weakTo => [Fighting, Rock, Steel, Fire];
   @override
@@ -455,8 +437,7 @@ class Steel implements TypeElement {
   @override
   List<Type> get weakTo => [Fire, Fighting, Ground];
   @override
-  List<Type> get resistTo =>
-      [Normal, Grass, Ice, Flying, Rock, Bug, Dragon, Steel, Fairy];
+  List<Type> get resistTo => [Normal, Grass, Ice, Flying, Rock, Bug, Dragon, Steel, Fairy];
   @override
   List<Type> get immuneTo => [Poison];
 }

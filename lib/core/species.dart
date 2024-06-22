@@ -6,11 +6,7 @@ class Species {
   int id = 0;
   Typing typing = Typing(type1: Normal());
   Stats baseStats;
-  Species(
-      {required this.speciesName,
-      required this.typing,
-      required this.id,
-      required this.baseStats});
+  Species({required this.speciesName, required this.typing, required this.id, required this.baseStats});
 
   factory Species.fromJson(Map<String, dynamic> json) {
     return Species(
