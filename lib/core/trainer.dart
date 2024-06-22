@@ -1,4 +1,4 @@
-import 'package:pokemon_manager/core/pokemon.dart';
+import 'pokemon.dart';
 
 class Trainer {
   String name;

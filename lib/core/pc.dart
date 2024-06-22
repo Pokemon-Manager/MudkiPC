@@ -1,14 +1,10 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:pokedex/pokedex.dart' as PokeAPI;
-import 'package:pokemon_manager/core/file_handles.dart';
-import 'package:pokemon_manager/core/pokemon.dart';
-import 'package:pokemon_manager/core/species.dart';
-import 'package:pokemon_manager/core/stats.dart';
-import 'package:pokemon_manager/core/trainer.dart';
-import 'package:pokemon_manager/core/elements.dart';
-import 'package:pokemon_manager/core/enums.dart';
+import 'file_handles.dart';
+import 'pokemon.dart';
+import 'species.dart';
+import 'trainer.dart';
+import 'enums.dart';
 
 /// # PC
 /// ## Represents the user's collection of [Pokemon], [Species], and [Trainer]s.

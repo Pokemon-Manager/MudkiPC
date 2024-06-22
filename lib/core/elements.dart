@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// # Typing
 /// ## A class that represents the typing of a [Species] or [Move].
 ///

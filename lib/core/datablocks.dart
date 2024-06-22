@@ -1,10 +1,7 @@
-import 'dart:math';
 import 'dart:typed_data';
-
-import 'package:pokemon_manager/core/pokemon.dart';
-import 'package:pokemon_manager/core/stats.dart';
-import 'package:pokemon_manager/core/enums.dart';
-import 'package:pokemon_manager/main.dart';
+import 'pokemon.dart';
+import 'stats.dart';
+import '../main.dart';
 
 class Datablock {
   List<int> data;

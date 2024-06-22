@@ -1,5 +1,5 @@
-import 'package:pokemon_manager/core/stats.dart';
-import 'package:pokemon_manager/core/elements.dart';
+import 'stats.dart';
+import 'elements.dart';
 
 class Species {
   String speciesName = "";

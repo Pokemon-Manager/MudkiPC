@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:pokemon_manager/core/datablocks.dart';
-import 'package:pokemon_manager/core/pc.dart';
-import 'package:pokemon_manager/main.dart';
+import 'datablocks.dart';
+import 'pc.dart';
 
 class FileHandle {
   List<Datablock> datablocks = [];

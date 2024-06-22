@@ -1,5 +1,5 @@
-import 'package:pokemon_manager/core/species.dart';
-import 'package:pokemon_manager/core/stats.dart';
+import 'species.dart';
+import 'stats.dart';
 
 /// # Pokémon
 /// ## A class that represents a Pokémon from a Game. Extends the Species class.
