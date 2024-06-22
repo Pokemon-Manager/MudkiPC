@@ -7,7 +7,7 @@ What is Pokémon Manager?
 -
 Pokémon Manager is alternative to [PKHeX](https://github.com/kwsch/PKHeX). The goal of this project is to make a user friendly, yet more feature rich way to store your Pokémon. 
 
-What happened to the Godot Engine version of Pokémon Manager?
+[What happened to the Godot Engine version of Pokémon Manager?](https://github.com/DrRetro2033/Pokemon-Manager)
 -
 That version of Pokémon Manager is now outdated. That version was messy, confusing, and had many workarounds. While I am proud of that version, I have grown a lot since that time, and have been learning from my mistakes. Some important lessons I learned was:
 
