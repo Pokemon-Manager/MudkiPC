@@ -18,6 +18,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - uses: flutter-actions/setup-flutter@v3.6
+        with:
+          version: 'latest'
+          channel: 'stable'
+          cache: 'true'
+          cache-sdk: 'true'
       # Note: This workflow uses the latest stable version of the Dart SDK.
       # You can specify other versions if desired, see documentation here:
       # https://github.com/dart-lang/setup-dart/blob/main/README.md
@@ -27,16 +33,10 @@ jobs:
       # Uncomment this step to verify the use of 'dart format' on each commit.
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
-        
-      - name: Setup Flutter SDK
-        uses: flutter-actions/setup-flutter@v3.6
-        with:
-          version: 'latest'
-          channel: 'stable'
-          cache: 'true'
-          cache-sdk: 'true'
+      
       - name: Get Packages
         run: flutter pub get
+      
       # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
         run: dart analyze 
