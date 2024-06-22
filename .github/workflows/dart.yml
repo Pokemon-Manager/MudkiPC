@@ -33,6 +33,7 @@ jobs:
         with:
           cache: 'true'
           cache-sdk: 'true'
+          cache-key: 'flutter-action-setup-flutter-Linux-latest-stable-X64-main-pub-cache'
       - name: Get Packages
         run: flutter pub get
       # Consider passing '--fatal-infos' for slightly stricter analysis.
