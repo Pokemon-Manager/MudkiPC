@@ -27,17 +27,12 @@ jobs:
       # Uncomment this step to verify the use of 'dart format' on each commit.
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
-      - name: Flutter SDK
-        id: flutter-sdk
-        uses: actions/cache@v4
-        with:
-          path: flutter-sdk
-          key: ${{ runner.os }}-sdk
         
       - name: Setup Flutter SDK
-        if: steps.flutter-sdk.outputs.cache-hit != 'true'
         uses: flutter-actions/setup-flutter@v3.6
-        
+        with:
+          cache: 'true'
+          cache-sdk: 'true'
       - name: Get Packages
         run: flutter pub get
       # Consider passing '--fatal-infos' for slightly stricter analysis.
