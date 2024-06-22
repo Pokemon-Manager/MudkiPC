@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class EventWidget extends StatefulWidget {
-  const EventWidget({Key? key, required this.controller}) : super(key: key);
+  const EventWidget({super.key, required this.controller});
 
   final WindowController controller;
 
@@ -132,7 +132,7 @@ class _EventWidgetState extends State<EventWidget> {
 }
 
 class _MessageItemWidget extends StatelessWidget {
-  const _MessageItemWidget({Key? key, required this.item}) : super(key: key);
+  const _MessageItemWidget({required this.item});
 
   final MessageItem item;
 

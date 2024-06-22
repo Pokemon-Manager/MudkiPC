@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MainWindow extends StatefulWidget {
-  const MainWindow({Key? key}) : super(key: key);
+  const MainWindow({super.key});
   @override
   State<MainWindow> createState() => MainWindowState();
 }

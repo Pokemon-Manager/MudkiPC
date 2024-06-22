@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:pokedex/pokedex.dart' as PokeAPI;
+import 'package:pokedex/pokedex.dart' as pokeapi;
 import 'file_handles.dart';
 import 'pokemon.dart';
 import 'species.dart';
@@ -16,7 +16,7 @@ class PC {
   /// Always check to see if the species exists before create a new one using.
   Map<int, Species> species;
   List<PKMDBFolder> pkmdbs = [];
-  final pokedex = PokeAPI.Pokedex();
+  final pokedex = pokeapi.Pokedex();
   PC({required this.pokemons, required this.species});
 
   /// Adds a [Pokemon] to the list of [pokemons].
@@ -47,8 +47,8 @@ class PC {
   }
 
   void createSpecies(int id) async {
-    PokeAPI.Pokemon speciesEndpoint =
-        pokedex.pokemon.get(id: id) as PokeAPI.Pokemon;
+    pokeapi.Pokemon speciesEndpoint =
+        pokedex.pokemon.get(id: id) as pokeapi.Pokemon;
     species[id] = Species.fromJson(speciesEndpoint.toJson());
     return;
   }
