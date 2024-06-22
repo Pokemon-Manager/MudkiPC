@@ -56,7 +56,7 @@ Please feel free to contribute in anyway possible! Just remember to format your 
 
 ## Credits:
   - [PokéAPI](https://github.com/PokeAPI/pokeapi).
-  - [Project Pokémon.](https://projectpokemon.org/) for documentation on save data.
+  - [Project Pokémon](https://projectpokemon.org/) for documentation on save data.
   - [PKHeX](https://github.com/kwsch/PKHeX) for the structure and pointers of every save file.
 
 ## Copyrights:
