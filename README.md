@@ -3,9 +3,10 @@
 </p>
 <p align="center"> View, organize, and manage your Pokémon. </p>
 
+### NOTICE: This new version is still in alpha, and does not have all of the features that PKHeX or the original version has.
 What is Pokémon Manager?
 -
-Pokémon Manager is alternative to [PKHeX](https://github.com/kwsch/PKHeX). The goal of this project is to make a user friendly, yet more feature rich way to store your Pokémon. 
+Pokémon Manager is designed to be an alternative to [PKHeX](https://github.com/kwsch/PKHeX). The goal of this project is to make a user friendly, yet feature rich way to store your Pokémon. 
 
 [What happened to the Godot Engine version of Pokémon Manager?](https://github.com/DrRetro2033/Pokemon-Manager)
 -
@@ -17,14 +18,14 @@ That version of Pokémon Manager is now outdated. That version was messy, confus
 4. Keep the frontend (The GUI and Menu logic) and the backend (Pokémon, Trainers, and vital functions) separated from each other. 
 5. Always focus on the backend before the frontend.
 ## Goals/Planned Features:
-### Backend:
  - [ ] Convertion between different generations.
  - [ ] Import/Export
     - [ ] Import and Export from and to Pokémon Showdown.
     - [ ] Exporting a single Pokémon or the entire library.
  - [ ] Trainer Support.
- - [ ] Sharing.
- - [ ] SQL Database to store Pokémon.
+   - [ ] Editing Trainers.
+ - [ ] Sharing with other People.
+ - [ ] SQL Database to store Pokémon and Trainers.
     - [ ] The ability to restore a Pokémon in a save file.
  - [ ] File Support.
     - [ ] Encryption and Decryption.
@@ -41,13 +42,10 @@ That version of Pokémon Manager is now outdated. That version was messy, confus
         - [ ] pk9
     - [ ] Save File support.
         - [ ] sav
-### Frontend:
  - [ ] Experience Calculator.
  - [ ] Clean and Compact Pokémon Preview.
  - [ ] Stats chart with Base, IV, and EVs shown in total.
  - [ ] Drag and Droping.
-
-### General:
  - [ ] Mobile Support:
     - [ ] Android.
     - [ ] IOS (Maybe)
