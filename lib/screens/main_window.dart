@@ -5,7 +5,6 @@ import 'package:desktop_lifecycle/desktop_lifecycle.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:flutter/material.dart';
 
-
 class MainWindow extends StatefulWidget {
   const MainWindow({Key? key}) : super(key: key);
   @override
@@ -22,6 +21,3 @@ class MainWindowState extends State<MainWindow> {
     );
   }
 }
-
-
-

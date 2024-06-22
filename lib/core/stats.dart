@@ -5,7 +5,13 @@ class Stats {
   int specialAttack;
   int specialDefense;
   int speed;
-  Stats({required this.hp, required this.attack, required this.defense, required this.specialAttack, required this.specialDefense, required this.speed});
+  Stats(
+      {required this.hp,
+      required this.attack,
+      required this.defense,
+      required this.specialAttack,
+      required this.specialDefense,
+      required this.speed});
 
   factory Stats.fromJson(List<dynamic> json) {
     return Stats(

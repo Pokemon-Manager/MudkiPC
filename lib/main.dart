@@ -7,8 +7,7 @@ PC openedPC = PC(pokemons: [], species: {});
 void main(List<String> args) {
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     runApp(const MainWindow());
-  } 
-  else {
+  } else {
     return;
   }
 }
