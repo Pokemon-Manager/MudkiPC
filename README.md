@@ -56,7 +56,5 @@ That version of Pokémon Manager is now outdated and was archived. That version 
 ## Contributing:
 Please feel free to contribute in anyway possible! Just remember to format your code using dart's built-in formatter. You can also support this project by contributing to [PokéAPI](https://github.com/PokeAPI/pokeapi)!
 
-## Contributors:
-[<img src="https://github.com/{{ contributor }}.png" width="60px;"/><br /><sub><ahref="https://github.com/{{ DrRetro2033 }}">{{ DrRetro2033 }}</a></sub>](https://github.com/{{ DrRetro2033 }}/{{ repository }}
 ## Copyrights:
 Pokémon, its character names, related images, and other content referenced in this material are the property of their respective owners including but not limited to Nintendo, Creatures Inc., and Game Freak. All rights to the Pokémon franchise, including any related names, logos, or images, are reserved by their respective copyright holders. This material is intended for educational and informational purposes only and is not intended to infringe on any copyrights or trademarks. Pokémon and all related media are trademarks and copyright of their respective owners.
