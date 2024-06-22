@@ -37,9 +37,6 @@ jobs:
       - name: Setup Flutter SDK
         if: steps.flutter-sdk.outputs.cache-hit != 'true'
         uses: flutter-actions/setup-flutter@v3.6
-      
-      - name: Setup Flutter SDK
-        uses: flutter-actions/setup-flutter@v3.6
         
       - name: Get Packages
         run: flutter pub get
