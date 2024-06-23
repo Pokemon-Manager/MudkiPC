@@ -25,6 +25,7 @@ class PC {
   void removePokemon(Pokemon pokemon) {
     pokemons.remove(pokemon);
   }
+
   /// #getSpecies(`int id`)
   /// ## Gets a [Species] from an ID.
   /// Returns the [Species] if it exists in the dictionary [species].

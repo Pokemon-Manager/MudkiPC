@@ -158,7 +158,7 @@ class Pokemon {
     return species.getBaseStats();
   }
 
-  int getHash(){
+  int getHash() {
     return hashCode;
   }
 }

@@ -14,8 +14,13 @@ class Move {
   int priority = 0;
   List<Species> learnableBy = []; // List of species that can learn this move.
   List<Pokemon> knownBy = []; // List of pokemons that have learned this move.
-  Move({required this.name, required this.power, required this.typing, required this.accuracy, required this.pp});
-  
+  Move(
+      {required this.name,
+      required this.power,
+      required this.typing,
+      required this.accuracy,
+      required this.pp});
+
   factory Move.fromJson(Map<String, dynamic> json) {
     return Move(
       name: json['name'],
@@ -34,7 +39,7 @@ class Move {
       "pp": pp,
     };
   }
-  
+
   String getName() {
     return name;
   }

@@ -9,9 +9,12 @@ import 'package:pokemon_manager/pokemon_manager.dart';
 /// For example, a save file will requires one block for the general data, one for the trainer, and one for each Pokémon.
 class Datablock {
   FileHandle fileHandle;
-  int offset = 0x00; // Offset of the datablock in the file. ALWAYS USE HEXADECIMAL INSTEAD OF DECIMAL, FOR CONSISTENCY.
-  Datablock? parent; // The datablock that this datablock is relative to. In other words, is the datablock inside of another datablock.
-  List<Datablock> children = []; // List of datablocks that are children of this datablock.
+  int offset =
+      0x00; // Offset of the datablock in the file. ALWAYS USE HEXADECIMAL INSTEAD OF DECIMAL, FOR CONSISTENCY.
+  Datablock?
+      parent; // The datablock that this datablock is relative to. In other words, is the datablock inside of another datablock.
+  List<Datablock> children =
+      []; // List of datablocks that are children of this datablock.
   Datablock({required this.fileHandle}); // Constructor.
 
   /// #combineBytesToInt8(`List<int> bytes`)
@@ -39,7 +42,8 @@ class Datablock {
   }
 
   Iterable<int> getRange(int offset, int length) {
-    return fileHandle.data.getRange(getAbsoluteOffset(offset), getAbsoluteOffset(offset) + length);
+    return fileHandle.data.getRange(
+        getAbsoluteOffset(offset), getAbsoluteOffset(offset) + length);
   }
 
   String getString(int offset, int length) {
@@ -64,6 +68,7 @@ class Datablock {
     datablock.children.add(this);
     parent = datablock;
   }
+
   /// # makeThisParentOf(`Datablock datablock`)
   /// ## A function that makes this datablock a parent of the given datablock.
   void makeThisParentOf(Datablock datablock) {
@@ -79,7 +84,7 @@ class Datablock {
   int getAbsoluteOffset(int relativeOffset) {
     Datablock? currentRelativeBlock = parent;
     List<Datablock> parentBlocks = [];
-    while(currentRelativeBlock != null) {
+    while (currentRelativeBlock != null) {
       parentBlocks.add(currentRelativeBlock);
       currentRelativeBlock = currentRelativeBlock.parent;
     }
@@ -96,17 +101,17 @@ class Datablock {
   Datablock getDatablockAtOffset(int offset) {
     Datablock? currentRelativeBlock = parent;
     List<Datablock> parentBlocks = [];
-    while(currentRelativeBlock != null) {
+    while (currentRelativeBlock != null) {
       parentBlocks.add(currentRelativeBlock);
       currentRelativeBlock = currentRelativeBlock.parent;
     }
     while (currentRelativeBlock!.children.isNotEmpty) {
       if (currentRelativeBlock.children.length == 1) {
         currentRelativeBlock = currentRelativeBlock.children[0];
-      }
-      else {
-        for (int x = 0; x+1 < currentRelativeBlock!.children.length; x++) {
-          if (currentRelativeBlock.children[x].offset <= offset && currentRelativeBlock.children[x+1].offset > offset) {
+      } else {
+        for (int x = 0; x + 1 < currentRelativeBlock!.children.length; x++) {
+          if (currentRelativeBlock.children[x].offset <= offset &&
+              currentRelativeBlock.children[x + 1].offset > offset) {
             currentRelativeBlock = currentRelativeBlock.children[x];
             break;
           }
@@ -132,7 +137,7 @@ mixin Gen3PokemonFormat implements Datablock {
   }
 
   int getSpeciesID(int offset) {
-    Iterable<int> speciesRange = getRange(offset,2);
+    Iterable<int> speciesRange = getRange(offset, 2);
     return combineBytesToInt16(speciesRange.toList());
   }
 
@@ -174,7 +179,8 @@ mixin Gen3PokemonFormat implements Datablock {
     Iterable<int> moveRange = getRange(offset, 8);
     List<Move> moves = [];
     for (int i = 0; i < 4; i++) {
-      int moveID = combineBytesToInt16([moveRange.elementAt(i*2), moveRange.elementAt(i*2+1)]);
+      int moveID = combineBytesToInt16(
+          [moveRange.elementAt(i * 2), moveRange.elementAt(i * 2 + 1)]);
       moves.add(await PokeAPI.fetchMove(moveID));
     }
     return moves;
