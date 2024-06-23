@@ -1,11 +1,14 @@
-import 'species.dart';
-import 'stats.dart';
+import 'package:pokemon_manager/pokemon_manager.dart';
 
 /// # Pokémon
 /// ## A class that represents a Pokémon from a Game. Extends the Species class.
 ///
 /// ### Variables:
 /// - [nickName] is the name of the Pokémon. If the Pokémon has no nickname, this will be the same as the species name.
+/// - [gender] is the gender of the pokemon.
+/// - [level] is the level of the pokemon.
+/// - [exp] is the current experience of the pokemon.
+/// - []
 /// - [species] is the species of the pokemon.
 /// - [ivStats] is the IVs of the Pokémon.
 /// - [evStats] is the EVs of the Pokémon.
@@ -23,7 +26,17 @@ import 'stats.dart';
 /// - [getBaseStats] gets the base stats of the pokemon.
 class Pokemon {
   String nickName = "";
+  Species species;
   int gender = 0;
+  int level = 0;
+  int exp = 0;
+  Ability ability = Ability(name: "", description: "", id: 0);
+  Move? move1;
+  Move? move2;
+  Move? move3;
+  Move? move4;
+
+  // Stats
   Stats ivStats = Stats(
       hp: 0,
       attack: 0,
@@ -38,7 +51,6 @@ class Pokemon {
       specialAttack: 0,
       specialDefense: 0,
       speed: 0);
-  Species species;
   Pokemon({required this.species});
 
   factory Pokemon.fromJson(Species species, Map<String, dynamic> json) {
@@ -63,9 +75,13 @@ class Pokemon {
 
   Map<String, dynamic> toJson() {
     return {
+      "nickname": nickName,
+      "typing": species.typing.toJson(),
       "ivStats": ivStats.toJson(),
       "evStats": evStats.toJson(),
-      "nickname": nickName
+      "gender": gender,
+      "species": species,
+      "level": exp,
     };
   }
 
@@ -136,5 +152,9 @@ class Pokemon {
 
   Stats getBaseStats() {
     return species.getBaseStats();
+  }
+
+  int getHash(){
+    return hashCode;
   }
 }

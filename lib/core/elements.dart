@@ -35,11 +35,19 @@ class Typing {
 
   factory Typing.fromJson(List<dynamic> json) {
     if (json.length == 1) {
-      return Typing(type1: TypeElement.fromJson(json[0]));
+      return Typing(type1: TypeElement.fromJson(json.first));
     } else {
       return Typing(
-          type1: TypeElement.fromJson(json[0]),
-          type2: TypeElement.fromJson(json[1]));
+          type1: TypeElement.fromJson(json.first as Map<String, dynamic>),
+          type2: TypeElement.fromJson(json.last as Map<String, dynamic>));
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    if (isSingleType()) {
+      return {"type1":TypeElement.toJson(type1)};
+    } else {
+      return {"type1":TypeElement.toJson(type1), "type2":TypeElement.toJson(type2 as TypeElement)};
     }
   }
 }
@@ -124,14 +132,23 @@ abstract class TypeElement {
   static bool isImmuneTo(Type type, TypeElement element) {
     return element.immuneTo.contains(type);
   }
-}
 
+  static Map<String, dynamic> toJson(TypeElement element) {
+    return {
+      'name': element.toString().split('.').last.toLowerCase(),
+      'weakTo': element.weakTo.map((e) => e.toString().split('.').last.toLowerCase()).toList(),
+      'resistTo': element.resistTo.map((e) => e.toString().split('.').last.toLowerCase()).toList(),
+      'immuneTo': element.immuneTo.map((e) => e.toString().split('.').last.toLowerCase()).toList(),
+    };
+  }
+}
 /// # Normal
 /// ## A class that represents the Normal type.
 /// ### Weak To:
 /// - Fighting
 /// ### Resist To:
 /// - Ghost
+
 class Normal implements TypeElement {
   @override
   List<Type> get weakTo => [Fighting];

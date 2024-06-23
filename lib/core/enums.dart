@@ -1,35 +1,4 @@
-import 'dart:io';
-
 // ignore_for_file: constant_identifier_names
-
-/// # CompatibleFiles
-/// ## A class that contains the extensions of the compatible files.
-/// ### Compatible Extensions:
-/// - pk6 (A Single Pokémon + Basic Trainer Info)
-/// ### Planned Compatible Extensions:
-/// - pk1 (A Single Pokémon + Basic Trainer Info)
-/// - pk2 (A Single Pokémon + Basic Trainer Info)
-/// - pk3 (A Single Pokémon + Basic Trainer Info)
-/// - pk4 (A Single Pokémon + Basic Trainer Info)
-/// - pk5 (A Single Pokémon + Basic Trainer Info)
-/// - pk7 (A Single Pokémon + Basic Trainer Info)
-/// - pk8 (A Single Pokémon + Basic Trainer Info)
-/// - pk9 (A Single Pokémon + Basic Trainer Info)
-/// - sav (Trainer Data + All Their Pokémon)
-/// - json (A Single Pokémon + Basic Trainer Info, or Trainer Data + All Their Pokémons. Requires JSON export to be implemented.)
-/// - db (All Pokémon Manager Data. Requires DB export to be implemented.)
-final class CompatibleFiles {
-  static const List<String> compatibleExtensions = [
-    "pk6",
-  ];
-
-  static bool isCompatibleFile(File file) {
-    if (compatibleExtensions.contains(file.path.split('.').last)) {
-      return true;
-    }
-    return false;
-  }
-}
 
 /// # Elements
 /// ## A class that contains the ids of elements of the games. TODO: Figure out if this is necessary.

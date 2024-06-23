@@ -30,8 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
-  pokedex: ^0.3.0
+
+  http:
   desktop_multi_window: ^0.2.0
   desktop_lifecycle:
   # The following adds the Cupertino Icons font to your application.

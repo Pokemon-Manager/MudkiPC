@@ -7,4 +7,6 @@ export 'core/trainer.dart';
 export 'core/pc.dart';
 export 'core/pokemon.dart';
 export 'core/species.dart';
+export 'core/move.dart';
+export 'core/ability.dart';
 export 'screens/main_window.dart';
