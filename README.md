@@ -62,7 +62,7 @@ Please feel free to contribute in anyway possible! Just remember to format your 
 ### Rules of Contribution:
 To make sure the code is consistent, I made some guidelines that I would like everyone to follow:
 
-1. Follow this format for every class header.
+1. Follow this format for every class header:
    
    ```dart
    /// # `Class` Pokemon
@@ -73,6 +73,14 @@ To make sure the code is consistent, I made some guidelines that I would like ev
    /// // write the variables here.
    /// ### Functions:
    /// // write the functions here.
+   ```
+
+   And follow this for every function header:
+
+   ```dart
+   /// # fetchSpecies(`int id`)
+   /// ## Fetches a species from PokeAPI.
+   /// // add some example code or explain what it does.
 2. Always use hexadecimal instead of integers for file offsets.
 
    ✅ 0x01

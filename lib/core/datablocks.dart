@@ -7,11 +7,12 @@ import 'package:pokemon_manager/pokemon_manager.dart';
 /// ## A class that represents a datablock from a Game.
 /// Datablocks are used to store data in files. Datablocks should be used in combination with other Datablocks to create a file handle.
 /// For example, a save file will requires one block for the general data, one for the trainer, and one for each Pokémon.
-/// 
 class Datablock {
-  List<int> data;
+  FileHandle fileHandle;
   int offset = 0x00; // Offset of the datablock in the file. ALWAYS USE HEXADECIMAL INSTEAD OF DECIMAL, FOR CONSISTENCY.
-  Datablock({required this.data});
+  Datablock? parent; // The datablock that this datablock is relative to. In other words, is the datablock inside of another datablock.
+  List<Datablock> children = []; // List of datablocks that are children of this datablock.
+  Datablock({required this.fileHandle}); // Constructor.
 
   /// #combineBytesToInt8(`List<int> bytes`)
   /// ## A function that combines a single byte into a 8-bit integer.
@@ -38,7 +39,7 @@ class Datablock {
   }
 
   Iterable<int> getRange(int offset, int length) {
-    return data.getRange(offset, offset + length);
+    return fileHandle.data.getRange(getAbsoluteOffset(offset), getAbsoluteOffset(offset) + length);
   }
 
   String getString(int offset, int length) {
@@ -57,7 +58,65 @@ class Datablock {
     return z;
   }
 
-  void parse() {
+  /// # makeThisChildOf(`Datablock datablock`)
+  /// ## A function that makes this datablock a child of the given datablock.
+  void makeThisChildOf(Datablock datablock) {
+    datablock.children.add(this);
+    parent = datablock;
+  }
+  /// # makeThisParentOf(`Datablock datablock`)
+  /// ## A function that makes this datablock a parent of the given datablock.
+  void makeThisParentOf(Datablock datablock) {
+    datablock.offset += getAbsoluteOffset(0x00);
+    children.add(datablock);
+    datablock.parent = this;
+  }
+
+  /// # getAbsoluteOffset(`int offset`)
+  /// ## A function that returns the absolute offset of the relative offset.
+  /// The absolute offset is the offset of the datablock relative to its parent datablocks.
+  /// In other words, it is the offset of the datablock inside all of its parent datablocks.
+  int getAbsoluteOffset(int relativeOffset) {
+    Datablock? currentRelativeBlock = parent;
+    List<Datablock> parentBlocks = [];
+    while(currentRelativeBlock != null) {
+      parentBlocks.add(currentRelativeBlock);
+      currentRelativeBlock = currentRelativeBlock.parent;
+    }
+    int y = 0x00;
+    for (Datablock datablock in parentBlocks) {
+      y += datablock.offset;
+    }
+    return y + offset + relativeOffset;
+  }
+
+  /// # getDatablockAtOffset(`int offset`)
+  /// ## A function that returns the datablock at the given offset.
+  /// TODO: Might want to change this in the future.
+  Datablock getDatablockAtOffset(int offset) {
+    Datablock? currentRelativeBlock = parent;
+    List<Datablock> parentBlocks = [];
+    while(currentRelativeBlock != null) {
+      parentBlocks.add(currentRelativeBlock);
+      currentRelativeBlock = currentRelativeBlock.parent;
+    }
+    while (currentRelativeBlock!.children.isNotEmpty) {
+      if (currentRelativeBlock.children.length == 1) {
+        currentRelativeBlock = currentRelativeBlock.children[0];
+      }
+      else {
+        for (int x = 0; x+1 < currentRelativeBlock!.children.length; x++) {
+          if (currentRelativeBlock.children[x].offset <= offset && currentRelativeBlock.children[x+1].offset > offset) {
+            currentRelativeBlock = currentRelativeBlock.children[x];
+            break;
+          }
+        }
+      }
+    }
+    return currentRelativeBlock;
+  }
+
+  Future<void> parse() async {
     return;
   }
 }
@@ -67,7 +126,6 @@ class Datablock {
 /// The modern format was introduced in Generation 3, and has been extended and expanded over each subsequent generation.
 /// It is more cut down and compact than the old format, and requires bitmasks and more complex calculations to extract data.
 /// Offsets are relative to the start of the block, so that it can be used in save files, as save files contain mutliple Pokémon and Trainers.
-/// ```dart
 mixin Gen3PokemonFormat implements Datablock {
   String getNickname(int offset) {
     return getString(offset, 24);
@@ -111,6 +169,16 @@ mixin Gen3PokemonFormat implements Datablock {
     int total = combineBytesToInt32(ivRange.toList());
     return total >> 30 & 11;
   }
+
+  Future<List<Move>> getMoves(int offset) async {
+    Iterable<int> moveRange = getRange(offset, 8);
+    List<Move> moves = [];
+    for (int i = 0; i < 4; i++) {
+      int moveID = combineBytesToInt16([moveRange.elementAt(i*2), moveRange.elementAt(i*2+1)]);
+      moves.add(await PokeAPI.fetchMove(moveID));
+    }
+    return moves;
+  }
 }
 
 /// # `PK6Data`
@@ -121,29 +189,30 @@ mixin Gen3PokemonFormat implements Datablock {
 /// PK6Data({required super.data});
 /// ```
 class PK6Data extends Datablock with Gen3PokemonFormat {
-  PK6Data({required super.data});
+  PK6Data({required super.fileHandle});
 
   @override
   Future<void> parse() async {
     int speciesID = getSpeciesID(0x08);
-    Species? species = await openedPC.getSpecies(speciesID);
-    if (species == null) {
-      return;
-    }
+    Species? species = await PokeAPI.fetchSpecies(speciesID);
     Pokemon newPokemon = Pokemon(species: species);
     newPokemon.nickName = getNickname(0x40);
     newPokemon.ivStats = getIvStats(0x74);
     newPokemon.evStats = getEvStats(0x1E);
+    List<Move> moves = await getMoves(0x5A);
+    newPokemon.move1 = moves[0];
+    newPokemon.move2 = moves[1];
+    newPokemon.move3 = moves[2];
+    newPokemon.move4 = moves[3];
     openedPC.addPokemon(newPokemon);
-    print(newPokemon.toJson());
   }
 }
 
 class PK7Data extends Datablock with Gen3PokemonFormat {
-  PK7Data({required super.data});
+  PK7Data({required super.fileHandle});
 
   @override
-  void parse() {
+  Future<void> parse() async {
     return;
   }
 }

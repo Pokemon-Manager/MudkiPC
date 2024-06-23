@@ -26,12 +26,12 @@ class Stats {
 
   List<dynamic> toJson() {
     return [
-      {"base_stat": hp},
-      {"base_stat": attack},
-      {"base_stat": defense},
-      {"base_stat": specialAttack},
-      {"base_stat": specialDefense},
-      {"base_stat": speed},
+      {"hp": hp},
+      {"attack": attack},
+      {"defense": defense},
+      {"special_attack": specialAttack},
+      {"special_defense": specialDefense},
+      {"speed": speed},
     ];
   }
 }

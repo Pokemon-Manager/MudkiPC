@@ -9,4 +9,5 @@ export 'core/pokemon.dart';
 export 'core/species.dart';
 export 'core/move.dart';
 export 'core/ability.dart';
+export 'core/pokeapi.dart';
 export 'screens/main_window.dart';

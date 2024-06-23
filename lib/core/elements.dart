@@ -33,13 +33,22 @@ class Typing {
     return 1.0;
   }
 
-  factory Typing.fromJson(List<dynamic> json) {
-    if (json.length == 1) {
-      return Typing(type1: TypeElement.fromJson(json.first));
-    } else {
-      return Typing(
+  factory Typing.fromJson(dynamic json) {
+    if (json is List<dynamic>){
+      if (json.length == 1) {
+        return Typing(type1: TypeElement.fromJson(json.first));
+      } 
+      else {
+        return Typing(
           type1: TypeElement.fromJson(json.first as Map<String, dynamic>),
           type2: TypeElement.fromJson(json.last as Map<String, dynamic>));
+      }
+    }
+    else if (json is Map<String, dynamic>) {
+      return Typing(type1: TypeElement.fromJson({"type": json}));
+    }
+    else {
+      return Typing(type1: Normal());
     }
   }
 

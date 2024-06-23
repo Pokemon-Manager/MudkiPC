@@ -19,6 +19,7 @@ import 'pc.dart';
 /// - db (All Pokémon Manager Data. Requires DB export to be implemented.)
 class FileHandle {
   List<Datablock> datablocks = [];
+  List<int> data = [];
   File file;
   Uint8List? fileData;
   PKMDBFolder? folder;
@@ -96,7 +97,8 @@ class PK6File extends FileHandle {
   @override
   void divideIntoDatablocks() {
     fileData = file.readAsBytesSync() as Uint8List?;
-    PK6Data pkData = PK6Data(data: fileData!);
+    data = fileData!.toList();
+    PK6Data pkData = PK6Data(fileHandle: this);
     datablocks.add(pkData);
   }
 }
