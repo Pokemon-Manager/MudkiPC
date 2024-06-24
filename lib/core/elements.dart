@@ -13,23 +13,36 @@
 /// ```
 class Typing {
   TypeElement type1;
-  TypeElement? type2;
+  TypeElement? type2; // can be null
 
   Typing({required this.type1, this.type2});
 
+  /// # isSingleType()
+  /// ## Checks if this Typing instance is single or dual.
+  /// Returns true if the Typing instance is single, false if it is dual.
   bool isSingleType() {
     return type2 == null;
   }
 
+  /// # getType1()
+  /// ## Gets the first type of this Typing instance.
+  /// Returns the first type element of the Typing instance.
   TypeElement getType1() {
     return type1;
   }
 
+  /// # getType2()
+  /// ## Gets the second type of this Typing instance.
+  /// Returns the second type element of the Typing instance, which can be null.
   TypeElement? getType2() {
     return type2;
   }
 
-  double getMultiplier() {
+  /// # getMultiplier(`TypeElement type_to_check`)
+  /// ## Gets the multiplier of this Typing instance.
+  /// Returns the multiplier of the Typing instance.
+  double getMultiplier(TypeElement typeToCheck) {
+    // TODO: implement getMultiplier
     return 1.0;
   }
 
@@ -87,6 +100,9 @@ abstract class TypeElement {
         Fairy
       ];
 
+  /// # toJson(`Map<String, dynamic> json`)
+  /// ## Creates a TypeElement instance from JSON.
+  /// Returns a TypeElement instance.
   factory TypeElement.fromJson(Map<String, dynamic> json) {
     switch (json['type']['name']) {
       case 'normal':
@@ -130,18 +146,30 @@ abstract class TypeElement {
     }
   }
 
+  /// # isWeakTo(`Type type`, `TypeElement element`)
+  /// ## Checks if `element` is weak to `type`.
+  /// Returns true if `element` is weak to `type`, false if not.
   static bool isWeakTo(Type type, TypeElement element) {
     return element.weakTo.contains(type);
   }
 
+  /// # isResistTo(`Type type`, `TypeElement element`)
+  /// ## Checks if `element` is resistant to `type`.
+  /// Returns true if `element` is resistant to `type`, false if not.
   static bool isResistTo(Type type, TypeElement element) {
     return element.resistTo.contains(type);
   }
 
+  /// # isImmuneTo(`Type type`, `TypeElement element`)
+  /// ## Checks if `element` is immune to `type`.
+  /// Returns true if `element` is immune to `type`, false if not.
   static bool isImmuneTo(Type type, TypeElement element) {
     return element.immuneTo.contains(type);
   }
 
+  /// # toJson(`TypeElement element`)
+  /// ## Converts this TypeElement instance to JSON.
+  /// Returns a [Map<String, dynamic>] object.
   static Map<String, dynamic> toJson(TypeElement element) {
     return {
       'name': element.toString().split('.').last.toLowerCase(),

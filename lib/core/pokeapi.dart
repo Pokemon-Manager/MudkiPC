@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:pokemon_manager/pokemon_manager.dart';
@@ -6,7 +7,7 @@ import 'package:pokemon_manager/pokemon_manager.dart';
 /// # PokeAPI
 /// ## A class that represents PokeAPI.
 /// The fetch functions returns the object you are looking for, so you can get the object you need.
-/// If you are confused on what the difference is between this and PC, remeber this:
+/// If you are confused on what the difference is between this and the [PC] class, remember this:
 /// - PC = User's Data (Pokemon, Items, etc.) This is not consitent.
 /// - PokeAPI = PokeDex Data (Species, Moves, etc.) This is consitent.
 class PokeAPI {
@@ -36,6 +37,9 @@ class PokeAPI {
     }
   }
 
+  /// # fetchMove(`int id`)
+  /// ## Fetches a move from PokeAPI.
+  /// Returns a [Move] object
   static Future<Move> fetchMove(int id) async {
     final response = await fetch("move", "$id");
     if (response.statusCode == 200) {
@@ -56,4 +60,13 @@ class PokeAPI {
   //     throw Exception("Failed to create ability $id");
   //   }
   // }
+
+  static Future<Image> fetchImage(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return Image.memory(response.bodyBytes);
+    } else {
+      throw Exception("Failed to fetch image");
+    }
+  }
 }

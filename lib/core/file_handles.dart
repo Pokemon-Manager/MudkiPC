@@ -82,10 +82,10 @@ class FileHandle {
   ///   }
   ///  }
   /// ```
-  void parseDatablocks() {
+  Future<void> parseDatablocks() async {
     divideIntoDatablocks();
     for (Datablock datablock in datablocks) {
-      datablock.parse();
+      await datablock.parse();
     }
     return;
   }

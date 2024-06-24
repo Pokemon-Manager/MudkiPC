@@ -2,7 +2,7 @@ import 'package:pokemon_manager/pokemon_manager.dart';
 
 /// # Pokémon
 /// ## A class that represents a Pokémon from a Game. Extends the Species class.
-///
+/// This class contains all possible information about a Pokémon.
 /// ### Variables:
 /// - [nickName] is the name of the Pokémon. If the Pokémon has no nickname, this will be the same as the species name.
 /// - [gender] is the gender of the pokemon.
@@ -142,18 +142,30 @@ class Pokemon {
     this.evStats = evStats;
   }
 
+  /// # getEvStats(`Stats evStats`)
+  /// ## Gets the EVs of the pokemon.
+  /// Returns the EVs of the pokemon. See [Stats] in `stats.dart` for more details.
   Stats getEvStats() {
     return evStats;
   }
 
+  /// # getSpecies(`Species species`)
+  /// ## Gets the species of the pokemon.
+  /// Returns the species of the pokemon. See [Species] in `species.dart` for more details.
   Species getSpecies() {
     return species;
   }
 
+  // # setSpecies(`Species species`)
+  // ## Sets the species of the pokemon.
+  // Set the species of the pokemon to the provided species object.
   void setSpecies(Species species) {
     species = species;
   }
 
+  /// # getBaseStats(`Stats baseStats`)
+  /// ## Gets the base stats of the species.
+  /// Returns the base stats of the species. See [Stats] in `stats.dart` for more details.
   Stats getBaseStats() {
     return species.getBaseStats();
   }

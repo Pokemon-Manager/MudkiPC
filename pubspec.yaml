@@ -32,8 +32,11 @@ dependencies:
     sdk: flutter
 
   http:
+  cached_network_image: ^3.2.1
+  transparent_image: ^2.0.0
   desktop_multi_window: ^0.2.0
   desktop_lifecycle:
+  window_manager:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6

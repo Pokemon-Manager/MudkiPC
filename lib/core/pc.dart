@@ -36,11 +36,11 @@ class PC {
   /// Returns the created [Species] if successful.
   /// Throws an exception if the [Species] could not be created.
 
-  void openFolder(String path) {
+  Future<void> openFolder(String path) async {
     pkmdbs.add(PKMDBFolder(path: path));
     pkmdbs.last.loadFolder();
     pkmdbs.last.openCompatibleFiles();
-    pkmdbs.last.extractAllData();
+    await pkmdbs.last.extractAllData();
     return;
   }
 }
@@ -72,9 +72,9 @@ class PKMDBFolder {
     }
   }
 
-  void extractAllData() {
+  Future<void> extractAllData() async {
     for (FileHandle file in openFiles) {
-      file.parseDatablocks();
+      await file.parseDatablocks();
     }
     return;
   }
