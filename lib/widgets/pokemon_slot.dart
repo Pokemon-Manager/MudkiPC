@@ -9,23 +9,20 @@ class PokemonSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         onPressed: () {},
-        child: Tooltip(
-            message: pokemon.getSpecies().getName().capitalize(),
-            enableTapToDismiss: false,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(children: [
-                Expanded(
-                    child: FittedBox(
-                        fit: BoxFit.cover,
-                        child: CachedNetworkImage(
-                            imageUrl: pokemon.getSpecies().getFrontImageUrl(),
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error)))),
-                Text(pokemon.getNickname())
-              ]),
-            )));
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(children: [
+            Expanded(
+                child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: CachedNetworkImage(
+                        imageUrl: pokemon.getSpecies().getFrontImageUrl(),
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error)))),
+            Text(pokemon.getNickname())
+          ]),
+        ));
   }
 }

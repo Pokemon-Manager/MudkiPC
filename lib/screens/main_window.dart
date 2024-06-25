@@ -17,7 +17,7 @@ class MainWindow extends StatefulWidget {
 class MainWindowState extends State<MainWindow> {
   bool isLoading = true;
   List<Pokemon> pokemons = [];
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,33 +26,39 @@ class MainWindowState extends State<MainWindow> {
         themeMode: themeManager.themeMode,
         home: Scaffold(
           body: Stack(
-                children: [
-          if (isLoading)
-            const SetupNotifier()
-          else
-            Row(children: [
-              NavigationRail(
-                selectedIndex: 0,
-                onDestinationSelected: (int index) {},
-                destinations: const [
-                  NavigationRailDestination(
-                      icon: Icon(Icons.home), label: Text("Home")),
-                  NavigationRailDestination(
-                      icon: Icon(Icons.search), label: Text("Search")),
-                ],
-                trailing: Switch(value: themeManager.themeMode == ThemeMode.dark, thumbIcon: WidgetStateProperty.resolveWith<Icon>(
-                  (Set<WidgetState> states) {
-                    if (themeManager.themeMode == ThemeMode.dark) {
-                      return const Icon(Icons.dark_mode);
-                    }
-                    return const Icon(Icons.light_mode);
-                  }
-                ), onChanged: (bool value) { themeManager.toggleTheme(value); },),
-              ),
-              Expanded(child: PokemonBox(pokemons: pokemons))
-            ])
-                ],
-              ),
+            children: [
+              if (isLoading)
+                const SetupNotifier()
+              else
+                Row(children: [
+                  NavigationRail(
+                    selectedIndex: 0,
+                    labelType: NavigationRailLabelType.selected,
+                    onDestinationSelected: (int index) {},
+                    destinations: const [
+                      NavigationRailDestination(
+                          icon: Icon(Icons.home), label: Text("Home")),
+                      NavigationRailDestination(
+                          icon: Icon(Icons.search), label: Text("Search")),
+                    ],
+                    trailing: Switch(
+                      value: themeManager.themeMode == ThemeMode.dark,
+                      thumbIcon: WidgetStateProperty.resolveWith<Icon>(
+                          (Set<WidgetState> states) {
+                        if (themeManager.themeMode == ThemeMode.dark) {
+                          return const Icon(Icons.dark_mode);
+                        }
+                        return const Icon(Icons.light_mode);
+                      }),
+                      onChanged: (bool value) {
+                        themeManager.toggleTheme(value);
+                      },
+                    ),
+                  ),
+                  Expanded(child: PokemonBox(pokemons: pokemons))
+                ])
+            ],
+          ),
         ));
   }
 
@@ -73,11 +79,8 @@ class MainWindowState extends State<MainWindow> {
   }
 
   themeListener() {
-    if(mounted){
-        setState(() {
-          
-        }
-      );
+    if (mounted) {
+      setState(() {});
     }
   }
 }

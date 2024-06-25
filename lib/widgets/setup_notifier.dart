@@ -34,18 +34,21 @@ class SetupNotifierState extends State<SetupNotifier> {
             ),
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
-            child: Column(
+            child: Center(
+                child: Column(
               children: [
                 const SizedBox(
                   height: 10,
                 ),
-                Text(text,
-                    style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        decoration: TextDecoration.none),
-                    textAlign: TextAlign.center,),
+                Text(
+                  text,
+                  style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      decoration: TextDecoration.none),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -54,7 +57,7 @@ class SetupNotifierState extends State<SetupNotifier> {
                   height: 10,
                 ),
               ],
-            )),
+            ))),
       )),
     );
   }
