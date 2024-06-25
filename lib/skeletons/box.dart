@@ -19,8 +19,7 @@ class PokemonBox extends StatelessWidget {
         return PokemonSlot(pokemon: pokemons[index]);
       },
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          crossAxisSpacing: 10, mainAxisSpacing: 10, maxCrossAxisExtent: 300
-      ),
+          crossAxisSpacing: 10, mainAxisSpacing: 10, maxCrossAxisExtent: 300),
     );
   }
 }
