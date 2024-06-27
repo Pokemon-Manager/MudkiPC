@@ -26,6 +26,7 @@ class FileHandle {
   FileHandle({required this.file, this.folder});
   static const List<String> compatibleExtensions = [
     "pk6",
+    "pk7"
   ];
 
   static bool isCompatibleFile(File file) {
@@ -41,6 +42,8 @@ class FileHandle {
     switch (file.path.split('.').last) {
       case "pk6":
         return PK6File(file: file, folder: folder);
+      case "pk7":
+        return PK7File(file: file, folder: folder);
       default:
         return FileHandle(file: file, folder: folder);
     }
@@ -82,7 +85,13 @@ class FileHandle {
   ///   }
   ///  }
   /// ```
+  void extractFromFile() {
+    fileData = file.readAsBytesSync() as Uint8List?;
+    data = fileData!.toList();
+  }
+  
   Future<void> parseDatablocks() async {
+    extractFromFile();
     divideIntoDatablocks();
     for (Datablock datablock in datablocks) {
       await datablock.parse();
@@ -96,9 +105,15 @@ class PK6File extends FileHandle {
 
   @override
   void divideIntoDatablocks() {
-    fileData = file.readAsBytesSync() as Uint8List?;
-    data = fileData!.toList();
-    PK6Data pkData = PK6Data(fileHandle: this);
-    datablocks.add(pkData);
+    addDatablock(PK6Data(fileHandle: this));
+  }
+}
+
+class PK7File extends FileHandle {
+  PK7File({required super.file, super.folder});
+
+  @override
+  void divideIntoDatablocks() {
+    addDatablock(PK7Data(fileHandle: this));
   }
 }

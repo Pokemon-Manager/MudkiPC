@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
-class ThemeManager with ChangeNotifier {
+class ThemeManager extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.dark;
   get themeMode => _themeMode;
 

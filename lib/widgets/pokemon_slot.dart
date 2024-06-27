@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:pokemon_manager/pokemon_manager.dart';
 
 class PokemonSlot extends StatelessWidget {
-  const PokemonSlot({super.key, required this.pokemon});
+  const PokemonSlot({super.key, required this.pokemon, required this.onTap});
   final Pokemon pokemon;
+  final Function onTap;
+  
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          onTap();
+        },
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(children: [
@@ -20,7 +24,8 @@ class PokemonSlot extends StatelessWidget {
                         placeholder: (context, url) =>
                             const CircularProgressIndicator(),
                         errorWidget: (context, url, error) =>
-                            const Icon(Icons.error)))),
+                            const Icon(Icons.error),
+                        filterQuality: FilterQuality.none))),
             Text(pokemon.getNickname())
           ]),
         ));

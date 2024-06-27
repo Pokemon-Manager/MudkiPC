@@ -22,32 +22,41 @@ class PokeAPI {
 
   /// # fetchSpecies(`int id`)
   /// ## Fetches a species from PokeAPI.
-  ///
+  /// Returns a [Species] object. It fetches multiple endpoints and combines them into one Map.
+  /// If you want to fetch a single endpoint, use [fetch].
+  /// If you want to learn why mutiple fetches are needed, look at the [Species] class.
+  /// ### Current Endpoints:
+  /// - pokemon
+  /// - pokemon-species
   static Future<Species> fetchSpecies(int id) async {
     if (species.containsKey(id)) {
       return species[id]!;
     }
-    final response = await fetch("pokemon", "$id");
-    if (response.statusCode == 200) {
-      species[id] =
-          Species.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-      return species[id]!;
-    } else {
+    Map<String, dynamic> data = {};
+    dynamic response = await fetch("pokemon", "$id");
+    if (response.statusCode != 200) {
+      throw Exception("Failed to create species $id");
+    } 
+    data["pokemon"] = jsonDecode(response.body) as Map<String, dynamic>;
+    response = await fetch("pokemon-species", "$id");
+    if (response.statusCode != 200) {
       throw Exception("Failed to create species $id");
     }
+    data["pokemon-species"] = jsonDecode(response.body) as Map<String, dynamic>;
+    return Species.fromJson(data);
   }
 
   /// # fetchMove(`int id`)
   /// ## Fetches a move from PokeAPI.
   /// Returns a [Move] object
-  static Future<Move> fetchMove(int id) async {
+  static Future<Move?> fetchMove(int id) async {
     final response = await fetch("move", "$id");
     if (response.statusCode == 200) {
       moves[id] =
           Move.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
       return moves[id]!;
     } else {
-      throw Exception("Failed to create move $id");
+      return null;
     }
   }
 

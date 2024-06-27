@@ -11,5 +11,6 @@ export 'core/move.dart';
 export 'core/ability.dart';
 export 'core/pokeapi.dart';
 export 'core/extensions.dart';
+export 'core/local_string.dart';
 export 'screens/main_window.dart';
 export 'package:desktop_multi_window/desktop_multi_window.dart';

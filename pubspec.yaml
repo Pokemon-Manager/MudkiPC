@@ -35,8 +35,15 @@ dependencies:
   cached_network_image: ^3.2.1
   transparent_image: ^2.0.0
   desktop_multi_window: ^0.2.0
+  file_picker: ^8.0.5
   desktop_lifecycle:
   window_manager:
+  fl_chart: ^0.68.0
+  shared_preferences: ^2.2.3
+  sqflite: ^2.3.3+1
+  path_provider: ^2.1.3
+  flutter_expandable_fab: ^2.0.0
+  flutter_animate: ^4.5.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6

@@ -175,9 +175,9 @@ mixin Gen3PokemonFormat implements Datablock {
     return total >> 30 & 11;
   }
 
-  Future<List<Move>> getMoves(int offset) async {
+  Future<List<Move?>> getMoves(int offset) async {
     Iterable<int> moveRange = getRange(offset, 8);
-    List<Move> moves = [];
+    List<Move?> moves = [];
     for (int i = 0; i < 4; i++) {
       int moveID = combineBytesToInt16(
           [moveRange.elementAt(i * 2), moveRange.elementAt(i * 2 + 1)]);
@@ -205,7 +205,7 @@ class PK6Data extends Datablock with Gen3PokemonFormat {
     newPokemon.nickName = getNickname(0x40);
     newPokemon.ivStats = getIvStats(0x74);
     newPokemon.evStats = getEvStats(0x1E);
-    List<Move> moves = await getMoves(0x5A);
+    List<Move?> moves = await getMoves(0x5A);
     newPokemon.move1 = moves[0];
     newPokemon.move2 = moves[1];
     newPokemon.move3 = moves[2];
@@ -219,6 +219,17 @@ class PK7Data extends Datablock with Gen3PokemonFormat {
 
   @override
   Future<void> parse() async {
-    return;
+    int speciesID = getSpeciesID(0x08);
+    Species? species = await PokeAPI.fetchSpecies(speciesID);
+    Pokemon newPokemon = Pokemon(species: species);
+    newPokemon.nickName = getNickname(0x40);
+    newPokemon.ivStats = getIvStats(0x74);
+    newPokemon.evStats = getEvStats(0x1E);
+    List<Move?> moves = await getMoves(0x5A);
+    newPokemon.move1 = moves[0];
+    newPokemon.move2 = moves[1];
+    newPokemon.move3 = moves[2];
+    newPokemon.move4 = moves[3];
+    openedPC.addPokemon(newPokemon);
   }
 }
