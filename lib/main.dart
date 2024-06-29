@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:pokemon_manager/screens/main_window.dart';
-import 'package:pokemon_manager/theme/theme_constants.dart';
+import 'package:mudkip_frontend/screens/main_window.dart';
+import 'package:mudkip_frontend/theme/theme_constants.dart';
 import 'package:pokemon_manager_backend/pokemon_manager.dart';
-import 'package:pokemon_manager/theme/theme_manager.dart';
+import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> doPrefs() async {
