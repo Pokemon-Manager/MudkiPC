@@ -3,10 +3,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:pokemon_manager/main.dart';
-import 'package:pokemon_manager/skeletons/preview_panel.dart';
-import 'package:pokemon_manager/widgets/pokemon_slot.dart';
-import 'package:pokemon_manager/pokemon_manager.dart';
+import 'package:mudkip_frontend/main.dart';
+import 'package:mudkip_frontend/skeletons/preview_panel.dart';
+import 'package:mudkip_frontend/widgets/pokemon_slot.dart';
+import 'package:pokemon_manager_backend/pokemon_manager.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -301,41 +301,39 @@ class PCView extends Destination {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-            child: GridView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: pokemons.length,
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(10),
-              clipBehavior: Clip.antiAlias,
-              itemBuilder: (BuildContext context, int index) {
-                return PokemonSlot(
-                    pokemon: pokemons[index],
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            PreviewPanel previewDialog =
-                                PreviewPanel(pokemon: pokemons[index]);
-                            final showFullScreenDialog =
-                                MediaQuery.sizeOf(context).width < 600;
-                            if (showFullScreenDialog) {
-                              return Dialog.fullscreen(child: previewDialog);
-                            } else {
-                              return Dialog(
-                                  child: ConstrainedBox(
-                                      constraints:
-                                          const BoxConstraints(maxWidth: 600),
-                                      child: previewDialog));
-                            }
-                          });
+      child: GridView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: pokemons.length,
+        shrinkWrap: true,
+        padding: const EdgeInsets.all(10),
+        clipBehavior: Clip.antiAlias,
+        itemBuilder: (BuildContext context, int index) {
+          return PokemonSlot(
+              pokemon: pokemons[index],
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      PreviewPanel previewDialog =
+                          PreviewPanel(pokemon: pokemons[index]);
+                      final showFullScreenDialog =
+                          MediaQuery.sizeOf(context).width < 600;
+                      if (showFullScreenDialog) {
+                        return Dialog.fullscreen(child: previewDialog);
+                      } else {
+                        return Dialog(
+                            child: ConstrainedBox(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 600),
+                                child: previewDialog));
+                      }
                     });
-              },
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  maxCrossAxisExtent: 300),
-            ),
-          );
+              });
+        },
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            crossAxisSpacing: 10, mainAxisSpacing: 10, maxCrossAxisExtent: 300),
+      ),
+    );
   }
 }
 

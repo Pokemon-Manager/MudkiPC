@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:pokemon_manager/screens/main_window.dart';
 import 'package:pokemon_manager/theme/theme_constants.dart';
-import 'package:pokemon_manager/pokemon_manager.dart';
+import 'package:pokemon_manager_backend/pokemon_manager.dart';
 import 'package:pokemon_manager/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,6 +10,7 @@ Future<void> doPrefs() async {
   prefs = await SharedPreferences.getInstance();
   return;
 }
+
 ThemeManager themeManager = ThemeManager();
 PC openedPC = PC(pokemons: []);
 SharedPreferences? prefs;
@@ -32,8 +34,6 @@ void main(List<String> args) async {
         title: "Pokémon Manager",
         theme: lightTheme,
         darkTheme: darkTheme,
-        home: const MainWindow()
-    ));
+        home: const MainWindow()));
   }
 }
-
