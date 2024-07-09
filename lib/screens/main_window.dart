@@ -6,7 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mudkip_frontend/main.dart';
 import 'package:mudkip_frontend/skeletons/preview_panel.dart';
 import 'package:mudkip_frontend/widgets/pokemon_slot.dart';
-import 'package:pokemon_manager_backend/pokemon_manager.dart';
+import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -70,11 +70,33 @@ class MainWindowState extends State<MainWindow>
                 }),
             FloatingActionButton(
                 child: const Icon(Icons.drive_folder_upload_rounded),
-                onPressed: () async {
-                  if (prefs != null) {
-                    final result = await FilePicker.platform.getDirectoryPath();
-                    if (result != null) {}
-                  }
+                onPressed: () {
+                  FilePicker.platform.getDirectoryPath().then((result) {
+                    if (result != null && context.mounted) {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                content: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                        margin: const EdgeInsets.only(left: 7),
+                                        child: const Text(
+                                            "Fetching Pokémon from Folder...")),
+                                    const SizedBox(height: 10),
+                                    const CircularProgressIndicator(),
+                                  ],
+                                ),
+                              ),
+                          barrierDismissible: false);
+                      print(result);
+                      openedPC
+                          .openFolder(result)
+                          .then((value) => refreshPCView());
+                    }
+                  });
                 }),
           ],
         ),
@@ -124,11 +146,6 @@ class MainWindowState extends State<MainWindow>
 
   Future<void> start() async {
     // First Dialog. Welcomes user, and gives them a disclaimer about the development of this program.
-    if (prefs != null) {
-      if (prefs!.getBool("firstRun") ?? true) {
-        return;
-      }
-    }
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -145,97 +162,25 @@ class MainWindowState extends State<MainWindow>
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Welcome to Pokemon Manager!",
+                  Text("Welcome to MudkiPC!",
                       style: Theme.of(context).textTheme.titleLarge),
                   Text(
                       "This program is still in alpha, so some bugs may occur. Please report them if you encounter any. Don't hesitate to contribute!",
                       style: Theme.of(context).textTheme.titleMedium),
                 ],
               ));
-        }).then((_) => start_1());
-    // ignore: use_build_context_synchronously
+        });
   }
 
-  void start_1() {
-    // Second Dialog. Tells user to select a PKMDB folder to import from for the first time.
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-              actions: [
-                TextButton(
-                  child: const Text("OK"),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                      "Please select the PKM database you would like to import from.",
-                      style: Theme.of(context).textTheme.titleMedium),
-                ],
-              ));
-        }).then((_) => start_2());
-  }
-
-  Future<void> start_2() async {
-    // Third Dialog. Brings up the folder picker.
-    FilePicker.platform
-        .getDirectoryPath(dialogTitle: "Select PKMDB Folder")
-        .then((value) {
-      start_3(value);
-      return null;
+  Future<void> refreshPCView() async {
+    destinations_widgets[0] = PCView(pokemons: openedPC.pokemons);
+    setState(() {
+      isLoading = false;
     });
-  }
-
-  void start_3(String? result) async {
-    // Final Preparation. Opens the selected PKMDB folder.
-    if (result != null) {
-      AlertDialog alert = showLoaderDialog(context);
-      await openedPC.openFolder(result);
-      destinations_widgets[0] = PCView(pokemons: openedPC.pokemons);
-      setState(() {
-        isLoading = false;
-      });
-      handleScreenChanged(0);
-      closeLoaderDialog(alert);
-      await prefs?.setBool("firstRun", false);
+    handleScreenChanged(0);
+    if (context.mounted) {
+      Navigator.of(context).pop();
     }
-  }
-
-  void closeLoaderDialog(AlertDialog? alert) {
-    // Closes the loading dialog.
-    Navigator.of(context, rootNavigator: true).pop(alert);
-  }
-
-  AlertDialog showLoaderDialog(BuildContext context) {
-    // Shows the loading dialog.
-    AlertDialog alert = AlertDialog(
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              margin: const EdgeInsets.only(left: 7),
-              child: const Text("Fetching Pokémon from Folder...")),
-          const SizedBox(height: 10),
-          const CircularProgressIndicator(),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-    return alert;
   }
 }
 
@@ -289,7 +234,7 @@ class Destination extends StatelessWidget {
 
 class PCView extends Destination {
   // The PC view is where the user can see their Pokémon.
-  List<Pokemon> pokemons;
+  List<dynamic> pokemons;
   PCView({super.key, required this.pokemons});
 
   @override
@@ -300,39 +245,39 @@ class PCView extends Destination {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GridView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: pokemons.length,
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(10),
-        clipBehavior: Clip.antiAlias,
-        itemBuilder: (BuildContext context, int index) {
-          return PokemonSlot(
-              pokemon: pokemons[index],
-              onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      PreviewPanel previewDialog =
-                          PreviewPanel(pokemon: pokemons[index]);
-                      final showFullScreenDialog =
-                          MediaQuery.sizeOf(context).width < 600;
-                      if (showFullScreenDialog) {
-                        return Dialog.fullscreen(child: previewDialog);
-                      } else {
-                        return Dialog(
-                            child: ConstrainedBox(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 600),
-                                child: previewDialog));
-                      }
-                    });
-              });
-        },
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            crossAxisSpacing: 10, mainAxisSpacing: 10, maxCrossAxisExtent: 300),
-      ),
+    return GridView.builder(
+      scrollDirection: Axis.vertical,
+      itemCount: pokemons.length,
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(10),
+      clipBehavior: Clip.antiAlias,
+      itemBuilder: (BuildContext context, int index) {
+        if (pokemons[index] is! Pokemon) {
+          return const SizedBox();
+        }
+        return PokemonSlot(
+            pokemon: pokemons[index],
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    PreviewPanel previewDialog =
+                        PreviewPanel(pokemon: pokemons[index]);
+                    final showFullScreenDialog =
+                        MediaQuery.sizeOf(context).width < 600;
+                    if (showFullScreenDialog) {
+                      return Dialog.fullscreen(child: previewDialog);
+                    } else {
+                      return Dialog(
+                          child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 600),
+                              child: previewDialog));
+                    }
+                  });
+            });
+      },
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          crossAxisSpacing: 10, mainAxisSpacing: 10, maxCrossAxisExtent: 300),
     );
   }
 }
@@ -395,7 +340,7 @@ class PokeDexView extends Destination {
 mixin Destinations {
   // ignore: non_constant_identifier_names
   List<Destination> destinations_widgets = [
-    PCView(pokemons: const []),
+    PCView(pokemons: []),
     PokeDexView()
   ];
 

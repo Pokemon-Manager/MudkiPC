@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/screens/main_window.dart';
 import 'package:mudkip_frontend/theme/theme_constants.dart';
-import 'package:pokemon_manager_backend/pokemon_manager.dart';
+import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,11 +12,13 @@ Future<void> doPrefs() async {
 }
 
 ThemeManager themeManager = ThemeManager();
-PC openedPC = PC(pokemons: []);
+late PC openedPC;
 SharedPreferences? prefs;
 
 void main(List<String> args) async {
+  WidgetsFlutterBinding.ensureInitialized();
   await doPrefs();
+  openedPC = PC(pokemons: []);
   if (args.firstOrNull == 'multi_window') {
     // ignore: unused_local_variable
     final windowId = int.parse(args[1]);

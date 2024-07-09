@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:pokemon_manager_backend/pokemon_manager.dart';
+import 'package:mudkip_frontend/pokemon_manager.dart';
 
 class PokemonSlot extends StatelessWidget {
   const PokemonSlot({super.key, required this.pokemon, required this.onTap});

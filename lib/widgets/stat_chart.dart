@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:pokemon_manager_backend/pokemon_manager.dart';
+import 'package:mudkip_frontend/pokemon_manager.dart';
 
 class StatChart extends StatelessWidget {
   const StatChart(
