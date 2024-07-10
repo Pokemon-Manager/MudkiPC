@@ -10,7 +10,6 @@ class TextWithLoaderBuffer extends StatelessWidget {
     return FutureBuilder(
       future: future,
       builder: (context, snapshot) {
-        print(snapshot);
         if (snapshot.hasData) {
           return Text(snapshot.requireData,
               style: text.style,

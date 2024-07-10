@@ -48,6 +48,8 @@ dependencies:
   test: ^1.25.2
   sqflite_common_ffi: '>=2.2.2-1'
   sqflite: '>=2.3.2-2'
+  flutter_launcher_icons: ^0.13.1
+  rename_app: ^1.6.1
   sqflite_common_ffi_web: '>=0.4.2-1'
 
 dev_dependencies:
@@ -63,7 +65,18 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  windows:
+    generate: true
+    image_path: "assets/icon.png"
+    icon_size: 256 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/icon.png"
 # The following section is specific to Flutter packages.
 flutter:
 

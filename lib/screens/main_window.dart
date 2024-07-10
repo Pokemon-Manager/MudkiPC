@@ -2,11 +2,10 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mudkip_frontend/main.dart';
 import 'package:mudkip_frontend/skeletons/preview_panel.dart';
+import 'package:mudkip_frontend/skeletons/warning_page.dart';
 import 'package:mudkip_frontend/widgets/pokemon_slot.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -19,18 +18,9 @@ class MainWindow extends StatefulWidget {
 
 class MainWindowState extends State<MainWindow>
     with Destinations, TickerProviderStateMixin {
-  bool isLoading = true;
-  int selectedIndex = 0;
-  AnimationController? controller;
   void handleScreenChanged(int selectedScreen) {
-    controller?.reverse().then(
-      (value) {
-        setState(() {
-          selectedIndex = selectedScreen;
-        });
-      },
-    ).then((value) {
-      controller?.forward();
+    setState(() {
+      selectedIndex = selectedScreen;
     });
   }
 
@@ -61,7 +51,9 @@ class MainWindowState extends State<MainWindow>
           ),
           children: [
             FloatingActionButton(
-                child: const Icon(Icons.upload_file_rounded),
+                tooltip: "Add File",
+                child: const Icon(Icons.upload_file_rounded,
+                    semanticLabel: "Add File"),
                 onPressed: () async {
                   if (prefs != null) {
                     final result = await FilePicker.platform.pickFiles();
@@ -69,6 +61,7 @@ class MainWindowState extends State<MainWindow>
                   }
                 }),
             FloatingActionButton(
+                tooltip: "Add Folder",
                 child: const Icon(Icons.drive_folder_upload_rounded),
                 onPressed: () {
                   FilePicker.platform.getDirectoryPath().then((result) {
@@ -91,7 +84,6 @@ class MainWindowState extends State<MainWindow>
                                 ),
                               ),
                           barrierDismissible: false);
-                      print(result);
                       openedPC
                           .openFolder(result)
                           .then((value) => refreshPCView());
@@ -111,15 +103,8 @@ class MainWindowState extends State<MainWindow>
           else
             const SizedBox(width: 0),
           Expanded(
-              child: Animate(
-            controller: controller,
-            effects: const [
-              FadeEffect(curve: Curves.easeIn, begin: 0.0, end: 1.0),
-              SlideEffect(
-                  curve: Curves.easeIn,
-                  begin: Offset(0, -0.1),
-                  end: Offset(0, 0)),
-            ],
+              child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 100),
             child: destinations_widgets[selectedIndex],
           )),
         ]),
@@ -135,8 +120,6 @@ class MainWindowState extends State<MainWindow>
 
   @override
   void initState() {
-    controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 150));
     super.initState();
     Future.delayed(const Duration(seconds: 0), () {
       // Makes sure that the MaterialApp is loaded before begin the first time setup.
@@ -173,10 +156,7 @@ class MainWindowState extends State<MainWindow>
   }
 
   Future<void> refreshPCView() async {
-    destinations_widgets[0] = PCView(pokemons: openedPC.pokemons);
-    setState(() {
-      isLoading = false;
-    });
+    destinations_widgets[0] = PCView();
     handleScreenChanged(0);
     if (context.mounted) {
       Navigator.of(context).pop();
@@ -234,8 +214,7 @@ class Destination extends StatelessWidget {
 
 class PCView extends Destination {
   // The PC view is where the user can see their Pokémon.
-  List<dynamic> pokemons;
-  PCView({super.key, required this.pokemons});
+  PCView({super.key});
 
   @override
   Icon get destinationIcon => const Icon(Icons.grid_view_rounded);
@@ -245,24 +224,27 @@ class PCView extends Destination {
 
   @override
   Widget build(BuildContext context) {
+    if (openedPC.pokemons.isEmpty) {
+      return WarningPage(
+          title: "No Pokémon in sight.",
+          description: "You can add some with the + button.",
+          icon: Icons.announcement_rounded);
+    }
     return GridView.builder(
       scrollDirection: Axis.vertical,
-      itemCount: pokemons.length,
+      itemCount: openedPC.pokemons.length,
       shrinkWrap: true,
       padding: const EdgeInsets.all(10),
       clipBehavior: Clip.antiAlias,
       itemBuilder: (BuildContext context, int index) {
-        if (pokemons[index] is! Pokemon) {
-          return const SizedBox();
-        }
         return PokemonSlot(
-            pokemon: pokemons[index],
+            pokemon: openedPC.pokemons[index],
             onTap: () {
               showDialog(
                   context: context,
                   builder: (context) {
                     PreviewPanel previewDialog =
-                        PreviewPanel(pokemon: pokemons[index]);
+                        PreviewPanel(pokemon: openedPC.pokemons[index]);
                     final showFullScreenDialog =
                         MediaQuery.sizeOf(context).width < 600;
                     if (showFullScreenDialog) {
@@ -323,26 +305,18 @@ class PokeDexView extends Destination {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Icon(Icons.notification_important_rounded, size: 100),
-        Text("In development", style: Theme.of(context).textTheme.titleLarge),
-        Text("This feature is not yet implemented.",
-            style: Theme.of(context).textTheme.titleMedium)
-      ],
-    ));
+    return WarningPage(
+        title: "In development",
+        description: "This feature is not yet implemented.",
+        icon: Icons.notification_important_rounded);
   }
 }
 
 mixin Destinations {
   // ignore: non_constant_identifier_names
-  List<Destination> destinations_widgets = [
-    PCView(pokemons: const []),
-    PokeDexView()
-  ];
+  List<Destination> destinations_widgets = [PCView(), PokeDexView()];
+
+  int selectedIndex = 0;
 
   List<NavigationRailDestination> getDestinationsForRail() {
     List<NavigationRailDestination> destinations = [];
