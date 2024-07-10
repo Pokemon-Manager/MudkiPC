@@ -25,8 +25,11 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 /// - [setSpecies] sets the species of the pokemon.
 /// - [getBaseStats] gets the base stats of the pokemon.
 class Pokemon {
+  int uniqueID = 0;
   String nickName = "";
-  Species species;
+  int pokemonID =
+      0; // Not the same as unique ID. This is the ID of the species and form combined.
+  late Species species;
   int gender = 0;
   int level = 0;
   int exp = 0;
@@ -51,10 +54,10 @@ class Pokemon {
       specialAttack: 0,
       specialDefense: 0,
       speed: 0);
-  Pokemon({required this.species});
+  Pokemon();
 
   factory Pokemon.fromJson(Species species, Map<String, dynamic> json) {
-    Pokemon newPokemon = Pokemon(species: species);
+    Pokemon newPokemon = Pokemon();
     for (String key in json.keys) {
       switch (key) {
         case "ivStats":
@@ -73,10 +76,18 @@ class Pokemon {
     return newPokemon;
   }
 
+  factory Pokemon.fromDB(Map<String, Object?> query) {
+    Pokemon newPokemon = Pokemon();
+    PokeAPI.fetchSpecies(query["species_id"] as int, true)
+        .asStream()
+        .listen((value) {
+      newPokemon.species = value;
+    });
+    return newPokemon;
+  }
   Map<String, dynamic> toJson() {
     return {
       "nickname": nickName,
-      "typing": species.typing.toJson(),
       "ivStats": ivStats.toJson(),
       "evStats": evStats.toJson(),
       "move1": move1?.toJson(),
@@ -102,9 +113,9 @@ class Pokemon {
 
   /// Gets the nickname of the pokemon.
   /// @returns - The nickname of the pokemon. If the pokemon has no nickname, this will be the same as the species name.
-  String getNickname() {
+  Future<String> getNickname() async {
     if (nickName == "") {
-      return species.getName();
+      return await species.getName();
     }
     return nickName;
   }

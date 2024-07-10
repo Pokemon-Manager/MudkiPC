@@ -21,7 +21,7 @@ class LocalizedString {
     }
     return format(get(locale));
   }
-  
+
   String format(String string) {
     return string.replaceAll('\n', ' ');
   }
@@ -30,11 +30,15 @@ class LocalizedString {
     LocalizedString newString = LocalizedString();
     for (Map<String, dynamic> entry in json) {
       for (String key in entry.keys) {
-        if(entry[key] is String) {
+        if (entry[key] is String) {
           newString.strings[entry["language"]["name"]] = entry[key];
         }
       }
     }
     return newString;
+  }
+
+  factory LocalizedString.fromDB(Map<String, dynamic> query) {
+    return LocalizedString()..strings = query as Map<String, String>;
   }
 }

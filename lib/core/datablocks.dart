@@ -199,8 +199,11 @@ class PK6Data extends Datablock with Gen3PokemonFormat {
   @override
   Future<dynamic> parse() async {
     int speciesID = getSpeciesID(0x08);
-    Species? species = await PokeAPI.fetchSpecies(speciesID);
-    Pokemon newPokemon = Pokemon(species: species);
+    Pokemon newPokemon = Pokemon();
+    PokeAPI.fetchSpecies(speciesID, true).then((value) {
+      newPokemon.species = value;
+    });
+    newPokemon.pokemonID = getSpeciesID(0x08);
     newPokemon.nickName = getNickname(0x40);
     newPokemon.ivStats = getIvStats(0x74);
     newPokemon.evStats = getEvStats(0x1E);
@@ -219,8 +222,10 @@ class PK7Data extends Datablock with Gen3PokemonFormat {
   @override
   Future<dynamic> parse() async {
     int speciesID = getSpeciesID(0x08);
-    Species? species = await PokeAPI.fetchSpecies(speciesID);
-    Pokemon newPokemon = Pokemon(species: species);
+    Pokemon newPokemon = Pokemon();
+    PokeAPI.fetchSpecies(speciesID, true).then((value) {
+      newPokemon.species = value;
+    });
     newPokemon.nickName = getNickname(0x40);
     newPokemon.ivStats = getIvStats(0x74);
     newPokemon.evStats = getEvStats(0x1E);

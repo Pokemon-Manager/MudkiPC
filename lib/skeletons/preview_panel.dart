@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mudkip_frontend/widgets/stat_chart.dart';
+import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 
 // ignore: must_be_immutable
@@ -21,16 +22,21 @@ class PreviewPanel extends StatelessWidget {
             fit: BoxFit.contain,
             filterQuality: FilterQuality.none,
             height: 300),
-        Text(pokemon.getNickname(),
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 50)),
-        Text(pokemon.getSpecies().getName(),
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
-        Text(pokemon.getSpecies().getDescription(),
-            textAlign: TextAlign.center,
-            style:
-                const TextStyle(fontWeight: FontWeight.normal, fontSize: 16)),
+        TextWithLoaderBuffer(
+            future: pokemon.getNickname(),
+            text: const Text("",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50))),
+        TextWithLoaderBuffer(
+            future: pokemon.getSpecies().getName(),
+            text: const Text("",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 36))),
+        TextWithLoaderBuffer(
+            future: pokemon.getSpecies().getDescription(),
+            text: const Text("",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16))),
         StatChart(
             base: pokemon.getBaseStats(),
             iv: pokemon.getIvStats(),

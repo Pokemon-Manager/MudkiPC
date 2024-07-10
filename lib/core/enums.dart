@@ -225,6 +225,53 @@ abstract class LevelProgression {
   }
 }
 
+final class LocaleIDs {
+  static const int ja = 1;
+  static const int ja2 = 2;
+  static const int ko = 3;
+  static const int zh = 4;
+  static const int fr = 5;
+  static const int de = 6;
+  static const int es = 7;
+  static const int it = 8;
+  static const int en = 9;
+  static const int cs = 10;
+  static const int ja3 = 11;
+  static const int zh2 = 12;
+  static const int pt = 13;
+
+  static int getIDFromLocale(String localeName) {
+    switch (localeName) {
+      case "ja":
+        return ja;
+      case "ja-JP":
+        return ja2;
+      case "ko":
+        return ko;
+      case "zh":
+        return zh;
+      case "fr":
+        return fr;
+      case "de":
+        return de;
+      case "es":
+        return es;
+      case "it":
+        return it;
+      case "en":
+        return en;
+      case "cs":
+        return cs;
+      case "zh-CN":
+        return zh2;
+      case "pt":
+        return pt;
+      default:
+        return en;
+    }
+  }
+}
+
 class ErracticProgression extends LevelProgression {
   static const List<int> expRequiredForNextLevel = [
     15,

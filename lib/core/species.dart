@@ -7,11 +7,10 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 /// So instead, [PokeAPI] stores a Map containing all of the already created [Species]s objects.
 /// If you want to know more about how [Species] is created, look at the [PokeAPI] class.
 class Species {
-  LocalizedString speciesNames = LocalizedString();
-  LocalizedString descriptions = LocalizedString();
-  int id = 0;
-  Typing typing = Typing(type1: Normal());
-  Stats baseStats = Stats(
+  int id;
+  late LocalizedString descriptions;
+  late List<Move> moves;
+  late Stats baseStats = Stats(
       hp: 0,
       attack: 0,
       defense: 0,
@@ -19,32 +18,23 @@ class Species {
       specialDefense: 0,
       speed: 0);
 
-  Species(
-      {required this.typing,
-      required this.speciesNames,
-      required this.descriptions,
-      required this.id,
-      required this.baseStats});
+  late Stream builder;
 
-  /// # Species.fromJson(`Map<String, dynamic> json`)
-  /// ## Creates a new Species from a json object.
-  /// Because the API fragments the data, we need to combine multiple request into one final Map.
-  /// If you want, for example, the evolution chain, first you need to figure out the endpoint it is stored at.
-  /// One of the evolution chain endpoints is `pokemon-species`, so just use the key of that to get the data.
-  /// The `PokeAPI` will all of the required data and combine them before calling this.
-  factory Species.fromJson(Map<String, dynamic> json) {
-    return Species(
-      id: json['pokemon']['id'],
-      speciesNames: LocalizedString.fromJson(json['pokemon-species']['names']),
-      descriptions: LocalizedString.fromJson(
-          json['pokemon-species']['flavor_text_entries']),
-      typing: Typing.fromJson(json['pokemon']['types']),
-      baseStats: Stats.fromJson(json['pokemon']['stats']),
-    );
+  Species({required this.id});
+
+  factory Species.fromDB(Map query) {
+    print(query);
+    Species newSpecies = Species(id: query["id"] as int);
+    return newSpecies;
   }
 
-  String getName() {
-    return speciesNames.getLocalizedString();
+  Future<String> getName() {
+    return PokeAPI.fetchString(LanguageBinding(
+        id: id,
+        table: "pokemon_species_names",
+        id_column: "pokemon_species_id",
+        string_column: "name",
+        isNameTable: true));
   }
 
   int getId() {
@@ -75,7 +65,12 @@ class Species {
   /// ## Returns the description of the pokemon.
   /// Returns a string that is the description of the pokemon.
   /// Will be localized to the current language.
-  String getDescription() {
-    return descriptions.getLocalizedString();
+  Future<String> getDescription() {
+    return PokeAPI.fetchString(LanguageBinding(
+        id: id,
+        table: "pokemon_species_flavor_text",
+        id_column: "species_id",
+        string_column: "flavor_text",
+        isNameTable: false));
   }
 }

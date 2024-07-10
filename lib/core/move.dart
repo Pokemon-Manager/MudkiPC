@@ -4,44 +4,45 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 /// ## A class that represents a move from a Game.
 /// TODO: Add ability to search by moves. Not sure how to do that yet.
 class Move {
-  String name = "";
   int id = 0;
   String description = "";
-  Typing typing = Typing(type1: Normal());
   int? power;
   int? accuracy;
   int pp;
   int priority = 0;
   List<Species> learnableBy = []; // List of species that can learn this move.
   List<Pokemon> knownBy = []; // List of pokemons that have learned this move.
-  Move(
-      {required this.name,
-      required this.power,
-      required this.typing,
-      required this.accuracy,
-      required this.pp});
+  Move({required this.power, required this.accuracy, required this.pp});
 
   factory Move.fromJson(Map<String, dynamic> json) {
     return Move(
-      name: json['name'],
       power: json['power'],
-      typing: Typing.fromJson(json['type']),
       accuracy: json['accuracy'],
       pp: json['pp'],
     );
   }
   Map<String, dynamic> toJson() {
     return {
-      "name": name,
       "power": power,
-      "type": typing.toJson(),
       "accuracy": accuracy,
       "pp": pp,
     };
   }
 
-  String getName() {
-    return name;
+  factory Move.fromDB(Map<String, Object?> query) {
+    return Move(
+      power: query['power'] as int?,
+      accuracy: query['accuracy'] as int?,
+      pp: query['pp'] as int,
+    );
+  }
+  Future<String> getName() {
+    return PokeAPI.fetchString(LanguageBinding(
+        id: id,
+        table: "move_names",
+        id_column: "move_id",
+        string_column: "name",
+        isNameTable: true));
   }
 
   int getId() {

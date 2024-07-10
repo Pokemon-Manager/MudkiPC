@@ -2,9 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 
-import 'datablocks.dart';
-import 'pc.dart';
-
 /// ### Compatible Extensions:
 /// - pk6 (A Single Pokémon + Basic Trainer Info)
 /// ### Planned Compatible Extensions:

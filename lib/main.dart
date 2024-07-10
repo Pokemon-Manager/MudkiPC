@@ -17,8 +17,11 @@ SharedPreferences? prefs;
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
   await doPrefs();
-  openedPC = PC(pokemons: []);
+  openedPC = await PC.create();
+  PokeAPI.create();
   if (args.firstOrNull == 'multi_window') {
     // ignore: unused_local_variable
     final windowId = int.parse(args[1]);
@@ -36,6 +39,15 @@ void main(List<String> args) async {
         title: "Pokémon Manager",
         theme: lightTheme,
         darkTheme: darkTheme,
+        supportedLocales: const [
+          Locale('en', 'US'),
+          Locale('fr', 'FR'),
+          Locale('ja', 'JP'),
+          Locale('ko', 'KR'),
+          Locale('es', 'ES'),
+          Locale('zh', 'CN'),
+          Locale('it', 'IT'),
+        ],
         home: const MainWindow()));
   }
 }

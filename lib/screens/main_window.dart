@@ -340,7 +340,7 @@ class PokeDexView extends Destination {
 mixin Destinations {
   // ignore: non_constant_identifier_names
   List<Destination> destinations_widgets = [
-    PCView(pokemons: []),
+    PCView(pokemons: const []),
     PokeDexView()
   ];
 

@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// # PC
 /// ## Represents the user's collection of [Pokemon], [Species], and [Trainer]s.
 class PC {
+  Database? db;
+
   List<Pokemon> pokemons;
 
   /// # species
@@ -14,6 +17,47 @@ class PC {
   PC({required this.pokemons});
 
   get settings => null;
+
+  static create() async {
+    Directory directory = await getApplicationDocumentsDirectory();
+    Database db = await databaseFactory
+        .openDatabase("${directory.path}/MudkiPC/db/User.db");
+    return PC.fromDB(db);
+  }
+
+  static Future<PC> fromDB(Database db) async {
+    await db.execute("""CREATE TABLE IF NOT EXISTS pokemons (
+      unique_id INTEGER PRIMARY KEY AUTOINCREMENT,
+      species_id INTEGER,
+      nickname TEXT,
+      shiny INTEGER,
+      gender INTEGER,
+      exp INTEGER,
+      iv_hp INTEGER,
+      iv_atk INTEGER,
+      iv_def INTEGER,
+      iv_spatk INTEGER,
+      iv_spdef INTEGER,
+      iv_speed INTEGER
+      ev_hp INTEGER,
+      ev_atk INTEGER,
+      ev_def INTEGER,
+      ev_spatk INTEGER,
+      ev_spdef INTEGER,
+      ev_speed INTEGER
+      move_1 INTEGER,
+      move_2 INTEGER,
+      move_3 INTEGER,
+      move_4 INTEGER
+    );""");
+    var pokemons = await db.query("pokemons");
+    List<Pokemon> pokemonList = [];
+    for (var pokemon in pokemons) {
+      pokemonList.add(Pokemon.fromDB(pokemon));
+    }
+
+    return PC(pokemons: pokemonList)..db = db;
+  }
 
   /// #addPokemon(`Pokemon pokemon`)
   /// ## Adds a [Pokemon] to the list of [pokemons].

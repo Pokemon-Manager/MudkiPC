@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 
 class PokemonSlot extends StatelessWidget {
   const PokemonSlot({super.key, required this.pokemon, required this.onTap});
@@ -26,7 +27,8 @@ class PokemonSlot extends StatelessWidget {
                         errorWidget: (context, url, error) =>
                             const Icon(Icons.error),
                         filterQuality: FilterQuality.none))),
-            Text(pokemon.getNickname())
+            TextWithLoaderBuffer(
+                future: pokemon.getNickname(), text: const Text("")),
           ]),
         ));
   }
