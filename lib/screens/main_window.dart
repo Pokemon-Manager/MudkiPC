@@ -104,7 +104,7 @@ class MainWindowState extends State<MainWindow>
             const SizedBox(width: 0),
           Expanded(
               child: AnimatedSwitcher(
-            duration: Duration(milliseconds: 100),
+            duration: const Duration(milliseconds: 100),
             child: destinations_widgets[selectedIndex],
           )),
         ]),

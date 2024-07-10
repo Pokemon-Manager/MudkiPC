@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
-import 'package:sqflite/sqflite.dart';
 
 /// # PokeAPI
 /// ## A class that represents PokeAPI.
