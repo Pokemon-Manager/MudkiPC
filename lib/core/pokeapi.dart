@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:queue/queue.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// # PokeAPI
@@ -11,48 +12,52 @@ import 'package:sqflite/sqflite.dart';
 /// - PC = User's Data (Pokemon, Items, etc.) This is not consitent.
 /// - PokeAPI = PokeDex Data (Species, Moves, etc.) This is consitent.
 ///
-
-enum Tables {
-  species,
-  moves,
-  abilities,
-}
-
 class PokeAPI {
-  static Database? db;
-  static Map<int, Species> species = {};
-  static Map<int, Move> moves = {};
-  static Map<int, Ability> abilities = {};
+  static Database?
+      db; // The database object that is accessed to fetch data. See `Global.db` in the `access/db` folder for the SQLite database used.
+  static Queue queue = Queue(
+      delay: const Duration(
+          milliseconds:
+              100)); /* This queue is to make sure that multiple requests are not made at the same time, 
+  as it could result in an overflow or an asynchronous error.*/
+  /// # `Future<void>` create() async
+  /// ## Checks to see if the database exists and if it doesn't, it extracts it from the asset bundle.
+  /// The database is stored in the `access/db/` and is named `Global.db`.
   static Future<void> create() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    File globalFile = File("${directory.path}/MudkiPC/db/Global.db");
+    Directory directory =
+        await getApplicationCacheDirectory(); // Gets the cache directory for the device.
+    File globalFile = File(
+        "${directory.path}/MudkiPC/db/Global.db"); // Initializes the file object to check if the database exists.
     if (!(globalFile.existsSync())) {
-      ByteData data = await rootBundle.load("assets/db/Global.db");
-      globalFile.createSync(recursive: true);
-      globalFile.writeAsBytesSync(data.buffer.asUint8List());
+      ByteData data = await rootBundle.load(
+          "assets/db/Global.db"); // Loads the database from the asset bundle.
+      globalFile.createSync(recursive: true); // Creates the file.
+      globalFile.writeAsBytesSync(data.buffer
+          .asUint8List()); // Writes the data from the asset bundle to the created file.
     }
     PokeAPI.db = await openDatabase("${directory.path}/MudkiPC/db/Global.db",
-        onConfigure: _onConfigure);
+        onConfigure: _onConfigure); // Opens the database.
     return;
   }
 
-  static Future _onConfigure(Database db) async {
+  /// # `Future<void>` _onConfigure(`Database db`) async
+  /// ## Configures the database for foreign keys.
+  static Future<void> _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
-  /// # fetchSpecies(`int id`)
+  /// # `Future<Species?>` fetchSpecies(`int id`) async
   /// ## Fetches a species from PokeAPI.
-  /// Returns a [Species] object. It fetches multiple endpoints and combines them into one Map.
-  /// If you want to fetch a single endpoint, use [fetch].
-  /// If you want to learn why mutiple fetches are needed, look at the [Species] class.
-  /// ### Current Endpoints:
-  /// - pokemon
-  /// - pokemon-species
+  /// Returns a [Species] object. It fetches from multiple tables and combines them into one object.
+  /// Adds the request for the species to the queue to be fetched later.
   static Future<Species?> fetchSpecies(int id, bool cache) async {
-    if (species.containsKey(id)) {
-      await Future.delayed(const Duration(milliseconds: 1), () {});
-      return species[id]!;
-    }
+    return queue.add(() => _fetchSpecies(id, cache));
+  }
+
+  /// # `Future<Species?>` _fetchSpecies(`int id`) async
+  /// ## See [fetchSpecies] for details.
+  /// This function is what actually fetches the data from the database.
+  static Future<Species?> _fetchSpecies(int id, bool cache) async {
     List<Map<String, Object?>>? query = (await db?.rawQuery("""
       SELECT * FROM pokemon
       INNER JOIN pokemon_species ON pokemon.species_id = pokemon_species.id 
@@ -64,12 +69,17 @@ class PokeAPI {
     return Species.fromDB(query.first);
   }
 
+  /// # `Future<int?>` fetchAmountOfEntries(`String table`) async
+  /// ## Fetches the amount of entries in a table from the database.
   static Future<int?> fetchAmountOfEntries(String table) async {
     var x = await db?.rawQuery('SELECT * FROM $table;');
     int? count = x?.length;
     return count;
   }
 
+  /// # `Future<List<Move?>>` fetchSpecies(`int id`) async
+  /// ## Fetches a species from PokeAPI.
+  ///
   static Future<List<Move?>> fetchMoves(List<int> ids) async {
     List<Move?> data = [];
     for (var id in ids) {
@@ -78,10 +88,17 @@ class PokeAPI {
     return data;
   }
 
-  /// # fetchMove(`int id`)
+  /// # `Future<Move?>` fetchMove(`int id`)
   /// ## Fetches a move from PokeAPI.
-  /// Returns a [Move] object
-  static Future<Move?> fetchMove(int id) async {
+  /// Adds the request for the move to the queue to be fetched later.
+  static Future<Move?> fetchMove(int id) {
+    return queue.add(() => _fetchMove(id));
+  }
+
+  /// # `Future<Move?>` _fetchMove(`int id`) async
+  /// ## See [fetchMove] for details.
+  /// This function is what actually fetches the data from the database.
+  static Future<Move?> _fetchMove(int id) async {
     if (id == 0) {
       return null;
     }
@@ -115,6 +132,10 @@ class PokeAPI {
   }
 
   static Future<String> fetchString(LanguageBinding binding) async {
+    return queue.add(() async => _fetchString(binding));
+  }
+
+  static Future<String> _fetchString(LanguageBinding binding) async {
     int languageId = LocaleIDs.getIDFromLocale(Platform.localeName);
     String table = binding.table;
     String idColumn = binding.id_column;
@@ -128,7 +149,8 @@ class PokeAPI {
       SELECT * FROM $table
       WHERE $idColumn = ? AND $languageColumn = ?;
     """, [binding.id, languageId]));
-    return query!.last[binding.string_column] as String;
+    return (query!.last[binding.string_column] as String)
+        .replaceAll(RegExp('\n'), '');
   }
 
   static Map<String, Object?> changeEmptyStringsToNull(

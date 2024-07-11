@@ -6,21 +6,46 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 
 // ignore: must_be_immutable
 class PreviewPanel extends StatelessWidget {
-  Object? object;
+  Future<Object?> object;
   PreviewPanel({super.key, required this.object});
 
   @override
   Widget build(BuildContext context) {
-    if (object is Pokemon) {
-      Pokemon pokemon = object as Pokemon;
-      return PreviewInfo(
-          title: pokemon.getSpecies().getName(),
-          subtitle: pokemon.getNickname(),
-          imageUrl: pokemon.getSpecies().getFrontImageUrl(),
-          description: pokemon.getSpecies().getDescription(),
-          baseStats: pokemon.species.getBaseStats(),
-          effortStats: pokemon.getEvStats(),
-          individualStats: pokemon.getIvStats());
+    if (object is Future<Pokemon>) {
+      return FutureBuilder(
+          future: object,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                  child: AspectRatio(
+                      aspectRatio: 1, child: CircularProgressIndicator()));
+            }
+            Pokemon pokemon = snapshot.requireData as Pokemon;
+            return PreviewInfo(
+                title: pokemon.getSpecies().getName(),
+                subtitle: pokemon.getNickname(),
+                imageUrl: pokemon.getSpecies().getFrontImageUrl(),
+                description: pokemon.getSpecies().getDescription(),
+                baseStats: pokemon.species.getBaseStats(),
+                effortStats: pokemon.getEvStats(),
+                individualStats: pokemon.getIvStats());
+          });
+    } else if (object is Future<Species?>) {
+      return FutureBuilder(
+          future: object,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                  child: AspectRatio(
+                      aspectRatio: 1, child: CircularProgressIndicator()));
+            }
+            Species species = snapshot.requireData as Species;
+            return PreviewInfo(
+                title: species.getName(),
+                imageUrl: species.getFrontImageUrl(),
+                description: species.getDescription(),
+                baseStats: species.getBaseStats());
+          });
     }
     return const Placeholder();
   }
@@ -51,20 +76,30 @@ class PreviewInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     if (imageUrl != null) {
-      children.add(CachedNetworkImage(
-        imageUrl: imageUrl!,
-        placeholder: (context, url) => const CircularProgressIndicator(),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
+      children.add(Container(
+        height: 300,
+        padding: const EdgeInsets.all(5.0),
+        alignment: Alignment.center,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: CachedNetworkImage(
+            imageUrl: imageUrl!,
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.none,
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
+        ),
       ));
     } else if (icon != null) {
       children.add(Icon(icon, size: 100));
     }
     children.add(TextWithLoaderBuffer(
         future: title,
-        text: Text(
+        text: const Text(
           "",
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge,
+          style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
         )));
 
     if (subtitle != null) {

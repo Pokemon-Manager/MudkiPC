@@ -30,9 +30,13 @@ class SpeciesEntry extends StatelessWidget {
                   }
                   return Row(children: [
                     CachedNetworkImage(
+                      width: 100,
                       imageUrl: snapshot.requireData!.getFrontImageUrl(),
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.none,
+                      placeholder: (context, url) => const AspectRatio(
+                          aspectRatio: 1,
+                          child: Center(child: CircularProgressIndicator())),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                     ),

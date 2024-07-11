@@ -45,12 +45,14 @@ dependencies:
   test: ^1.25.2
   sqflite_common_ffi: '>=2.2.2-1'
   sqflite: '>=2.3.2-2'
+  sqlite3_flutter_libs: ^0.5.24
   flutter_launcher_icons: ^0.13.1
   rename_app: ^1.6.1
   sqflite_common_ffi_web: '>=0.4.2-1'
   package_info_plus: ^8.0.0
   markdown_widget: ^2.3.2+6
   url_launcher: ^6.3.0
+  queue: ^3.1.0+2
 
 dev_dependencies:
   flutter_test:
