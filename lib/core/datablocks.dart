@@ -201,7 +201,7 @@ class PK6Data extends Datablock with Gen3PokemonFormat {
     int speciesID = getSpeciesID(0x08);
     Pokemon newPokemon = Pokemon();
     PokeAPI.fetchSpecies(speciesID, true).then((value) {
-      newPokemon.species = value;
+      newPokemon.species = value!;
     });
     newPokemon.pokemonID = getSpeciesID(0x08);
     newPokemon.nickName = getNickname(0x40);
@@ -224,7 +224,7 @@ class PK7Data extends Datablock with Gen3PokemonFormat {
     int speciesID = getSpeciesID(0x08);
     Pokemon newPokemon = Pokemon();
     PokeAPI.fetchSpecies(speciesID, true).then((value) {
-      newPokemon.species = value;
+      newPokemon.species = value!;
     });
     newPokemon.nickName = getNickname(0x40);
     newPokemon.ivStats = getIvStats(0x74);

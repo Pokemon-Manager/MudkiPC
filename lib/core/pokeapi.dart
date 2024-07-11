@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:sqflite/sqflite.dart';
 
 /// # PokeAPI
 /// ## A class that represents PokeAPI.
@@ -47,16 +48,26 @@ class PokeAPI {
   /// ### Current Endpoints:
   /// - pokemon
   /// - pokemon-species
-  static Future<Species> fetchSpecies(int id, bool cache) async {
+  static Future<Species?> fetchSpecies(int id, bool cache) async {
     if (species.containsKey(id)) {
+      await Future.delayed(const Duration(milliseconds: 1), () {});
       return species[id]!;
     }
-    Map<String, Object?> query = (await db?.rawQuery("""
+    List<Map<String, Object?>>? query = (await db?.rawQuery("""
       SELECT * FROM pokemon
       INNER JOIN pokemon_species ON pokemon.species_id = pokemon_species.id 
       AND pokemon.id = ?;
-        """, [id]))!.first;
-    return Species.fromDB(query);
+        """, [id]));
+    if (query == null || query.isEmpty) {
+      return null;
+    }
+    return Species.fromDB(query.first);
+  }
+
+  static Future<int?> fetchAmountOfEntries(String table) async {
+    var x = await db?.rawQuery('SELECT * FROM $table;');
+    int? count = x?.length;
+    return count;
   }
 
   static Future<List<Move?>> fetchMoves(List<int> ids) async {
@@ -82,16 +93,25 @@ class PokeAPI {
     return Move.fromDB(query);
   }
 
-  static Future<List<int>> fetchBaseStatsAsIntPacket(int id) async {
-    List<Map<String, Object?>>? query = (await db?.rawQuery("""
+  static Future<Stats> fetchBaseStats(int id) async {
+    List<Map<String, Object?>> stats = [];
+    for (var i in [1, 2, 3, 4, 5, 6]) {
+      List<Map<String, Object?>>? query = (await db?.rawQuery("""
       SELECT * FROM pokemon_stats
-      WHERE pokemon_id = ?;
-    """, [id]));
-    List<int> data = [];
-    for (var q in query!) {
-      data.insert((q['stat_id'] as int) - 1, q['base_stat'] as int);
+      WHERE pokemon_id = ? AND stat_id = ?;
+    """, [id, i]));
+      if (query == null || query.isEmpty) {
+        continue;
+      }
+      stats.add(query.first);
     }
-    return data;
+    return Stats(
+        hp: stats[0]["base_stat"] as int,
+        attack: stats[1]["base_stat"] as int,
+        defense: stats[2]["base_stat"] as int,
+        specialAttack: stats[3]["base_stat"] as int,
+        specialDefense: stats[4]["base_stat"] as int,
+        speed: stats[5]["base_stat"] as int);
   }
 
   static Future<String> fetchString(LanguageBinding binding) async {

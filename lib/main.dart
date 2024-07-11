@@ -4,22 +4,22 @@ import 'package:mudkip_frontend/screens/main_window.dart';
 import 'package:mudkip_frontend/theme/theme_constants.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/theme/theme_manager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future<void> doPrefs() async {
-  prefs = await SharedPreferences.getInstance();
   return;
 }
 
 ThemeManager themeManager = ThemeManager();
 late PC openedPC;
-SharedPreferences? prefs;
+late PackageInfo packageInfo;
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
   await doPrefs();
+  packageInfo = await PackageInfo.fromPlatform();
   openedPC = await PC.create();
   PokeAPI.create();
   if (args.firstOrNull == 'multi_window') {

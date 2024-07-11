@@ -8,22 +8,10 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 /// If you want to know more about how [Species] is created, look at the [PokeAPI] class.
 class Species {
   int id;
-  late LocalizedString descriptions;
-  late List<Move> moves;
-  late Stats baseStats = Stats(
-      hp: 0,
-      attack: 0,
-      defense: 0,
-      specialAttack: 0,
-      specialDefense: 0,
-      speed: 0);
-
-  late Stream builder;
 
   Species({required this.id});
 
   factory Species.fromDB(Map query) {
-    print(query);
     Species newSpecies = Species(id: query["id"] as int);
     return newSpecies;
   }
@@ -41,8 +29,8 @@ class Species {
     return id;
   }
 
-  Stats getBaseStats() {
-    return baseStats;
+  Future<Stats> getBaseStats() {
+    return PokeAPI.fetchBaseStats(id);
   }
 
   /// # getFrontImageUrl()

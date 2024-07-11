@@ -2,12 +2,15 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mudkip_frontend/core/pokeapi.dart';
 import 'package:mudkip_frontend/main.dart';
-import 'package:mudkip_frontend/skeletons/preview_panel.dart';
-import 'package:mudkip_frontend/skeletons/warning_page.dart';
+import 'package:mudkip_frontend/screens/preview_panel.dart';
+import 'package:mudkip_frontend/screens/warning_page.dart';
 import 'package:mudkip_frontend/widgets/pokemon_slot.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:mudkip_frontend/widgets/species_entry.dart';
+import 'package:mudkip_frontend/screens/about_screen.dart';
 
 class MainWindow extends StatefulWidget {
   const MainWindow({super.key});
@@ -30,37 +33,43 @@ class MainWindowState extends State<MainWindow>
     return Scaffold(
         floatingActionButtonLocation: ExpandableFab.location,
         floatingActionButton: ExpandableFab(
-          distance: 100,
+          distance: 90.0,
+          childrenOffset: const Offset(1.0, 1.0),
           openButtonBuilder: RotateFloatingActionButtonBuilder(
             child: const Icon(Icons.add),
             fabSize: ExpandableFabSize.regular,
+            heroTag: "add",
             shape: const CircleBorder(),
           ),
           closeButtonBuilder: FloatingActionButtonBuilder(
-            size: 100,
+            size: 60,
             builder: (BuildContext context, void Function()? onPressed,
                 Animation<double> progress) {
-              return IconButton(
+              return ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(20),
+                ),
                 onPressed: onPressed,
-                icon: const Icon(
+                iconAlignment: IconAlignment.end,
+                child: const Icon(
                   Icons.close_rounded,
-                  size: 40,
+                  size: 35,
                 ),
               );
             },
           ),
           children: [
             FloatingActionButton(
+                heroTag: "addFile",
                 tooltip: "Add File",
                 child: const Icon(Icons.upload_file_rounded,
                     semanticLabel: "Add File"),
                 onPressed: () async {
-                  if (prefs != null) {
-                    final result = await FilePicker.platform.pickFiles();
-                    if (result != null) {}
-                  }
+                  FilePicker.platform.pickFiles().then((result) {});
                 }),
             FloatingActionButton(
+                heroTag: "addFolder",
                 tooltip: "Add Folder",
                 child: const Icon(Icons.drive_folder_upload_rounded),
                 onPressed: () {
@@ -115,7 +124,31 @@ class MainWindowState extends State<MainWindow>
                 onDestinationSelected: (int index) {
                   handleScreenChanged(index);
                 },
-              ));
+              ),
+        appBar: AppBar(title: const Text("MudkiPC")),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              const DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.blue),
+                  child: Text("MudkiPC")),
+              ListTile(
+                title: const Text("Settings"),
+                onTap: () {},
+                leading: const Icon(Icons.settings),
+              ),
+              ListTile(
+                title: const Text("About"),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const AboutScreen();
+                  }));
+                },
+                leading: const Icon(Icons.info),
+              ),
+            ],
+          ),
+        ));
   }
 
   @override
@@ -179,6 +212,7 @@ class BottomNavBar extends StatelessWidget with Destinations {
       },
       animationDuration: const Duration(milliseconds: 200),
       destinations: getDestinationsForBar(),
+      height: 80,
     );
   }
 }
@@ -244,7 +278,7 @@ class PCView extends Destination {
                   context: context,
                   builder: (context) {
                     PreviewPanel previewDialog =
-                        PreviewPanel(pokemon: openedPC.pokemons[index]);
+                        PreviewPanel(object: openedPC.pokemons[index]);
                     final showFullScreenDialog =
                         MediaQuery.sizeOf(context).width < 600;
                     if (showFullScreenDialog) {
@@ -305,10 +339,26 @@ class PokeDexView extends Destination {
 
   @override
   Widget build(BuildContext context) {
-    return WarningPage(
-        title: "In development",
-        description: "This feature is not yet implemented.",
-        icon: Icons.notification_important_rounded);
+    return FutureBuilder(
+        future: PokeAPI.fetchAmountOfEntries("pokemon_species"),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+                child: AspectRatio(
+                    aspectRatio: 1, child: CircularProgressIndicator()));
+          }
+          return ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: snapshot.requireData,
+            itemBuilder: (context, index) {
+              return SpeciesEntry(
+                  species: PokeAPI.fetchSpecies(index + 1, false),
+                  onTap: () {
+                    print(index);
+                  });
+            },
+          );
+        });
   }
 }
 

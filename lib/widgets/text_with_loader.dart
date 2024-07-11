@@ -23,7 +23,7 @@ class TextWithLoaderBuffer extends StatelessWidget {
           return const AspectRatio(
               aspectRatio: 1,
               child: Center(
-                child: CircularProgressIndicator(),
+                child: LinearProgressIndicator(),
               ));
         }
       },

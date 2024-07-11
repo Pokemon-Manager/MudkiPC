@@ -81,7 +81,7 @@ class Pokemon {
     PokeAPI.fetchSpecies(query["species_id"] as int, true)
         .asStream()
         .listen((value) {
-      newPokemon.species = value;
+      newPokemon.species = value!;
     });
     return newPokemon;
   }
@@ -172,13 +172,6 @@ class Pokemon {
   // Set the species of the pokemon to the provided species object.
   void setSpecies(Species species) {
     species = species;
-  }
-
-  /// # getBaseStats(`Stats baseStats`)
-  /// ## Gets the base stats of the species.
-  /// Returns the base stats of the species. See [Stats] in `stats.dart` for more details.
-  Stats getBaseStats() {
-    return species.getBaseStats();
   }
 
   int getHash() {
