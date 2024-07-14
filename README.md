@@ -15,10 +15,12 @@ MudkiPC is a brand new application app, that is built from the ground up to be a
 # Key Features:
 
 ## A Modern Save Editor 📝
-Step aside Hex Editors, MudkiPC is now the easiest way to edit your save files and Pokémon. Plus, you can even transfer Pokémon to another game and even Pokémon Showdown!
+Step aside Hex Editors, MudkiPC is now the easiest way to edit your trainers and Pokémon. Want to move a old trainer to a newer game? Now you can, its that simple! Plus, you can even transfer Pokémon to another game and even Pokémon Showdown!
 
-## Cross-Platform 🖥️📱💻
+## Cross-Platform* 🖥️📱💻
 MudkiPC is built using Dart & Flutter, which in layman's terms mean that it can run any modern device, including Linux!
+
+(MacOS and iOS versions are currently impossible for me to compile, as I do not have a Mac system. Looking into getting one though!)
 
 ## Blazingly Fast 🚀
 With SQLite at its core, MudkiPC is bar none the fastest way to search and find your Pokémon... or anything for that matter.
@@ -39,6 +41,9 @@ You can pronounce it in two ways:
 - *Mud*-*Kip*-*C*
 
 It does not matter, choose one or the other.
+
+# Consider Sponsoring ❤️
+I would love to continue working on this for the foreseeable future, however, I am currently in school and this project is a lot of work. Consider sponsoring me on GitHub so I can continue working on this project! If you can't, no worries, you can spread the word about this project instead. Thanks!
 
 ## Credits
 Copyright (c) © 2013–2023 Paul Hallett and PokéAPI contributors (https://github.com/PokeAPI/pokeapi#contributing). Pokémon and Pokémon character names are trademarks of Nintendo.
