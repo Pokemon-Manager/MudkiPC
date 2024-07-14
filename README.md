@@ -47,3 +47,5 @@ I would love to continue working on this for the foreseeable future, however, I 
 
 ## Credits
 Copyright (c) © 2013–2023 Paul Hallett and PokéAPI contributors (https://github.com/PokeAPI/pokeapi#contributing). Pokémon and Pokémon character names are trademarks of Nintendo.
+
+The alpha icon was done by [Jedflah](https://www.deviantart.com/jedflah).
