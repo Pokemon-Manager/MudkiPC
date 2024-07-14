@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 // ignore: constant_identifier_names
 const COLOR_PRIMARY = Colors.blue;
 
@@ -13,9 +14,7 @@ ThemeData lightTheme = ThemeData(
           shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20.0)),
       )),
-    )
-);
-    
+    ));
 
 ThemeData darkTheme = ThemeData(
     useMaterial3: true,
