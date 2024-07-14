@@ -15,7 +15,7 @@ MudkiPC is a brand new application app, that is built from the ground up to be a
 # Key Features:
 
 ## A Modern Save Editor 📝
-Step aside Hex Editors, MudkiPC is now the easiest way to edit your trainers and Pokémon. Want to move a old trainer to a newer game? Now you can, its that simple! Plus, you can even transfer Pokémon to another game and even Pokémon Showdown!
+Step aside Hex Editors, MudkiPC is now the easiest way to edit your trainers and Pokémon. Want to move an old trainer to a newer game? Now you can, its that simple! Plus, you can even transfer Pokémon to another game and even Pokémon Showdown!
 
 ## Cross-Platform* 🖥️📱💻
 MudkiPC is built using Dart & Flutter, which in layman's terms mean that it can run any modern device, including Linux!
