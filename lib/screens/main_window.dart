@@ -21,13 +21,13 @@ class MainWindow extends StatefulWidget {
 
 class MainWindowState extends State<MainWindow>
     with SingleTickerProviderStateMixin {
-  static List<Destination> destinations_widgets = [PCView(), PokeDexView()];
-
+  static List<Destination> destinationsWidgets = [PCView(), PokeDexView()];
+  SearchController searchController = SearchController();
   int selectedIndex = 0;
 
   static List<NavigationRailDestination> getDestinationsForRail() {
     List<NavigationRailDestination> destinations = [];
-    for (Destination destination in destinations_widgets) {
+    for (Destination destination in destinationsWidgets) {
       destinations.add(NavigationRailDestination(
           icon: destination.destinationIcon,
           label: Text(destination.destinationLabel)));
@@ -37,7 +37,7 @@ class MainWindowState extends State<MainWindow>
 
   static List<NavigationDestination> getDestinationsForBar() {
     List<NavigationDestination> destinations = [];
-    for (Destination destination in destinations_widgets) {
+    for (Destination destination in destinationsWidgets) {
       destinations.add(NavigationDestination(
           icon: destination.destinationIcon,
           label: destination.destinationLabel));
@@ -70,7 +70,7 @@ class MainWindowState extends State<MainWindow>
           Expanded(
               child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            child: destinations_widgets[selectedIndex],
+            child: destinationsWidgets[selectedIndex],
           )),
         ]),
         bottomNavigationBar: showRail
@@ -81,7 +81,80 @@ class MainWindowState extends State<MainWindow>
                   handleScreenChanged(index);
                 },
               ),
-        appBar: AppBar(title: const Text("MudkiPC")),
+        appBar: AppBar(title: const Text("MudkiPC"), actions: [
+          if (showRail)
+            SearchAnchor(
+              viewLeading: Wrap(children: []),
+              searchController: searchController,
+              builder: (context, focusNode) {
+                return ElevatedButton(
+                    onPressed: () {
+                      searchController.openView();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      width: 350,
+                      child: ListView(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          children: const [
+                            InputChip(label: Text("Fire")),
+                          ]),
+                    ));
+              },
+              suggestionsBuilder:
+                  (BuildContext context, SearchController controller) {
+                return [
+                  ListTile(
+                      title: const Text("pokemon:"),
+                      onTap: () {
+                        controller.closeView("");
+                      }),
+                  ListTile(
+                      title: const Text("type:"),
+                      onTap: () {
+                        controller.closeView("");
+                      }),
+                  ListTile(
+                      title: const Text("ability:"),
+                      onTap: () {
+                        controller.closeView("");
+                      }),
+                  ListTile(
+                      title: const Text("item:"),
+                      onTap: () {
+                        controller.closeView("");
+                      }),
+                  ListTile(
+                      title: const Text("move:"),
+                      onTap: () {
+                        controller.closeView("");
+                      }),
+                  ListTile(
+                      title: const Text("location:"),
+                      onTap: () {
+                        controller.closeView("");
+                      }),
+                  ListTile(
+                      title: const Text("berry:"),
+                      onTap: () {
+                        controller.closeView("");
+                      }),
+                  ListTile(
+                      title: const Text("trainer:"),
+                      onTap: () {
+                        controller.closeView("");
+                      })
+                ];
+              },
+            )
+          else
+            IconButton(
+                iconSize: 25, onPressed: () {}, icon: const Icon(Icons.search)),
+          const SizedBox(
+            width: 16.0,
+          )
+        ]),
         drawer: Drawer(
           child: ListView(
             children: [
@@ -145,7 +218,7 @@ class MainWindowState extends State<MainWindow>
   }
 
   Future<void> refreshPCView() async {
-    destinations_widgets[0] = PCView();
+    destinationsWidgets[0] = PCView();
     handleScreenChanged(0);
     if (context.mounted) {
       Navigator.of(context).pop();
@@ -199,6 +272,7 @@ class MainWindowState extends State<MainWindow>
                   FilePicker.platform.getDirectoryPath().then((result) {
                     if (result != null && context.mounted) {
                       showDialog(
+                          // ignore: use_build_context_synchronously
                           context: context,
                           builder: (context) => AlertDialog(
                                 content: Column(
@@ -383,8 +457,7 @@ class PokeDexView extends Destination {
           return ListView.builder(
             scrollDirection: Axis.vertical,
             itemCount: snapshot.requireData,
-            prototypeItem: const ElevatedButton(
-                onPressed: null, child: SizedBox(height: 100)),
+            itemExtent: 100,
             itemBuilder: (context, index) {
               return SpeciesEntry(
                   species: PokeAPI.fetchSpecies(index + 1, false),
@@ -402,8 +475,11 @@ class PokeDexView extends Destination {
                             return Dialog(
                                 child: ConstrainedBox(
                                     constraints:
-                                        const BoxConstraints(maxWidth: 600),
-                                    child: previewDialog));
+                                        const BoxConstraints(maxWidth: 800),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: previewDialog,
+                                    )));
                           }
                         });
                   });

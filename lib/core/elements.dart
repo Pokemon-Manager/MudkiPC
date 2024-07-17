@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mudkip_frontend/pokemon_manager.dart';
+
 /// # Typing
 /// ## A class that represents the typing of a [Species] or [Move].
 ///
@@ -62,19 +66,27 @@ class Typing {
     }
   }
 
+  factory Typing.fromDB(List<Map<String, Object?>> query) {
+    if (query.length == 1) {
+      return Typing(type1: TypeElement.fromDB(query.first));
+    } else {
+      return Typing(
+          type1: TypeElement.fromDB(query.first as Map<String, dynamic>),
+          type2: TypeElement.fromDB(query.last as Map<String, dynamic>));
+    }
+  }
+
   Map<String, dynamic> toJson() {
     if (isSingleType()) {
-      return {"type1": TypeElement.toJson(type1)};
+      return {"type1": type1.toJson()};
     } else {
-      return {
-        "type1": TypeElement.toJson(type1),
-        "type2": TypeElement.toJson(type2 as TypeElement)
-      };
+      return {"type1": type1.toJson(), "type2": type2!.toJson()};
     }
   }
 }
 
 abstract class TypeElement {
+  String get name;
   List<Type> get weakTo;
   List<Type> get resistTo;
   List<Type> get immuneTo;
@@ -141,8 +153,57 @@ abstract class TypeElement {
         return Steel();
       case 'fairy':
         return Fairy();
+      case 'stellar':
+        return Stellar();
       default:
         throw Exception('Unknown type: ${json['name']}');
+    }
+  }
+
+  factory TypeElement.fromDB(Map<String, Object?> query) {
+    switch (query['type_id']) {
+      case Elements.none:
+        return Normal();
+      case Elements.normal:
+        return Normal();
+      case Elements.fire:
+        return Fire();
+      case Elements.water:
+        return Water();
+      case Elements.electric:
+        return Electric();
+      case Elements.grass:
+        return Grass();
+      case Elements.ice:
+        return Ice();
+      case Elements.fighting:
+        return Fighting();
+      case Elements.poison:
+        return Poison();
+      case Elements.ground:
+        return Ground();
+      case Elements.flying:
+        return Flying();
+      case Elements.psychic:
+        return Psychic();
+      case Elements.bug:
+        return Bug();
+      case Elements.rock:
+        return Rock();
+      case Elements.ghost:
+        return Ghost();
+      case Elements.dragon:
+        return Dragon();
+      case Elements.dark:
+        return Dark();
+      case Elements.steel:
+        return Steel();
+      case Elements.fairy:
+        return Fairy();
+      case Elements.stellar:
+        return Stellar();
+      default:
+        throw Exception('Unknown type: ${query['type_id']}');
     }
   }
 
@@ -170,16 +231,33 @@ abstract class TypeElement {
   /// # toJson(`TypeElement element`)
   /// ## Converts this TypeElement instance to JSON.
   /// Returns a [Map<String, dynamic>] object.
-  static Map<String, dynamic> toJson(TypeElement element) {
+  Map<String, dynamic> toJson();
+  Widget getIcon();
+  Widget getChip();
+}
+
+mixin ElementFunctions implements TypeElement {
+  @override
+  Widget getIcon() {
+    return SvgPicture.asset("assets/svg/$name.svg", height: 60);
+  }
+
+  @override
+  Widget getChip() {
+    return Chip(avatar: getIcon(), label: Text(name.capitalize()));
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
     return {
-      'name': element.toString().split('.').last.toLowerCase(),
-      'weakTo': element.weakTo
+      'name': toString().split('.').last.toLowerCase(),
+      'weakTo': weakTo
           .map((e) => e.toString().split('.').last.toLowerCase())
           .toList(),
-      'resistTo': element.resistTo
+      'resistTo': resistTo
           .map((e) => e.toString().split('.').last.toLowerCase())
           .toList(),
-      'immuneTo': element.immuneTo
+      'immuneTo': immuneTo
           .map((e) => e.toString().split('.').last.toLowerCase())
           .toList(),
     };
@@ -193,7 +271,9 @@ abstract class TypeElement {
 /// ### Resist To:
 /// - Ghost
 
-class Normal implements TypeElement {
+class Normal with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'normal';
   @override
   List<Type> get weakTo => [Fighting];
   @override
@@ -215,7 +295,9 @@ class Normal implements TypeElement {
 /// - Bug
 /// - Steel
 /// - Fairy
-class Fire implements TypeElement {
+class Fire with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'fire';
   @override
   List<Type> get weakTo => [Water, Ground, Rock];
   @override
@@ -234,7 +316,9 @@ class Fire implements TypeElement {
 /// - Water
 /// - Ice
 /// - Steel
-class Water implements TypeElement {
+class Water with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'water';
   @override
   List<Type> get weakTo => [Electric, Grass];
   @override
@@ -251,7 +335,9 @@ class Water implements TypeElement {
 /// - Water
 /// - Flying
 /// - Steel
-class Electric implements TypeElement {
+class Electric with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'electric';
   @override
   List<Type> get weakTo => [Ground];
   @override
@@ -273,7 +359,9 @@ class Electric implements TypeElement {
 /// - Grass
 /// - Electric
 /// - Ground
-class Grass implements TypeElement {
+class Grass with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'grass';
   @override
   List<Type> get weakTo => [Fire, Ice, Poison, Flying, Bug];
   @override
@@ -291,7 +379,9 @@ class Grass implements TypeElement {
 /// - Steel
 /// ### Resist To:
 /// - Ice
-class Ice implements TypeElement {
+class Ice with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'ice';
   @override
   List<Type> get weakTo => [Fighting, Rock, Steel, Fire];
   @override
@@ -310,7 +400,9 @@ class Ice implements TypeElement {
 /// - Bug
 /// - Grass
 /// - Ice
-class Fighting implements TypeElement {
+class Fighting with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'fighting';
   @override
   List<Type> get weakTo => [Flying, Psychic, Rock];
   @override
@@ -327,7 +419,9 @@ class Fighting implements TypeElement {
 /// ### Resist To:
 /// - Fairy
 /// - Grass
-class Poison implements TypeElement {
+class Poison with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'poison';
   @override
   List<Type> get weakTo => [Ground, Psychic];
   @override
@@ -348,7 +442,9 @@ class Poison implements TypeElement {
 /// - Steel
 /// ### Immune To:
 /// - Electric
-class Ground implements TypeElement {
+class Ground with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'ground';
   @override
   List<Type> get weakTo => [Water, Grass, Ice];
   @override
@@ -369,7 +465,9 @@ class Ground implements TypeElement {
 /// - Bug
 /// ### Immune To:
 /// - Ground
-class Flying implements TypeElement {
+class Flying with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'flying';
   @override
   List<Type> get weakTo => [Electric, Ice, Rock];
   @override
@@ -387,7 +485,9 @@ class Flying implements TypeElement {
 /// ### Resist To:
 /// - Fighting
 /// - Poison
-class Psychic implements TypeElement {
+class Psychic with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'psychic';
   @override
   List<Type> get weakTo => [Bug, Ghost, Dark];
   @override
@@ -406,7 +506,9 @@ class Psychic implements TypeElement {
 /// - Grass
 /// - Fighting
 /// - Ground
-class Bug implements TypeElement {
+class Bug with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'bug';
   @override
   List<Type> get weakTo => [Fire, Flying, Rock];
   @override
@@ -426,7 +528,9 @@ class Bug implements TypeElement {
 /// - Ice
 /// - Flying
 /// - Bug
-class Rock implements TypeElement {
+class Rock with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'rock';
   @override
   List<Type> get weakTo => [Fighting, Ground, Steel];
   @override
@@ -446,7 +550,9 @@ class Rock implements TypeElement {
 /// ### Immune To:
 /// - Normal
 /// - Fighting
-class Ghost implements TypeElement {
+class Ghost with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'ghost';
   @override
   List<Type> get weakTo => [Dark, Ghost];
   @override
@@ -464,7 +570,9 @@ class Ghost implements TypeElement {
 /// - Water
 /// - Grass
 /// - Electric
-class Dragon implements TypeElement {
+class Dragon with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'dragon';
   @override
   List<Type> get weakTo => [Ice, Dragon, Fairy];
   @override
@@ -484,7 +592,9 @@ class Dragon implements TypeElement {
 /// - Ghost
 /// ### Immune To:
 /// - Psychic
-class Dark implements TypeElement {
+class Dark with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'dark';
   @override
   List<Type> get weakTo => [Fighting, Bug, Ghost];
   @override
@@ -510,7 +620,9 @@ class Dark implements TypeElement {
 /// - Steel
 /// ### Immune To:
 /// - Poison
-class Steel implements TypeElement {
+class Steel with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'steel';
   @override
   List<Type> get weakTo => [Fire, Fighting, Ground];
   @override
@@ -530,11 +642,24 @@ class Steel implements TypeElement {
 /// - Dark
 /// ### Immune To:
 /// - Dragon
-class Fairy implements TypeElement {
+class Fairy with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'fairy';
   @override
   List<Type> get weakTo => [Steel];
   @override
   List<Type> get resistTo => [Fighting, Bug, Dark];
   @override
   List<Type> get immuneTo => [Dragon];
+}
+
+class Stellar with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'stellar';
+  @override
+  List<Type> get weakTo => [];
+  @override
+  List<Type> get resistTo => [];
+  @override
+  List<Type> get immuneTo => [];
 }

@@ -33,12 +33,16 @@ class Species {
     return PokeAPI.fetchBaseStats(id);
   }
 
+  Future<Typing> getTyping() {
+    return PokeAPI.fetchTypingForSpecies(id);
+  }
+
   /// # getFrontImageUrl()
   /// ## Returns the url of the front image of the pokemon.
   /// Returns a string that is the url of the front image of the pokemon.
   /// Example: https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png
   String getFrontImageUrl() {
-    return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png";
+    return "assets/images/sprites/$id.png";
   }
 
   /// # getBackImageUrl()
@@ -46,7 +50,7 @@ class Species {
   /// Returns a string that is the url of the back image of the pokemon.
   /// Example: https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png
   String getBackImageUrl() {
-    return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/$id.png";
+    return "images/sprites/back/$id.png";
   }
 
   /// # getDescription()

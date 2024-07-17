@@ -3,7 +3,6 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:queue/queue.dart';
-import 'package:sqflite/sqflite.dart';
 
 /// # PokeAPI
 /// ## A class that represents PokeAPI.
@@ -153,6 +152,19 @@ class PokeAPI {
         .replaceAll(RegExp('\n'), '');
   }
 
+  static Future<Typing> fetchTypingForSpecies(int id) async {
+    return queue.add(() async => _fetchTypingForSpecies(id));
+  }
+
+  static Future<Typing> _fetchTypingForSpecies(int id) async {
+    List<Map<String, Object?>>? query = (await db?.rawQuery("""
+      SELECT * FROM pokemon_types
+      WHERE pokemon_types.pokemon_id = ?;
+    """, [id]));
+    print(query);
+    return Typing.fromDB(query!);
+  }
+
   static Map<String, Object?> changeEmptyStringsToNull(
       Map<String, Object?> query) {
     Map<String, Object?> newQuery = {};
@@ -165,6 +177,8 @@ class PokeAPI {
     }
     return newQuery;
   }
+
+  static search(String query) async {}
 
   // static Future<Ability> getAbility(int id) async {
   //   final response = await fetchPokeAPI("ability","$id");

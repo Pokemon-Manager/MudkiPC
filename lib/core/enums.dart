@@ -25,23 +25,26 @@
 final class Elements {
   static const int none = 0;
   static const int normal = 1;
-  static const int fire = 2;
-  static const int water = 3;
-  static const int electric = 4;
-  static const int grass = 5;
-  static const int ice = 6;
-  static const int fighting = 7;
-  static const int poison = 8;
-  static const int ground = 9;
-  static const int flying = 10;
-  static const int psychic = 11;
-  static const int bug = 12;
-  static const int rock = 13;
-  static const int ghost = 14;
-  static const int dragon = 15;
-  static const int dark = 16;
-  static const int steel = 17;
+  static const int fire = 10;
+  static const int water = 11;
+  static const int electric = 13;
+  static const int grass = 12;
+  static const int ice = 15;
+  static const int fighting = 2;
+  static const int poison = 4;
+  static const int ground = 5;
+  static const int flying = 3;
+  static const int psychic = 14;
+  static const int bug = 7;
+  static const int rock = 6;
+  static const int ghost = 8;
+  static const int dragon = 16;
+  static const int dark = 17;
+  static const int steel = 9;
   static const int fairy = 18;
+  static const int stellar = 19;
+  static const int unknown = 10001;
+  static const int shadow = 10002;
 
   String getElementName(int element) {
     switch (element) {
@@ -81,8 +84,16 @@ final class Elements {
         return 'Steel';
       case fairy:
         return 'Fairy';
+      case stellar:
+        return 'Stellar';
+      case unknown:
+        return 'Unknown';
+      case shadow:
+        return 'Shadow';
+      case none:
+        return 'None';
     }
-    return 'Unknown';
+    return 'Nothing';
   }
 }
 

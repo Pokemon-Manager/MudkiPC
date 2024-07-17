@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:mudkip_frontend/widgets/element_bar.dart';
 import 'package:mudkip_frontend/widgets/stat_chart.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
@@ -17,8 +17,10 @@ class PreviewPanel extends StatelessWidget {
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(
-                  child: AspectRatio(
-                      aspectRatio: 1, child: CircularProgressIndicator()));
+                  child: SizedBox(
+                child: AspectRatio(
+                    aspectRatio: 1, child: CircularProgressIndicator()),
+              ));
             }
             Pokemon pokemon = snapshot.requireData as Pokemon;
             return PreviewInfo(
@@ -28,7 +30,8 @@ class PreviewPanel extends StatelessWidget {
                 description: pokemon.getSpecies().getDescription(),
                 baseStats: pokemon.species.getBaseStats(),
                 effortStats: pokemon.getEvStats(),
-                individualStats: pokemon.getIvStats());
+                individualStats: pokemon.getIvStats(),
+                typing: pokemon.getSpecies().getTyping());
           });
     } else if (object is Future<Species?>) {
       return FutureBuilder(
@@ -44,7 +47,8 @@ class PreviewPanel extends StatelessWidget {
                 title: species.getName(),
                 imageUrl: species.getFrontImageUrl(),
                 description: species.getDescription(),
-                baseStats: species.getBaseStats());
+                baseStats: species.getBaseStats(),
+                typing: species.getTyping());
           });
     }
     return const Placeholder();
@@ -61,6 +65,7 @@ class PreviewInfo extends StatelessWidget {
   Future<Stats>? baseStats;
   Stats? effortStats;
   Stats? individualStats;
+  Future<Typing>? typing;
   PreviewInfo({
     super.key,
     required this.title,
@@ -71,28 +76,44 @@ class PreviewInfo extends StatelessWidget {
     this.baseStats,
     this.effortStats,
     this.individualStats,
+    this.typing,
   });
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
     if (imageUrl != null) {
-      children.add(Container(
-        height: 300,
-        padding: const EdgeInsets.all(5.0),
-        alignment: Alignment.center,
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: CachedNetworkImage(
-            imageUrl: imageUrl!,
-            fit: BoxFit.contain,
-            filterQuality: FilterQuality.none,
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+      children.add(
+        Container(
+          height: 250,
+          padding: const EdgeInsets.all(5.0),
+          alignment: Alignment.bottomCenter,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: SizedBox(
+              height: 200,
+              width: 200,
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: Image(
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.none,
+                    image: AssetImage(imageUrl!)),
+              ),
+            ),
           ),
         ),
-      ));
+      );
     } else if (icon != null) {
       children.add(Icon(icon, size: 100));
+    }
+
+    if (typing != null) {
+      children.add(Container(
+        height: 50,
+        padding: const EdgeInsets.all(4.0),
+        alignment: Alignment.center,
+        child: ElementBar(typing: typing!),
+      ));
     }
     children.add(TextWithLoaderBuffer(
         future: title,

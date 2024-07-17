@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
@@ -29,16 +28,14 @@ class SpeciesEntry extends StatelessWidget {
                     return const SizedBox();
                   }
                   return Row(children: [
-                    CachedNetworkImage(
-                      width: 100,
-                      imageUrl: snapshot.requireData!.getFrontImageUrl(),
-                      fit: BoxFit.contain,
-                      filterQuality: FilterQuality.none,
-                      placeholder: (context, url) => const AspectRatio(
-                          aspectRatio: 1,
-                          child: Center(child: CircularProgressIndicator())),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                    SizedBox(
+                      height: 96,
+                      width: 96,
+                      child: Image(
+                        filterQuality: FilterQuality.none,
+                        image: AssetImage(
+                            "assets/images/sprites/${snapshot.requireData!.getId()}.png"),
+                      ),
                     ),
                     const SizedBox(width: 10.0),
                     TextWithLoaderBuffer(

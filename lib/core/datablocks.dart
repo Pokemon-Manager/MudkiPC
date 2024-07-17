@@ -14,6 +14,8 @@ class Datablock {
       parent; // The datablock that this datablock is relative to. In other words, is the datablock inside of another datablock.
   List<Datablock> children =
       []; // List of datablocks that are children of this datablock.
+  List<dynamic> dataParsed =
+      []; // List of data that has been parsed from only this datablock, not its children. For when creating the json structure.
   Datablock({required this.fileHandle}); // Constructor.
 
   /// #combineBytesToInt8(`List<int> bytes`)
@@ -94,34 +96,12 @@ class Datablock {
     return y + offset + relativeOffset;
   }
 
-  /// # getDatablockAtOffset(`int offset`)
-  /// ## A function that returns the datablock at the given offset.
-  /// TODO: Might want to change this in the future.
-  Datablock getDatablockAtOffset(int offset) {
-    Datablock? currentRelativeBlock = parent;
-    List<Datablock> parentBlocks = [];
-    while (currentRelativeBlock != null) {
-      parentBlocks.add(currentRelativeBlock);
-      currentRelativeBlock = currentRelativeBlock.parent;
-    }
-    while (currentRelativeBlock!.children.isNotEmpty) {
-      if (currentRelativeBlock.children.length == 1) {
-        currentRelativeBlock = currentRelativeBlock.children[0];
-      } else {
-        for (int x = 0; x + 1 < currentRelativeBlock!.children.length; x++) {
-          if (currentRelativeBlock.children[x].offset <= offset &&
-              currentRelativeBlock.children[x + 1].offset > offset) {
-            currentRelativeBlock = currentRelativeBlock.children[x];
-            break;
-          }
-        }
-      }
-    }
-    return currentRelativeBlock;
-  }
-
   Future<dynamic> parse() async {
     return;
+  }
+
+  void addDataToParsedList(dynamic data) {
+    dataParsed.add(data);
   }
 }
 

@@ -42,3 +42,9 @@ class LocalizedString {
     return LocalizedString()..strings = query as Map<String, String>;
   }
 }
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
+}
