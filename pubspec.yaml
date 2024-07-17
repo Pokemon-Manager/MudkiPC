@@ -53,6 +53,7 @@ dependencies:
   markdown_widget: ^2.3.2+6
   url_launcher: ^6.3.0
   queue: ^3.1.0+2
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -89,6 +90,8 @@ flutter:
   assets:
     - assets/
     - assets/db/
+    - assets/svg/
+    - assets/images/sprites/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
