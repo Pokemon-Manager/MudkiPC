@@ -31,9 +31,9 @@ dependencies:
   flutter:
     sdk: flutter
   http:
-  cached_network_image: ^3.2.1
   desktop_multi_window: ^0.2.0
   file_picker: ^8.0.5
+  logging: ^1.2.0
   desktop_lifecycle:
   window_manager:
   fl_chart: ^0.68.0
@@ -54,6 +54,10 @@ dependencies:
   url_launcher: ^6.3.0
   queue: ^3.1.0+2
   flutter_svg: ^2.0.10+1
+  go_router: ^14.2.1
+  shared_preferences: ^2.2.3
+  hive: 
+  isar_flutter_libs: ^4.0.0-dev.13
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +68,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   build_runner:
+  build_verify:
+  go_router_builder:
   flutter_lints: ^3.0.0
 
 # For information on the generic Dart part of this file, see the

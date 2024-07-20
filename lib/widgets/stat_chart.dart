@@ -1,26 +1,22 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 
 class StatChart extends StatelessWidget {
   const StatChart(
       {super.key,
-      required this.base_future,
+      required this.baseFuture,
       required this.iv,
       required this.ev});
-  final Future<Stats> base_future;
+  final Future<Stats> baseFuture;
   final Stats? iv;
   final Stats? ev;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return AsyncPlaceholder(
         future: getDataSets(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-                child: AspectRatio(
-                    aspectRatio: 1, child: CircularProgressIndicator()));
-          }
+        childBuilder: (dataSets) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 40.0),
             child: AspectRatio(
@@ -55,7 +51,7 @@ class StatChart extends StatelessWidget {
                       return const RadarChartTitle(text: '');
                   }
                 },
-                dataSets: snapshot.hasData ? snapshot.requireData : [],
+                dataSets: dataSets,
                 radarShape: RadarShape.polygon,
                 radarBorderData: const BorderSide(color: Colors.blue, width: 2),
                 radarBackgroundColor: Colors.transparent,
@@ -69,7 +65,7 @@ class StatChart extends StatelessWidget {
 
   Future<List<RadarDataSet>> getDataSets() async {
     List<RadarDataSet> dataSets = [];
-    Stats base = await base_future;
+    Stats base = await baseFuture;
     dataSets.add(RadarDataSet(
         dataEntries: [
           RadarEntry(value: base.hp * 1.0),

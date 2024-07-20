@@ -25,80 +25,34 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 /// - [setSpecies] sets the species of the pokemon.
 /// - [getBaseStats] gets the base stats of the pokemon.
 class Pokemon {
-  int uniqueID = 0;
+  int? uniqueID = 0;
   String nickName = "";
-  int pokemonID =
+  int? pokemonID =
       0; // Not the same as unique ID. This is the ID of the species and form combined.
-  late Species species;
-  int gender = 0;
-  int level = 0;
-  int exp = 0;
-  Ability ability = Ability(name: "", description: "", id: 0);
-  Move? move1;
-  Move? move2;
-  Move? move3;
-  Move? move4;
-
-  // Stats
-  Stats ivStats = Stats(
-      hp: 0,
-      attack: 0,
-      defense: 0,
-      specialAttack: 0,
-      specialDefense: 0,
-      speed: 0);
-  Stats evStats = Stats(
-      hp: 0,
-      attack: 0,
-      defense: 0,
-      specialAttack: 0,
-      specialDefense: 0,
-      speed: 0);
-  Pokemon();
-
-  factory Pokemon.fromJson(Species species, Map<String, dynamic> json) {
-    Pokemon newPokemon = Pokemon();
-    for (String key in json.keys) {
-      switch (key) {
-        case "ivStats":
-          newPokemon.setIvStats(Stats.fromJson(json[key]));
-          break;
-        case "evStats":
-          newPokemon.setEvStats(Stats.fromJson(json[key]));
-          break;
-        case "gender":
-          newPokemon.setGender(json[key]);
-        case "nickname":
-          newPokemon.setNickname(json[key]);
-          break;
-      }
-    }
-    return newPokemon;
-  }
-
-  factory Pokemon.fromDB(Map<String, Object?> query) {
-    Pokemon newPokemon = Pokemon();
-    PokeAPI.fetchSpecies(query["species_id"] as int, true)
-        .asStream()
-        .listen((value) {
-      newPokemon.species = value!;
-    });
-    return newPokemon;
-  }
-  Map<String, dynamic> toJson() {
-    return {
-      "nickname": nickName,
-      "ivStats": ivStats.toJson(),
-      "evStats": evStats.toJson(),
-      "move1": move1?.toJson(),
-      "move2": move2?.toJson(),
-      "move3": move3?.toJson(),
-      "move4": move4?.toJson(),
-      "gender": gender,
-      "species": species,
-      "level": exp,
-    };
-  }
+  int speciesID = 0;
+  int? exp = 0;
+  Stats ev;
+  Stats iv;
+  int? gender = 0;
+  int? abilityID = 0;
+  int move1ID;
+  int move2ID;
+  int move3ID;
+  int move4ID;
+  Pokemon({
+    required this.speciesID,
+    required this.nickName,
+    this.pokemonID,
+    this.exp,
+    required this.iv,
+    required this.ev,
+    this.gender,
+    this.abilityID,
+    required this.move1ID,
+    required this.move2ID,
+    required this.move3ID,
+    required this.move4ID,
+  });
 
   /// Sets the nickname of the pokemon.
   /// @param nickname - The nickname of the pokemon.
@@ -115,7 +69,7 @@ class Pokemon {
   /// @returns - The nickname of the pokemon. If the pokemon has no nickname, this will be the same as the species name.
   Future<String> getNickname() async {
     if (nickName == "") {
-      return await species.getName();
+      return await (await PokeAPI.fetchSpecies(speciesID) as Species).getName();
     }
     return nickName;
   }
@@ -124,11 +78,11 @@ class Pokemon {
   /// ## Sets the gender of the pokemon.
   /// Get the desired gender from [Genders] in the `enums.dart` file.
   void setGender(int gender) {
-    this.gender = gender;
+    gender = gender;
   }
 
   int getGender() {
-    return gender;
+    return gender!;
   }
 
   /// # setIvStats(`Stats ivStats`)
@@ -137,34 +91,32 @@ class Pokemon {
   void setIvStats(Stats ivStats) {
     /// Sets the IVs of the pokemon.
     /// @param ivStats - The IVs of the pokemon.
-    this.ivStats = ivStats;
+    iv = ivStats;
   }
 
   Stats getIvStats() {
-    /// Gets the IVs of the pokemon.
-    /// @returns - The IVs of the pokemon.
-    return ivStats;
+    return iv;
   }
 
   /// # setEvStats(`Stats evStats`)
   /// ## Sets the EVs of the pokemon.
   /// Create a new `Stats` object with the desired EVs and pass it to this function.
   void setEvStats(Stats evStats) {
-    this.evStats = evStats;
+    ev = evStats;
   }
 
   /// # getEvStats(`Stats evStats`)
   /// ## Gets the EVs of the pokemon.
   /// Returns the EVs of the pokemon. See [Stats] in `stats.dart` for more details.
   Stats getEvStats() {
-    return evStats;
+    return ev;
   }
 
   /// # getSpecies(`Species species`)
   /// ## Gets the species of the pokemon.
   /// Returns the species of the pokemon. See [Species] in `species.dart` for more details.
-  Species getSpecies() {
-    return species;
+  Future<Species?> getSpecies() {
+    return PokeAPI.fetchSpecies(speciesID);
   }
 
   // # setSpecies(`Species species`)
@@ -176,5 +128,39 @@ class Pokemon {
 
   int getHash() {
     return hashCode;
+  }
+
+  Map<String, Object?> toDB() {
+    return {
+      "nickName": nickName,
+      "speciesID": speciesID,
+      "abilityID": abilityID,
+      "pokemonID": pokemonID,
+      "exp": exp,
+      "move1ID": move1ID,
+      "move2ID": move2ID,
+      "move3ID": move3ID,
+      "move4ID": move4ID,
+      "iv": iv.toString(),
+      "ev": ev.toString(),
+      "gender": gender,
+    };
+  }
+
+  factory Pokemon.fromDB(Map<dynamic, dynamic> query) {
+    Pokemon newPokemon = Pokemon(
+        speciesID: query['speciesID'],
+        nickName: query['nickName'],
+        pokemonID: query['pokemonID'],
+        exp: query['exp'],
+        iv: Stats.fromString(query['iv']),
+        ev: Stats.fromString(query['ev']),
+        gender: query['gender'],
+        abilityID: query['abilityID'],
+        move1ID: query['move1ID'],
+        move2ID: query['move2ID'],
+        move3ID: query['move3ID'],
+        move4ID: query['move4ID']);
+    return newPokemon;
   }
 }

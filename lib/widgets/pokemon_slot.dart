@@ -1,11 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 
 class PokemonSlot extends StatelessWidget {
-  const PokemonSlot({super.key, required this.pokemon, required this.onTap});
-  final Pokemon pokemon;
+  const PokemonSlot({super.key, required this.uniqueID, required this.onTap});
+  final int uniqueID;
   final Function onTap;
 
   @override
@@ -16,20 +16,30 @@ class PokemonSlot extends StatelessWidget {
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(children: [
-            Expanded(
-                child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: CachedNetworkImage(
-                        imageUrl: pokemon.getSpecies().getFrontImageUrl(),
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                        filterQuality: FilterQuality.none))),
-            TextWithLoaderBuffer(
-                future: pokemon.getNickname(), text: const Text("")),
-          ]),
+          child: AsyncPlaceholder(
+            future: PC.fetchPokemon(uniqueID),
+            childBuilder: (value) {
+              return Column(children: [
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: 150,
+                    height: 150,
+                    child: Image(
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.none,
+                      image: AssetImage(
+                          "assets/images/sprites/${value!.speciesID}.png"),
+                    ),
+                  ),
+                ),
+                TextWithLoaderBuffer(
+                    future: value.getNickname(), text: const Text("")),
+              ]);
+            },
+          ),
         ));
   }
 }

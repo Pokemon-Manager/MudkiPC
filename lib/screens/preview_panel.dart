@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/element_bar.dart';
 import 'package:mudkip_frontend/widgets/stat_chart.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:go_router/go_router.dart';
 
 // ignore: must_be_immutable
 class PreviewPanel extends StatelessWidget {
@@ -11,38 +13,33 @@ class PreviewPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget previewWidget = const Placeholder();
     if (object is Future<Pokemon>) {
-      return FutureBuilder(
+      previewWidget = AsyncPlaceholder(
           future: object,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                  child: SizedBox(
-                child: AspectRatio(
-                    aspectRatio: 1, child: CircularProgressIndicator()),
-              ));
-            }
-            Pokemon pokemon = snapshot.requireData as Pokemon;
+          childBuilder: (pokemon) {
             return PreviewInfo(
-                title: pokemon.getSpecies().getName(),
-                subtitle: pokemon.getNickname(),
-                imageUrl: pokemon.getSpecies().getFrontImageUrl(),
-                description: pokemon.getSpecies().getDescription(),
-                baseStats: pokemon.species.getBaseStats(),
-                effortStats: pokemon.getEvStats(),
-                individualStats: pokemon.getIvStats(),
-                typing: pokemon.getSpecies().getTyping());
+                title: pokemon.getNickname() as Future<String>,
+                subtitle: pokemon
+                    .getSpecies()
+                    .then<String>((value) => (value! as Species).getName()),
+                imageUrl: "assets/images/sprites/${pokemon.speciesID}.png",
+                description: pokemon.getSpecies().then<String>(
+                        (value) => (value! as Species).getDescription())
+                    as Future<String>?,
+                baseStats: pokemon.getSpecies().then<Stats>(
+                        (value) => (value! as Species).getBaseStats())
+                    as Future<Stats>?,
+                effortStats: pokemon.getEvStats() as Stats,
+                individualStats: pokemon.getIvStats() as Stats,
+                typing: pokemon.getSpecies().then<Typing>(
+                        (value) => (value! as Species).getTyping())
+                    as Future<Typing>?);
           });
     } else if (object is Future<Species?>) {
-      return FutureBuilder(
+      previewWidget = AsyncPlaceholder(
           future: object,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                  child: AspectRatio(
-                      aspectRatio: 1, child: CircularProgressIndicator()));
-            }
-            Species species = snapshot.requireData as Species;
+          childBuilder: (species) {
             return PreviewInfo(
                 title: species.getName(),
                 imageUrl: species.getFrontImageUrl(),
@@ -51,7 +48,17 @@ class PreviewPanel extends StatelessWidget {
                 typing: species.getTyping());
           });
     }
-    return const Placeholder();
+    return Scaffold(
+        appBar: AppBar(
+          leading: BackButton(onPressed: () {
+            context.pop();
+          }),
+          title: const Text("Preview"),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: previewWidget,
+        ));
   }
 }
 
@@ -144,7 +151,7 @@ class PreviewInfo extends StatelessWidget {
 
     if (baseStats != null) {
       children.add(StatChart(
-        base_future: baseStats!,
+        baseFuture: baseStats!,
         ev: effortStats,
         iv: individualStats,
       ));

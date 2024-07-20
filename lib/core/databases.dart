@@ -2,23 +2,36 @@ import 'dart:io';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:hive/hive.dart';
 import 'package:queue/queue.dart';
+
+/* 
+Name: Databases
+Purpose: This file contains the databases that are used in the app.
+
+There are two databases in the app. There is the PokeAPI database that is used to fetch data from the permanent and slightly slower SQLite database.
+
+The other database, [PC] is used to store dynamic and ever changing data like the user's Pokémon, their trainers, and other fluctating data. It uses a NoSQL database called Hive. Hive is a key-value database that is used to store data, so use it like a dictionary if needed.
+
+Both have the same structure, so they work exactly the same way despite having different databases. If you want to fetch for data, use the functions that start with `fetch`. For example, use functions named `fetchPokemon`, `fetchTrainer`, `fetchSpecies`, etc. There is also `fetch` functions that start with a underscore. Those are for internal use only, to force me and other developers to always add a fetch request to the queue rather than directly accessing the database. Every other function is just for logic purposes (e.g. `amountOfEntries` is just for getting the max amount of entries for the list and grid views, without need null logic for them).
+
+If you are still confused on what the difference is between [PokeAPI] and the [PC] class, remember this:
+- PC = User's Data (Pokemon, Items, etc.) This is not consitent.
+- PokeAPI = PokeDex Data (Species, Moves, etc.) This is consitent.
+*/
 
 /// # PokeAPI
 /// ## A class that represents PokeAPI.
 /// The fetch functions returns the object you are looking for, so you can get the object you need.
-/// If you are confused on what the difference is between this and the [PC] class, remember this:
-/// - PC = User's Data (Pokemon, Items, etc.) This is not consitent.
-/// - PokeAPI = PokeDex Data (Species, Moves, etc.) This is consitent.
-///
-class PokeAPI {
+final class PokeAPI {
   static Database?
       db; // The database object that is accessed to fetch data. See `Global.db` in the `access/db` folder for the SQLite database used.
   static Queue queue = Queue(
       delay: const Duration(
-          milliseconds:
+          microseconds:
               100)); /* This queue is to make sure that multiple requests are not made at the same time, 
   as it could result in an overflow or an asynchronous error.*/
+
   /// # `Future<void>` create() async
   /// ## Checks to see if the database exists and if it doesn't, it extracts it from the asset bundle.
   /// The database is stored in the `access/db/` and is named `Global.db`.
@@ -49,14 +62,14 @@ class PokeAPI {
   /// ## Fetches a species from PokeAPI.
   /// Returns a [Species] object. It fetches from multiple tables and combines them into one object.
   /// Adds the request for the species to the queue to be fetched later.
-  static Future<Species?> fetchSpecies(int id, bool cache) async {
-    return queue.add(() => _fetchSpecies(id, cache));
+  static Future<Species?> fetchSpecies(int id) async {
+    return queue.add(() => _fetchSpecies(id));
   }
 
   /// # `Future<Species?>` _fetchSpecies(`int id`) async
   /// ## See [fetchSpecies] for details.
   /// This function is what actually fetches the data from the database.
-  static Future<Species?> _fetchSpecies(int id, bool cache) async {
+  static Future<Species?> _fetchSpecies(int id) async {
     List<Map<String, Object?>>? query = (await db?.rawQuery("""
       SELECT * FROM pokemon
       INNER JOIN pokemon_species ON pokemon.species_id = pokemon_species.id 
@@ -66,14 +79,6 @@ class PokeAPI {
       return null;
     }
     return Species.fromDB(query.first);
-  }
-
-  /// # `Future<int?>` fetchAmountOfEntries(`String table`) async
-  /// ## Fetches the amount of entries in a table from the database.
-  static Future<int?> fetchAmountOfEntries(String table) async {
-    var x = await db?.rawQuery('SELECT * FROM $table;');
-    int? count = x?.length;
-    return count;
   }
 
   /// # `Future<List<Move?>>` fetchSpecies(`int id`) async
@@ -137,7 +142,7 @@ class PokeAPI {
   static Future<String> _fetchString(LanguageBinding binding) async {
     int languageId = LocaleIDs.getIDFromLocale(Platform.localeName);
     String table = binding.table;
-    String idColumn = binding.id_column;
+    String idColumn = binding.idColumn;
     String languageColumn = "";
     if (binding.isNameTable) {
       languageColumn = "local_language_id";
@@ -148,8 +153,8 @@ class PokeAPI {
       SELECT * FROM $table
       WHERE $idColumn = ? AND $languageColumn = ?;
     """, [binding.id, languageId]));
-    return (query!.last[binding.string_column] as String)
-        .replaceAll(RegExp('\n'), '');
+    return (query!.last[binding.stringColumn] as String)
+        .replaceAll(RegExp('\n'), ' ');
   }
 
   static Future<Typing> fetchTypingForSpecies(int id) async {
@@ -161,7 +166,6 @@ class PokeAPI {
       SELECT * FROM pokemon_types
       WHERE pokemon_types.pokemon_id = ?;
     """, [id]));
-    print(query);
     return Typing.fromDB(query!);
   }
 
@@ -176,6 +180,12 @@ class PokeAPI {
       newQuery[key] = query[key];
     }
     return newQuery;
+  }
+
+  static Future<int?> amountOfEntries(String table) async {
+    var x = await db?.rawQuery('SELECT * FROM $table;');
+    int? count = x?.length;
+    return count;
   }
 
   static search(String query) async {}
@@ -194,13 +204,104 @@ class PokeAPI {
 class LanguageBinding {
   String table = "pokemon_species_names";
   bool isNameTable = true;
-  String id_column = "id";
+  String idColumn = "id";
   int id = 0;
-  String string_column = "string";
+  String stringColumn = "string";
   LanguageBinding(
       {required this.table,
-      required this.id_column,
+      required this.idColumn,
       required this.id,
-      required this.string_column,
+      required this.stringColumn,
       required this.isNameTable});
+}
+
+/// # PC
+/// ## Represents the user's collection of [Pokemon], [Species], and [Trainer]s.
+final class PC {
+  static Box? db;
+  static Queue queue = Queue(delay: const Duration(microseconds: 100));
+  static Stream<bool> isReady = const Stream.empty();
+  static List<PKMDBFolder> pkmdbs = [];
+
+  static Future<void> create() async {
+    Directory directory = await getApplicationDocumentsDirectory();
+    Hive.init("${directory.path}/MudkiPC/db/");
+    db = await Hive.openBox("pc");
+  }
+
+  /// #addPokemon(`Pokemon pokemon`)
+  /// ## Adds a [Pokemon] to the list of [pokemons].
+  static void addPokemon(Pokemon pokemon) {
+    db?.put(db!.length + 1, pokemon.toDB());
+  }
+
+  static void addPokemonList(List<Pokemon> pokemonList) {
+    for (var pokemon in pokemonList) {
+      addPokemon(pokemon);
+    }
+  }
+
+  /// #removePokemon(`Pokemon pokemon`)
+  /// ## Removes a [Pokemon] from the list of [pokemons].
+  static void removePokemon(Pokemon pokemon) {}
+
+  static Future<Pokemon> fetchPokemon(int id) async {
+    return queue.add(() async => _fetchPokemon(id));
+  }
+
+  static Future<Pokemon> _fetchPokemon(int id) async {
+    return Pokemon.fromDB(db?.get(id));
+  }
+
+  static Future<void> openFolder(String path) async {
+    PKMDBFolder pkmdb = PKMDBFolder(path: path);
+    pkmdb.loadFolder();
+    pkmdb.openCompatibleFiles();
+    await pkmdb.extractAllData();
+    return;
+  }
+
+  static Future<bool> isEmpty(String table) async {
+    return db?.isEmpty ?? true;
+  }
+
+  static Future<int?> amountOfEntries(String table) async {
+    return db?.length;
+  }
+}
+
+class PKMDBFolder {
+  String path;
+  List<Pokemon> pokemons = [];
+  List<FileSystemEntity> files = [];
+  List<FileHandle> openFiles = [];
+  List<Trainer> trainers = [];
+  Directory directory = Directory("");
+
+  PKMDBFolder({required this.path});
+
+  void loadFolder() {
+    directory = Directory(path);
+    files = directory.listSync();
+    return;
+  }
+
+  void openCompatibleFiles() {
+    for (FileSystemEntity entity in files) {
+      if (entity is File) {
+        File file = entity;
+        if (FileHandle.isCompatibleFile(file)) {
+          openFiles.add(FileHandle.toAssociatedHandle(file, this));
+        }
+      }
+    }
+  }
+
+  Future<void> extractAllData() async {
+    for (FileHandle file in openFiles) {
+      await file.parseDatablocks();
+    }
+    PC.addPokemonList(pokemons);
+    return;
+  }
 }

@@ -2,7 +2,6 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 
 /// # Move
 /// ## A class that represents a move from a Game.
-/// TODO: Add ability to search by moves. Not sure how to do that yet.
 class Move {
   int id = 0;
   String description = "";
@@ -40,8 +39,8 @@ class Move {
     return PokeAPI.fetchString(LanguageBinding(
         id: id,
         table: "move_names",
-        id_column: "move_id",
-        string_column: "name",
+        idColumn: "move_id",
+        stringColumn: "name",
         isNameTable: true));
   }
 

@@ -5,8 +5,7 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 /// ## A class that represents a datablock from a Game.
 /// Datablocks are used to store data in files. Datablocks should be used in combination with other Datablocks to create a file handle.
 /// For example, a save file will requires one block for the general data, one for the trainer, and one for each Pokémon.
-
-class Datablock {
+sealed class Datablock {
   FileHandle fileHandle;
   int offset =
       0x00; // Offset of the datablock in the file. ALWAYS USE HEXADECIMAL INSTEAD OF DECIMAL, FOR CONSISTENCY.
@@ -154,13 +153,13 @@ mixin Gen3PokemonFormat implements Datablock {
     return total >> 30 & 11;
   }
 
-  Future<List<Move?>> getMoves(int offset) async {
+  Future<List<int?>> getMoves(int offset) async {
     Iterable<int> moveRange = getRange(offset, 8);
-    List<Move?> moves = [];
+    List<int?> moves = [];
     for (int i = 0; i < 4; i++) {
       int moveID = combineBytesToInt16(
           [moveRange.elementAt(i * 2), moveRange.elementAt(i * 2 + 1)]);
-      moves.add(await PokeAPI.fetchMove(moveID));
+      moves.add(moveID);
     }
     return moves;
   }
@@ -178,21 +177,16 @@ class PK6Data extends Datablock with Gen3PokemonFormat {
 
   @override
   Future<dynamic> parse() async {
-    int speciesID = getSpeciesID(0x08);
-    Pokemon newPokemon = Pokemon();
-    PokeAPI.fetchSpecies(speciesID, true).then((value) {
-      newPokemon.species = value!;
-    });
-    newPokemon.pokemonID = getSpeciesID(0x08);
-    newPokemon.nickName = getNickname(0x40);
-    newPokemon.ivStats = getIvStats(0x74);
-    newPokemon.evStats = getEvStats(0x1E);
-    List<Move?> moves = await getMoves(0x5A);
-    newPokemon.move1 = moves[0];
-    newPokemon.move2 = moves[1];
-    newPokemon.move3 = moves[2];
-    newPokemon.move4 = moves[3];
-    return newPokemon;
+    List<int?> moveIDs = await getMoves(0x5A);
+    return Pokemon(
+        speciesID: getSpeciesID(0x08),
+        nickName: getNickname(0x40),
+        ev: getEvStats(0x1E),
+        iv: getIvStats(0x74),
+        move1ID: moveIDs[0]!,
+        move2ID: moveIDs[1]!,
+        move3ID: moveIDs[2]!,
+        move4ID: moveIDs[3]!);
   }
 }
 
@@ -201,19 +195,15 @@ class PK7Data extends Datablock with Gen3PokemonFormat {
 
   @override
   Future<dynamic> parse() async {
-    int speciesID = getSpeciesID(0x08);
-    Pokemon newPokemon = Pokemon();
-    PokeAPI.fetchSpecies(speciesID, true).then((value) {
-      newPokemon.species = value!;
-    });
-    newPokemon.nickName = getNickname(0x40);
-    newPokemon.ivStats = getIvStats(0x74);
-    newPokemon.evStats = getEvStats(0x1E);
-    List<Move?> moves = await getMoves(0x5A);
-    newPokemon.move1 = moves[0];
-    newPokemon.move2 = moves[1];
-    newPokemon.move3 = moves[2];
-    newPokemon.move4 = moves[3];
-    return newPokemon;
+    List<int?> moveIDs = await getMoves(0x5A);
+    return Pokemon(
+        speciesID: getSpeciesID(0x08),
+        nickName: getNickname(0x40),
+        ev: getEvStats(0x1E),
+        iv: getIvStats(0x74),
+        move1ID: moveIDs[0]!,
+        move2ID: moveIDs[1]!,
+        move3ID: moveIDs[2]!,
+        move4ID: moveIDs[3]!);
   }
 }

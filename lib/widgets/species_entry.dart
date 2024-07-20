@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 
 class SpeciesEntry extends StatelessWidget {
@@ -15,39 +16,29 @@ class SpeciesEntry extends StatelessWidget {
       child: ElevatedButton(
           onPressed: () => onTap(),
           child: Padding(
-            padding: const EdgeInsets.all(1.0),
-            child: FutureBuilder(
+              padding: const EdgeInsets.all(1.0),
+              child: AsyncPlaceholder(
                 future: species,
-                builder: (buildContext, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(
-                        child: AspectRatio(
-                            aspectRatio: 1,
-                            child: CircularProgressIndicator()));
-                  } else if (snapshot.requireData == null) {
-                    return const SizedBox();
-                  }
-                  return Row(children: [
-                    SizedBox(
-                      height: 96,
-                      width: 96,
-                      child: Image(
-                        filterQuality: FilterQuality.none,
-                        image: AssetImage(
-                            "assets/images/sprites/${snapshot.requireData!.getId()}.png"),
-                      ),
+                childBuilder: (species) => Row(children: [
+                  SizedBox(
+                    height: 96,
+                    width: 96,
+                    child: Image(
+                      filterQuality: FilterQuality.none,
+                      image: AssetImage(
+                          "assets/images/sprites/${species.getId()}.png"),
                     ),
-                    const SizedBox(width: 10.0),
-                    TextWithLoaderBuffer(
-                        future: snapshot.requireData!.getName(),
-                        text: Text(
-                          "",
-                          textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ))
-                  ]);
-                }),
-          )),
+                  ),
+                  const SizedBox(width: 10.0),
+                  TextWithLoaderBuffer(
+                      future: species.getName(),
+                      text: Text(
+                        "",
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ))
+                ]),
+              ))),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 
 class ElementBar extends StatelessWidget {
   final Future<Typing> typing;
@@ -9,22 +10,17 @@ class ElementBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      child: FutureBuilder<Typing>(
-          future: typing,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                  child: AspectRatio(
-                      aspectRatio: 1, child: CircularProgressIndicator()));
-            }
-            Typing typing = snapshot.requireData;
-            return Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: getElements(typing),
-                ));
-          }),
+      child: AsyncPlaceholder(
+        future: typing,
+        childBuilder: (typing) {
+          return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: getElements(typing),
+              ));
+        },
+      ),
     );
   }
 
@@ -34,8 +30,6 @@ class ElementBar extends StatelessWidget {
       elements.add(typing.getType1().getChip());
     } else {
       elements.add(typing.getType1().getChip());
-      elements.add(
-          const Divider(thickness: 8.0, height: 16.0, color: Colors.white));
       elements.add(typing.getType2()!.getChip());
     }
     return elements;

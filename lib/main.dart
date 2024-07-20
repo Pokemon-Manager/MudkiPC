@@ -1,18 +1,47 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:mudkip_frontend/screens/main_window.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mudkip_frontend/screens/app_shell.dart';
 import 'package:mudkip_frontend/theme/theme_constants.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:mudkip_frontend/screens.dart';
 
 Future<void> doPrefs() async {
   return;
 }
 
 ThemeManager themeManager = ThemeManager();
-late PC openedPC;
 late PackageInfo packageInfo;
+final router = GoRouter(initialLocation: "/pc", routes: <RouteBase>[
+  GoRoute(
+      path: "/about",
+      builder: (context, state) {
+        return const AboutScreen();
+      }),
+  GoRoute(
+      path: "/preview",
+      builder: (context, state) {
+        return PreviewPanel(object: state.extra! as Future<dynamic>);
+      }),
+  ShellRoute(
+      routes: <RouteBase>[
+        GoRoute(
+            path: "/pc",
+            builder: (context, state) {
+              return const PCView();
+            }),
+        GoRoute(
+            path: "/pokedex",
+            builder: (context, state) {
+              return const PokeDexView();
+            }),
+      ],
+      builder: (context, state, child) {
+        return AppShell(child: child);
+      }),
+]);
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,8 +49,8 @@ void main(List<String> args) async {
   databaseFactory = databaseFactoryFfi;
   await doPrefs();
   packageInfo = await PackageInfo.fromPlatform();
-  openedPC = await PC.create();
-  PokeAPI.create();
+  await PokeAPI.create();
+  await PC.create();
   if (args.firstOrNull == 'multi_window') {
     // ignore: unused_local_variable
     final windowId = int.parse(args[1]);
@@ -35,7 +64,7 @@ void main(List<String> args) async {
         break;
     }
   } else {
-    runApp(MaterialApp(
+    runApp(MaterialApp.router(
         title: "Pokémon Manager",
         theme: lightTheme,
         darkTheme: darkTheme,
@@ -46,8 +75,10 @@ void main(List<String> args) async {
           Locale('ko', 'KR'),
           Locale('es', 'ES'),
           Locale('zh', 'CN'),
-          Locale('it', 'IT'),
+          Locale('it', 'IT')
         ],
-        home: const MainWindow()));
+        routeInformationParser: router.routeInformationParser,
+        routerDelegate: router.routerDelegate,
+        routeInformationProvider: router.routeInformationProvider));
   }
 }

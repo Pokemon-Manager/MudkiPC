@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 /// # Elements
-/// ## A class that contains the ids of elements of the games. TODO: Figure out if this is necessary.
+/// ## A class that contains the ids of elements of the games.
 /// ### Constants:
 /// - None
 /// - Normal
@@ -127,25 +127,25 @@ final class Gender {
 /// The class has static constants for each game, each with a unique abreviation.
 /// ### Abreviation Scheme:
 ///
-/// The starting from the first game in the series, we can just use the first letter of the game:
+/// #### Rule 1:
+/// Starting from the first game in the series, we can just use the first letter of the game:
 ///   ```md
 ///   Pokémon Red
 ///           ^
 ///   The abreviation is R.
 ///   ```
 ///
-///
-/// For games that have two words in the name, we can use the first letter of each word:
+/// #### Rule 2:
+/// For games that have two words in the name, we can use the first letter of each word capitalized:
 ///   ```md
 ///   Pokémon FireRed
 ///           ^   ^
 ///   The abreviation is FR.
 ///   ```
-///
-///
+/// ### Rule 3:
 /// This works for most games in the Pokémon series, but there are some exceptions.
 /// Lets look at Pokémon Red and Ruby for example. They both start with R, and we cannot have two games with the same abreviation.
-/// So, lets use the last letter of the name as part of the abreviation:
+/// So, lets use the last letter of the name as part of the abreviation, in lowercase to distinguish between this rule from the previous rule above:
 ///   ```md
 ///   Pokémon Ruby
 ///           ^  ^
@@ -160,17 +160,21 @@ final class Gender {
 ///
 /// With these rules, we can define the abreviation for every game in the Pokémon series.
 /// However, to future-proof our code, we can define one last rule for abreviations.
+///
+/// #### Rule 4:
 /// For games that have two words in the name and have the same as another game, we can use the last letter of each word as part of the abreviation:
 ///   ```md
 ///   Pokémon LeafGreen
 ///           ^  ^^   ^
 ///   The abreviation is LfGn.
 ///   ```
+/// #### Rule 5:
 /// If there are absolutly no more possible abreviations, we can use the common abreviation of the console they were released on in all lowercase:
 ///   ```md
 ///   Pokémon Scarlet Switch
 ///           ^     ^ ^^
 ///   The abreviation is Stsw.
+///
 ///   Pokémon FireRed Gameboy Advance
 ///           ^   ^   ^   ^   ^
 ///   The abreviation is FRgba.

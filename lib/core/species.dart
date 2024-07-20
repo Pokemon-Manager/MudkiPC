@@ -1,11 +1,27 @@
 import 'package:mudkip_frontend/pokemon_manager.dart';
 
 /// # `Class` Species
-/// ## A class that contains all of the data for a [Pokemon]'s [Species].
-/// Every instance is shared between [Pokemon]s, so if a update to [Species] is made, all [Pokemon]s will be updated with the new data.
-/// At first, the plan was to make this the super class of [Pokemon]; however, that would require a lot of work arounds to get it to work.
-/// So instead, [PokeAPI] stores a Map containing all of the already created [Species]s objects.
-/// If you want to know more about how [Species] is created, look at the [PokeAPI] class.
+/// ## Acts as a interface for getting information about a [Species].
+/// This class only contains the id of the species, and the methods in the class just calls associated functions from the `PokeAPI` class.
+/// So every function is asynchronous, so be smart about fetching data for the frontend.
+/// MudkiPC has packages and custom made widgets for this extact purpose. Use `TextWithLoaderBuffer`, and `AsyncPlaceholder` for safe fetching of data in the frontend.
+/// ```dart
+/// AsyncPlaceholder(
+///   future: PokeAPI.fetchSpecies(1),
+///   childBuilder: (species) => SpeciesEntry(species: species),
+/// );
+/// ```
+///
+/// There are some instances where you may want to first fetch a Pokemon and then get its Species,
+/// but you would need nested FutureBuilders and AsyncPlaceholders, which is messy.
+/// So, remember to use the `then` function to get the pokemon and then get its Species, and then the data you need.
+/// ```dart
+/// AsyncPlaceholder(
+///   future: PC.fetchPokemon(1),
+///   childBuilder: (pokemon) => TextWithLoaderBuffer(future: pokemon.getSpecies().then((value) => (value! as Species).getName()) as Future<String>),
+/// );
+/// ```
+
 class Species {
   int id;
 
@@ -20,8 +36,8 @@ class Species {
     return PokeAPI.fetchString(LanguageBinding(
         id: id,
         table: "pokemon_species_names",
-        id_column: "pokemon_species_id",
-        string_column: "name",
+        idColumn: "pokemon_species_id",
+        stringColumn: "name",
         isNameTable: true));
   }
 
@@ -61,8 +77,8 @@ class Species {
     return PokeAPI.fetchString(LanguageBinding(
         id: id,
         table: "pokemon_species_flavor_text",
-        id_column: "species_id",
-        string_column: "flavor_text",
+        idColumn: "species_id",
+        stringColumn: "flavor_text",
         isNameTable: false));
   }
 }

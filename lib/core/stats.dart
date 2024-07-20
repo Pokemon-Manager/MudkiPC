@@ -1,3 +1,12 @@
+/// # `Class` Stats
+/// ## A container for stats, and required calulations for them.
+/// ### Variables:
+/// - [hp] is the hp stat.
+/// - [attack] is the attack stat.
+/// - [defense] is the defense stat.
+/// - [specialAttack] is the special attack stat.
+/// - [specialDefense] is the special defense stat.
+/// - [speed] is the speed stat.
 class Stats {
   int hp;
   int attack;
@@ -13,17 +22,6 @@ class Stats {
       required this.specialDefense,
       required this.speed});
 
-  factory Stats.fromJson(List<dynamic> json) {
-    return Stats(
-      hp: json[0]['base_stat'],
-      attack: json[1]['base_stat'],
-      defense: json[2]['base_stat'],
-      specialAttack: json[3]['base_stat'],
-      specialDefense: json[4]['base_stat'],
-      speed: json[5]['base_stat'],
-    );
-  }
-
   List<dynamic> toJson() {
     return [
       {"hp": hp},
@@ -33,5 +31,22 @@ class Stats {
       {"special_defense": specialDefense},
       {"speed": speed},
     ];
+  }
+
+  @override
+  String toString() {
+    return '$hp,$attack,$defense,$specialAttack,$specialDefense,$speed';
+  }
+
+  factory Stats.fromString(String stats) {
+    List<String> statList = stats.split(',');
+    return Stats(
+      hp: int.parse(statList[0]),
+      attack: int.parse(statList[1]),
+      defense: int.parse(statList[2]),
+      specialAttack: int.parse(statList[3]),
+      specialDefense: int.parse(statList[4]),
+      speed: int.parse(statList[5]),
+    );
   }
 }
