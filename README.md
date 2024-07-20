@@ -41,7 +41,9 @@ Because Mudkip is my favorite Pokémon. MudkiPC is just combination of Mudkip an
 ## How do you pronounce it?
 You can pronounce it in two ways:
 - *Mud*-*Ki*-*P*-*C*
-- or
+  
+  or
+  
 - *Mud*-*Kip*-*C*
 
 It does not matter, choose one or the other.
