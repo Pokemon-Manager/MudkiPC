@@ -2,18 +2,16 @@ import 'dart:io';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
-import 'package:hive/hive.dart';
 import 'package:queue/queue.dart';
-
 /* 
 Name: Databases
 Purpose: This file contains the databases that are used in the app.
 
-There are two databases in the app. There is the PokeAPI database that is used to fetch data from the permanent and slightly slower SQLite database.
+There are two databases in the app. There is the PokeAPI database that is used to fetch data from the `Global.db` file.
 
-The other database, [PC] is used to store dynamic and ever changing data like the user's Pokémon, their trainers, and other fluctating data. It uses a NoSQL database called Hive. Hive is a key-value database that is used to store data, so use it like a dictionary if needed.
+The other database, [PC] is used to store dynamic and ever changing data like the user's Pokémon, their trainers, and other fluctating data. It also uses a SQLite database.
 
-Both have the same structure, so they work exactly the same way despite having different databases. If you want to fetch for data, use the functions that start with `fetch`. For example, use functions named `fetchPokemon`, `fetchTrainer`, `fetchSpecies`, etc. There is also `fetch` functions that start with a underscore. Those are for internal use only, to force me and other developers to always add a fetch request to the queue rather than directly accessing the database. Every other function is just for logic purposes (e.g. `amountOfEntries` is just for getting the max amount of entries for the list and grid views, without need null logic for them).
+Both have the same structure, so they work exactly the same way. If you want to fetch for data, use the functions that start with `fetch`. For example, use functions named `fetchPokemon`, `fetchTrainer`, `fetchSpecies`, etc. There is also `fetch` functions that start with a underscore. Those are for internal use only, to force me and other developers to always add a fetch request to the queue rather than directly accessing the database. Every other function is just for logic purposes (e.g. `amountOfEntries` is just for getting the max amount of entries for the list and grid views, without need null logic for them).
 
 If you are still confused on what the difference is between [PokeAPI] and the [PC] class, remember this:
 - PC = User's Data (Pokemon, Items, etc.) This is not consitent.
@@ -50,6 +48,13 @@ final class PokeAPI {
     PokeAPI.db = await openDatabase("${directory.path}/MudkiPC/db/Global.db",
         onConfigure: _onConfigure); // Opens the database.
     return;
+  }
+
+  static recreate() async {
+    Directory directory = await getApplicationCacheDirectory();
+    await databaseFactory
+        .deleteDatabase("${directory.path}/MudkiPC/db/Global.db");
+    await PokeAPI.create();
   }
 
   /// # `Future<void>` _onConfigure(`Database db`) async
@@ -203,7 +208,8 @@ final class PokeAPI {
 
 class LanguageBinding {
   String table = "pokemon_species_names";
-  bool isNameTable = true;
+  bool isNameTable =
+      true; // For some reason, the name table has a different column name for language, so we need to use this to specify if the table contains names or not.
   String idColumn = "id";
   int id = 0;
   String stringColumn = "string";
@@ -218,27 +224,81 @@ class LanguageBinding {
 /// # PC
 /// ## Represents the user's collection of [Pokemon], [Species], and [Trainer]s.
 final class PC {
-  static Box? db;
+  static Database? db;
   static Queue queue = Queue(delay: const Duration(microseconds: 100));
   static Stream<bool> isReady = const Stream.empty();
   static List<PKMDBFolder> pkmdbs = [];
 
-  static Future<void> create() async {
+  static create() async {
     Directory directory = await getApplicationDocumentsDirectory();
-    Hive.init("${directory.path}/MudkiPC/db/");
-    db = await Hive.openBox("pc");
+    Database db = await databaseFactory.openDatabase(
+        "${directory.path}/MudkiPC/db/User.db",
+        options: OpenDatabaseOptions(onConfigure: _onConfigure));
+    return PC.fromDB(db);
   }
 
-  /// #addPokemon(`Pokemon pokemon`)
-  /// ## Adds a [Pokemon] to the list of [pokemons].
-  static void addPokemon(Pokemon pokemon) {
-    db?.put(db!.length + 1, pokemon.toDB());
+  static void recreate() async {
+    Directory directory = await getApplicationDocumentsDirectory();
+    databaseFactory.deleteDatabase("${directory.path}/MudkiPC/db/User.db");
+    PC.create();
   }
 
-  static void addPokemonList(List<Pokemon> pokemonList) {
+  /// # `Future<void>` _onConfigure(`Database db`) async
+  /// ## Configures the database for foreign keys.
+  static Future<void> _onConfigure(Database db) async {
+    await db.execute('PRAGMA foreign_keys = ON');
+  }
+
+  /// # `Future<void>` fromDB(`Database db`)
+  ///
+  static Future<void> fromDB(Database db) async {
+    await db.execute("""CREATE TABLE IF NOT EXISTS trainers (
+      trainerID INTEGER PRIMARY KEY AUTOINCREMENT,
+      id INTEGER,
+      name TEXT,
+      gameID INTEGER,
+      gender INTEGER
+    );""");
+    await db.execute("""CREATE TABLE IF NOT EXISTS pokemons (
+      uniqueID INTEGER PRIMARY KEY AUTOINCREMENT,
+      nickName TEXT,
+      speciesID INTEGER,
+      abilityID INTEGER,
+      pokemonID INTEGER,
+      gender INTEGER,
+      exp INTEGER,
+      iv TEXT,
+      ev TEXT,
+      move1ID INTEGER,
+      move2ID INTEGER,
+      move3ID INTEGER,
+      move4ID INTEGER,
+      otID INTEGER,
+      CONSTRAINT fk_ot FOREIGN KEY (otID) REFERENCES trainers(trainerID)
+    );""");
+    PC.db = db;
+  }
+
+  static Future<int?> amountOfEntries(String table) async {
+    var x = await db?.rawQuery('SELECT * FROM $table;');
+    int? count = x?.length;
+    return count;
+  }
+
+  static Future<void> addPokemon(Pokemon pokemon) async {
+    // print("Adding ${pokemon.nickName}");
+    await db?.insert("pokemons", pokemon.toDB());
+    return;
+  }
+
+  static Future<void> addPokemonList(List<Pokemon> pokemonList) async {
     for (var pokemon in pokemonList) {
-      addPokemon(pokemon);
+      await addPokemon(pokemon);
     }
+  }
+
+  static Future<int?> addTrainer(Trainer trainer) async {
+    return db?.insert("trainers", trainer.toDB());
   }
 
   /// #removePokemon(`Pokemon pokemon`)
@@ -250,7 +310,11 @@ final class PC {
   }
 
   static Future<Pokemon> _fetchPokemon(int id) async {
-    return Pokemon.fromDB(db?.get(id));
+    List<Map<String, Object?>>? query = (await db?.rawQuery("""
+      SELECT * FROM pokemons
+      WHERE pokemons.uniqueID = ?;
+    """, [id]));
+    return Pokemon.fromDB(query!.first);
   }
 
   static Future<void> openFolder(String path) async {
@@ -262,11 +326,7 @@ final class PC {
   }
 
   static Future<bool> isEmpty(String table) async {
-    return db?.isEmpty ?? true;
-  }
-
-  static Future<int?> amountOfEntries(String table) async {
-    return db?.length;
+    return await amountOfEntries(table) == 0;
   }
 }
 
@@ -301,7 +361,7 @@ class PKMDBFolder {
     for (FileHandle file in openFiles) {
       await file.parseDatablocks();
     }
-    PC.addPokemonList(pokemons);
+    await PC.addPokemonList(pokemons);
     return;
   }
 }

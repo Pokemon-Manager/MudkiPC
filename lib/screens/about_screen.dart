@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mudkip_frontend/core/file_handles.dart';
 import 'package:mudkip_frontend/main.dart';
 import 'package:markdown_widget/markdown_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,6 +23,9 @@ class AboutScreen extends StatelessWidget {
 ##### Developed with Flutter:
 Flutter is an open-source UI toolkit for building beautiful, natively compiled, multi-platform applications on the web, desktop, iOS, and Android.
 
+##### Currently Supported File Formats:
+  ${FileHandle.compatibleExtensions.map((e) => "- *.$e").join("\n  ")}
+
 ##### Credits:
 - [Flutter](https://flutter.dev/)
 - [Dart](https://dart.dev/)
@@ -37,10 +41,15 @@ Flutter is an open-source UI toolkit for building beautiful, natively compiled, 
 - [sqflite_common_ffi_web](https://pub.dev/packages/sqflite_common_ffi_web)
 - [file_picker](https://pub.dev/packages/file_picker)
 - [desktop_multi_window](https://pub.dev/packages/desktop_multi_window)
-- [window_manager](https://pub.dev/packages/window_manager)
+- [go_router](https://pub.dev/packages/go_router)
 
 The icon for the alpha version of the app was made by [Jedflah](https://www.deviantart.com/jedflah). It is subject to change.
-  """,
+
+##### Copyrights:
+
+Copyright (c) © 2013–2023 Paul Hallett and PokéAPI contributors (https://github.com/PokeAPI/pokeapi#contributing). Pokémon and Pokémon character names are trademarks of Nintendo.
+
+""",
         config: MarkdownConfig(configs: [
           LinkConfig(
             onTap: (url) async {

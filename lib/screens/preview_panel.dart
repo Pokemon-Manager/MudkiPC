@@ -133,19 +133,20 @@ class PreviewInfo extends StatelessWidget {
     if (subtitle != null) {
       children.add(TextWithLoaderBuffer(
           future: subtitle!,
-          text: Text(
+          text: const Text(
             "",
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.normal),
           )));
     }
+    children.add(const SizedBox(height: 10.0));
     if (description != null) {
       children.add(TextWithLoaderBuffer(
           future: description!,
-          text: Text(
+          text: const Text(
             "",
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
           )));
     }
 

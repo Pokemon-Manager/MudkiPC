@@ -128,96 +128,87 @@ final class Gender {
 /// ### Abreviation Scheme:
 ///
 /// #### Rule 1:
-/// Starting from the first game in the series, we can just use the first letter of the game:
+/// Starting from the first game in the series, we can use the first letter and last letter of the game:
 ///   ```md
 ///   Pokémon Red
-///           ^
-///   The abreviation is R.
+///           ^ ^
+///   The abreviation is Rd.
 ///   ```
-///
 /// #### Rule 2:
-/// For games that have two words in the name, we can use the first letter of each word capitalized:
+/// If the game has more than one word, then get the first letter from both the first and last word:
 ///   ```md
 ///   Pokémon FireRed
 ///           ^   ^
 ///   The abreviation is FR.
 ///   ```
-/// ### Rule 3:
-/// This works for most games in the Pokémon series, but there are some exceptions.
-/// Lets look at Pokémon Red and Ruby for example. They both start with R, and we cannot have two games with the same abreviation.
-/// So, lets use the last letter of the name as part of the abreviation, in lowercase to distinguish between this rule from the previous rule above:
 ///   ```md
-///   Pokémon Ruby
-///           ^  ^
-///   The abreviation is Ry.
+///   Pokémon Let's Go Pikachu
+///           ^        ^
+///   The abreviation is LP.
 ///   ```
-/// This also works for games with a number in the name.
+/// #### Rule 3:
+/// If there are games that have the same first and last letters, add the second letter from the front:
 ///   ```md
-///   Pokémon White 2
-///           ^     ^
-///   The abreviation is W2.
-///   ```
-///
-/// With these rules, we can define the abreviation for every game in the Pokémon series.
-/// However, to future-proof our code, we can define one last rule for abreviations.
-///
-/// #### Rule 4:
-/// For games that have two words in the name and have the same as another game, we can use the last letter of each word as part of the abreviation:
-///   ```md
-///   Pokémon LeafGreen
-///           ^  ^^   ^
-///   The abreviation is LfGn.
-///   ```
-/// #### Rule 5:
-/// If there are absolutly no more possible abreviations, we can use the common abreviation of the console they were released on in all lowercase:
-///   ```md
-///   Pokémon Scarlet Switch
-///           ^     ^ ^^
-///   The abreviation is Stsw.
-///
-///   Pokémon FireRed Gameboy Advance
-///           ^   ^   ^   ^   ^
-///   The abreviation is FRgba.
+///   Pokémon Shield
+///           ^^   ^
+///   The abreviation is Shd.
 ///   ```
 ///
 ///  ### Constants:
-///  - S for Pokémon Sapphire
+///  - Rd for Pokémon Red
+///  - Be for Pokémon Blue
+///  - Yw for Pokémon Yellow
+///  - Gd for Pokémon Gold
+///  - Sr for Pokémon Silver
+///  - Cl for Pokémon Crystal
+///  - Se for Pokémon Sapphire
 ///  - Ry for Pokémon Ruby
-///  - E for Pokémon Emerald
+///  - Ed for Pokémon Emerald
 ///  - FR for Pokémon FireRed
 ///  - LG for Pokémon LeafGreen
-///  - D for Pokémon Diamond
-///  - P for Pokémon Pearl
+///  - Dd for Pokémon Diamond
+///  - Pl for Pokémon Pearl
 ///  - Pt for Pokémon Platinum
 ///  - HG for Pokémon HeartGold
 ///  - SS for Pokémon SoulSilver
-///  - W for Pokémon White
-///  - B for Pokémon Black
-///  - W2 for Pokémon White 2
-///  - B2 for Pokémon Black 2
+///  - We for Pokémon White
+///  - Bk for Pokémon Black
+///  - We2 for Pokémon White 2
+///  - Bk2 for Pokémon Black 2
 ///  - X for Pokémon X
 ///  - Y for Pokémon Y
 ///  - AS for Pokémon Alpha Sapphire
 ///  - OR for Pokémon Omega Ruby
-///  - Sn for Pokémon Sun
-///  - Mn for Pokémon Moon
-///  - US for Pokémon Ultra Sun
-///  - UM for Pokémon Ultra Moon
+///  - LP for Pokémon Let's Go Pikachu
+///  - LE for Pokémon Let's Go Eevee
+///  - Sd for Pokémon Sword
+///  - Shd for Pokémon Shield
+///  - LA for Pokémon Legends: Arceus
+///  - BD for Pokémon Brilliant Diamond
+///  - SP for Pokémon Shining Pearl
+///  - St for Pokémon Scarlet
+///  - Vt for Pokémon Violet
 final class GameIDs {
-  static const int S = 1; // Pokémon Sapphire (GBA)
+  static const int Rd = 35; // Pokémon Red (GB)
+  static const int Be = 36; // Pokémon Blue (GB)
+  static const int Yw = 38; // Pokémon Yellow (GB)
+  static const int Gd = 39; // Pokémon Gold (GBC)
+  static const int Sr = 40; // Pokémon Silver (GBC)
+  static const int Cl = 41; // Pokémon Crystal (GBC)
+  static const int Se = 1; // Pokémon Sapphire (GBA)
   static const int Ry = 2; // Pokémon Ruby (GBA)
-  static const int E = 3; // Pokémon Emerald (GBA)
+  static const int Ed = 3; // Pokémon Emerald (GBA)
   static const int FR = 4; // Pokémon FireRed (GBA)
   static const int LG = 5; // Pokémon LeafGreen (GBA)
-  static const int D = 10; // Pokémon Diamond (NDS)
-  static const int P = 11; // Pokémon Pearl (NDS)
+  static const int Dd = 10; // Pokémon Diamond (NDS)
+  static const int Pl = 11; // Pokémon Pearl (NDS)
   static const int Pt = 12; // Pokémon Platinum (NDS)
   static const int HG = 7; // Pokémon HeartGold (NDS)
   static const int SS = 8; // Pokémon SoulSilver (NDS)
-  static const int W = 20; // Pokémon White (NDS)
-  static const int B = 21; // Pokémon Black (NDS)
-  static const int W2 = 22; // Pokémon White 2 (NDS)
-  static const int B2 = 23; // Pokémon Black 2 (NDS)
+  static const int We = 20; // Pokémon White (NDS)
+  static const int Bk = 21; // Pokémon Black (NDS)
+  static const int We2 = 22; // Pokémon White 2 (NDS)
+  static const int Bk2 = 23; // Pokémon Black 2 (NDS)
   static const int X = 24; // Pokémon X (3DS)
   static const int Y = 25; // Pokémon Y (3DS)
   static const int AS = 26; // Pokémon Alpha Sapphire (3DS)
@@ -226,9 +217,18 @@ final class GameIDs {
   static const int Mn = 31; // Pokémon Moon (3DS)
   static const int US = 32; // Pokémon Ultra Sun (3DS)
   static const int UM = 33; // Pokémon Ultra Moon (3DS)
+  static const int LP = 42; // Pokémon Let's Go, Pikachu! (Switch)
+  static const int LE = 43; // Pokémon Let's Go, Eevee! (Switch)
+  static const int Sd = 44; // Pokémon Sword (Switch)
+  static const int Shd = 45; // Pokémon Shield (Switch)
+  static const int LA = 47; // Pokémon Legends: Arceus (Switch)
+  static const int BD = 48; // Pokémon Brilliant Diamond (Switch)
+  static const int SP = 49; // Pokémon Shining Pearl (Switch)
+  static const int St = 50; // Pokémon Scarlet (Switch)
+  static const int Vt = 51; // Pokémon Violet (Switch)
 }
 
-abstract class LevelProgression {
+sealed class LevelProgression {
   static const List<int> expRequiredForNextLevel = [];
   int getLevel(int exp) {
     int expRequired = 0;

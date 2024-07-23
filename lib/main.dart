@@ -5,6 +5,7 @@ import 'package:mudkip_frontend/screens/app_shell.dart';
 import 'package:mudkip_frontend/theme/theme_constants.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/theme/theme_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:mudkip_frontend/screens.dart';
 
@@ -15,6 +16,11 @@ Future<void> doPrefs() async {
 ThemeManager themeManager = ThemeManager();
 late PackageInfo packageInfo;
 final router = GoRouter(initialLocation: "/pc", routes: <RouteBase>[
+  GoRoute(
+      path: "/settings",
+      builder: (context, state) {
+        return const SettingsScreen();
+      }),
   GoRoute(
       path: "/about",
       builder: (context, state) {
@@ -31,6 +37,41 @@ final router = GoRouter(initialLocation: "/pc", routes: <RouteBase>[
             path: "/pc",
             builder: (context, state) {
               return const PCView();
+            },
+            routes: [
+              GoRoute(
+                path: 'fetching',
+                builder: (context, state) {
+                  return AlertDialog(
+                    content: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                            margin: const EdgeInsets.only(left: 7),
+                            child:
+                                const Text("Fetching Pokémon from Folder...")),
+                        const SizedBox(height: 10),
+                        const CircularProgressIndicator(),
+                      ],
+                    ),
+                  );
+                },
+              )
+            ],
+            pageBuilder: (context, state) {
+              return CustomTransitionPage<void>(
+                key: UniqueKey(),
+                child: const PCView(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+              );
             }),
         GoRoute(
             path: "/pokedex",
@@ -64,21 +105,27 @@ void main(List<String> args) async {
         break;
     }
   } else {
-    runApp(MaterialApp.router(
-        title: "Pokémon Manager",
-        theme: lightTheme,
-        darkTheme: darkTheme,
-        supportedLocales: const [
-          Locale('en', 'US'),
-          Locale('fr', 'FR'),
-          Locale('ja', 'JP'),
-          Locale('ko', 'KR'),
-          Locale('es', 'ES'),
-          Locale('zh', 'CN'),
-          Locale('it', 'IT')
-        ],
-        routeInformationParser: router.routeInformationParser,
-        routerDelegate: router.routerDelegate,
-        routeInformationProvider: router.routeInformationProvider));
+    runApp(ChangeNotifierProvider(
+        create: (context) => ThemeManager(),
+        builder: (context, _) {
+          final themeProvider = Provider.of<ThemeManager>(context);
+          return MaterialApp.router(
+              title: "Pokémon Manager",
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: themeProvider.themeMode,
+              supportedLocales: const [
+                Locale('en', 'US'),
+                Locale('fr', 'FR'),
+                Locale('ja', 'JP'),
+                Locale('ko', 'KR'),
+                Locale('es', 'ES'),
+                Locale('zh', 'CN'),
+                Locale('it', 'IT')
+              ],
+              routeInformationParser: router.routeInformationParser,
+              routerDelegate: router.routerDelegate,
+              routeInformationProvider: router.routeInformationProvider);
+        }));
   }
 }

@@ -7,10 +7,15 @@ import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/pokemon_slot.dart';
 import 'package:mudkip_frontend/screens/warning_page.dart';
 
-class PCView extends StatelessWidget {
+class PCView extends StatefulWidget {
   // The PC view is where the user can see their Pokémon.
   const PCView({super.key});
 
+  @override
+  State<PCView> createState() => _PCViewState();
+}
+
+class _PCViewState extends State<PCView> {
   @override
   Widget build(BuildContext context) {
     return AsyncPlaceholder(
@@ -94,32 +99,30 @@ class PCView extends StatelessWidget {
                         FilePicker.platform.getDirectoryPath().then((result) {
                           if (result != null && context.mounted) {
                             showDialog(
-                                // ignore: use_build_context_synchronously
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                      content: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 7),
-                                              child: const Text(
-                                                  "Fetching Pokémon from Folder...")),
-                                          const SizedBox(height: 10),
-                                          const CircularProgressIndicator(),
-                                        ],
-                                      ),
-                                    ),
-                                barrierDismissible: false);
+                              // ignore: use_build_context_synchronously
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                content: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                        margin: const EdgeInsets.only(left: 7),
+                                        child: const Text(
+                                            "Fetching Pokémon from Folder...")),
+                                    const SizedBox(height: 10),
+                                    const CircularProgressIndicator(),
+                                  ],
+                                ),
+                              ),
+                              barrierDismissible: false,
+                            );
 
                             PC.openFolder(result).then((value) {
                               if (context.mounted) {
                                 context.pop();
-                                context.replace("/pc");
+                                context.push("/pc");
                               }
                             });
                           }

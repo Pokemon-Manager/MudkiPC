@@ -10,14 +10,14 @@ sealed class Datablock {
   int offset =
       0x00; // Offset of the datablock in the file. ALWAYS USE HEXADECIMAL INSTEAD OF DECIMAL, FOR CONSISTENCY.
   Datablock?
-      parent; // The datablock that this datablock is relative to. In other words, is the datablock inside of another datablock.
+      parent; // The datablock that this datablock is relative to. In other words, it is the parent of the datablock.
   List<Datablock> children =
       []; // List of datablocks that are children of this datablock.
   List<dynamic> dataParsed =
       []; // List of data that has been parsed from only this datablock, not its children. For when creating the json structure.
   Datablock({required this.fileHandle}); // Constructor.
 
-  /// #combineBytesToInt8(`List<int> bytes`)
+  /// # `int`combineBytesToInt8(`List<int> bytes`)
   /// ## A function that combines a single byte into a 8-bit integer.
   /// This function returns a 8-bit integer.
   int combineBytesToInt8(List<int> bytes) {
@@ -25,7 +25,7 @@ sealed class Datablock {
     return byteData.getInt8(0);
   }
 
-  /// #combineBytesToInt16(`List<int> bytes`)
+  /// # `int` combineBytesToInt16(`List<int> bytes`)
   /// ## A function that combines two bytes into a 16-bit integer.
   /// This function returns a 16-bit integer.
   int combineBytesToInt16(List<int> bytes) {
@@ -33,7 +33,7 @@ sealed class Datablock {
     return byteData.getInt16(0, Endian.little);
   }
 
-  /// #combineBytesToInt32(`List<int> bytes`)
+  /// # `int` combineBytesToInt32(`List<int> bytes`)
   /// ## A function that combines four bytes into a 32-bit integer.
   /// This function returns a 32-bit integer.
   int combineBytesToInt32(List<int> bytes) {
@@ -41,11 +41,27 @@ sealed class Datablock {
     return byteData.getInt32(0, Endian.little);
   }
 
+  int get8BitInt(int offset) {
+    return combineBytesToInt8(getRange(offset, 1).toList());
+  }
+
+  int get16BitInt(int offset) {
+    return combineBytesToInt16(getRange(offset, 2).toList());
+  }
+
+  int get32BitInt(int offset) {
+    return combineBytesToInt32(getRange(offset, 4).toList());
+  }
+
+  /// # `Iterable<int>`getRange(`int offset`, `int length`)
   Iterable<int> getRange(int offset, int length) {
     return fileHandle.data.getRange(
         getAbsoluteOffset(offset), getAbsoluteOffset(offset) + length);
   }
 
+  /// # `String`getString(`int offset`, `int length`)
+  /// ## A function that gets a string from the datablock.
+  /// This function returns a string.
   String getString(int offset, int length) {
     Iterable<int> string = getRange(offset, length);
     List<int> shortedString = [];
@@ -62,14 +78,14 @@ sealed class Datablock {
     return z;
   }
 
-  /// # makeThisChildOf(`Datablock datablock`)
+  /// # `void` makeThisChildOf(`Datablock datablock`)
   /// ## A function that makes this datablock a child of the given datablock.
   void makeThisChildOf(Datablock datablock) {
     datablock.children.add(this);
     parent = datablock;
   }
 
-  /// # makeThisParentOf(`Datablock datablock`)
+  /// # `void` makeThisParentOf(`Datablock datablock`)
   /// ## A function that makes this datablock a parent of the given datablock.
   void makeThisParentOf(Datablock datablock) {
     datablock.offset += getAbsoluteOffset(0x00);
@@ -77,7 +93,7 @@ sealed class Datablock {
     datablock.parent = this;
   }
 
-  /// # getAbsoluteOffset(`int offset`)
+  /// # `int` getAbsoluteOffset(`int offset`)
   /// ## A function that returns the absolute offset of the relative offset.
   /// The absolute offset is the offset of the datablock relative to its parent datablocks.
   /// In other words, it is the offset of the datablock inside all of its parent datablocks.
@@ -95,10 +111,17 @@ sealed class Datablock {
     return y + offset + relativeOffset;
   }
 
+  /// # `Future<dynamic>` parse()
+  /// ## A function that parses the datablock.
+  /// This function returns a dynamic future.
   Future<dynamic> parse() async {
+    // Override this in the child classes.
     return;
   }
 
+  /// # `void` addDataToParsedList(`dynamic data`)
+  /// ## A function that adds data to the parsed list.
+  /// This function returns nothing.
   void addDataToParsedList(dynamic data) {
     dataParsed.add(data);
   }
@@ -114,16 +137,8 @@ mixin Gen3PokemonFormat implements Datablock {
     return getString(offset, 24);
   }
 
-  int getSpeciesID(int offset) {
-    Iterable<int> speciesRange = getRange(offset, 2);
-    return combineBytesToInt16(speciesRange.toList());
-  }
-
-  int getEXP(int offset) {
-    Iterable<int> levelRange = getRange(offset, 4);
-    return combineBytesToInt32(levelRange.toList());
-  }
-
+  /// # `Stats` getStats(`int offset`)
+  /// ## A function that returns the stats of the Pokemon.
   Stats getEvStats(int offset) {
     Iterable<int> evRange = getRange(offset, 6);
     return Stats(
@@ -135,6 +150,8 @@ mixin Gen3PokemonFormat implements Datablock {
         speed: evRange.elementAt(5));
   }
 
+  /// # `Stats` getStats(`int offset`)
+  /// ## A function that returns the stats of the Pokemon.
   Stats getIvStats(int offset) {
     Iterable<int> ivRange = getRange(offset, 4);
     int total = combineBytesToInt32(ivRange.toList());
@@ -147,12 +164,17 @@ mixin Gen3PokemonFormat implements Datablock {
         speed: total >> 25 & 31);
   }
 
+  /// # `int` getGender(`int offset`)
+  /// ## A function that returns the gender of the Pokemon.
   int getGender(int offset) {
     Iterable<int> ivRange = getRange(offset, 4);
     int total = combineBytesToInt32(ivRange.toList());
     return total >> 30 & 11;
   }
 
+  /// # `Future<List<int?>>` getMoves(`int offset`)
+  /// ## A function that returns the moves of the Pokemon.
+  /// This function returns a future that contains a list of move IDs.
   Future<List<int?>> getMoves(int offset) async {
     Iterable<int> moveRange = getRange(offset, 8);
     List<int?> moves = [];
@@ -162,6 +184,13 @@ mixin Gen3PokemonFormat implements Datablock {
       moves.add(moveID);
     }
     return moves;
+  }
+
+  Trainer getOT(offset) {
+    return Trainer(
+        name: getString(offset + 0xB0, 24),
+        gameID: get8BitInt(offset + 0xDF),
+        id: get8BitInt(offset + 0x0C));
   }
 }
 
@@ -175,11 +204,16 @@ mixin Gen3PokemonFormat implements Datablock {
 class PK6Data extends Datablock with Gen3PokemonFormat {
   PK6Data({required super.fileHandle});
 
+  /// # `Future<dynamic>` parse()
+  /// ## A function that parses the data in the block.
+  /// This function returns a dynamic future.
   @override
   Future<dynamic> parse() async {
     List<int?> moveIDs = await getMoves(0x5A);
+    int? trainerID = await PC.addTrainer(getOT(0x00));
     return Pokemon(
-        speciesID: getSpeciesID(0x08),
+        otID: trainerID,
+        speciesID: get16BitInt(0x08),
         nickName: getNickname(0x40),
         ev: getEvStats(0x1E),
         iv: getIvStats(0x74),
@@ -193,17 +227,22 @@ class PK6Data extends Datablock with Gen3PokemonFormat {
 class PK7Data extends Datablock with Gen3PokemonFormat {
   PK7Data({required super.fileHandle});
 
+  /// # `Future<dynamic>` parse()
+  /// ## A function that parses the data in the block.
+  /// This function returns a dynamic future.
   @override
   Future<dynamic> parse() async {
     List<int?> moveIDs = await getMoves(0x5A);
+    int? trainerID = await PC.addTrainer(getOT(0x00));
     return Pokemon(
-        speciesID: getSpeciesID(0x08),
+        speciesID: get16BitInt(0x08),
         nickName: getNickname(0x40),
         ev: getEvStats(0x1E),
         iv: getIvStats(0x74),
         move1ID: moveIDs[0]!,
         move2ID: moveIDs[1]!,
         move3ID: moveIDs[2]!,
-        move4ID: moveIDs[3]!);
+        move4ID: moveIDs[3]!,
+        otID: trainerID);
   }
 }

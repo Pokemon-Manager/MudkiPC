@@ -1,11 +1,16 @@
-import 'pokemon.dart';
-
 class Trainer {
   String name;
-  List<Pokemon> pokemons;
-  Trainer({required this.name, required this.pokemons});
+  int gameID;
+  int id;
+  Trainer({required this.name, required this.gameID, required this.id});
 
-  void addPokemon(Pokemon pokemon) {
-    pokemons.add(pokemon);
+  Map<String, Object?> toDB() {
+    return {"name": name, "gameID": gameID, "id": id, "gender": 0};
+  }
+
+  factory Trainer.fromDB(Map<String, dynamic> query) {
+    Trainer newTrainer =
+        Trainer(name: query['name'], gameID: query['gameID'], id: query['id']);
+    return newTrainer;
   }
 }

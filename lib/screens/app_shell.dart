@@ -26,7 +26,9 @@ class AppShellState extends State<AppShell> {
               ListTile(
                 title: const Text("Settings"),
                 leading: const Icon(Icons.settings),
-                onTap: () {},
+                onTap: () {
+                  context.push("/settings");
+                },
               ),
               ListTile(
                 title: const Text("About"),

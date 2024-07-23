@@ -30,6 +30,7 @@ class Pokemon {
   int? pokemonID =
       0; // Not the same as unique ID. This is the ID of the species and form combined.
   int speciesID = 0;
+  int? formID = 0;
   int? exp = 0;
   Stats ev;
   Stats iv;
@@ -39,20 +40,22 @@ class Pokemon {
   int move2ID;
   int move3ID;
   int move4ID;
-  Pokemon({
-    required this.speciesID,
-    required this.nickName,
-    this.pokemonID,
-    this.exp,
-    required this.iv,
-    required this.ev,
-    this.gender,
-    this.abilityID,
-    required this.move1ID,
-    required this.move2ID,
-    required this.move3ID,
-    required this.move4ID,
-  });
+  int metAt = 0;
+  int? otID = 0;
+  Pokemon(
+      {required this.speciesID,
+      required this.nickName,
+      this.pokemonID,
+      this.exp,
+      required this.iv,
+      required this.ev,
+      this.gender,
+      this.abilityID,
+      required this.move1ID,
+      required this.move2ID,
+      required this.move3ID,
+      required this.move4ID,
+      required this.otID});
 
   /// Sets the nickname of the pokemon.
   /// @param nickname - The nickname of the pokemon.
@@ -143,11 +146,12 @@ class Pokemon {
       "move4ID": move4ID,
       "iv": iv.toString(),
       "ev": ev.toString(),
+      "otID": otID,
       "gender": gender,
     };
   }
 
-  factory Pokemon.fromDB(Map<dynamic, dynamic> query) {
+  factory Pokemon.fromDB(Map<String, dynamic> query) {
     Pokemon newPokemon = Pokemon(
         speciesID: query['speciesID'],
         nickName: query['nickName'],
@@ -160,7 +164,8 @@ class Pokemon {
         move1ID: query['move1ID'],
         move2ID: query['move2ID'],
         move3ID: query['move3ID'],
-        move4ID: query['move4ID']);
+        move4ID: query['move4ID'],
+        otID: query['otID']);
     return newPokemon;
   }
 }

@@ -91,27 +91,6 @@ abstract class TypeElement {
   List<Type> get resistTo;
   List<Type> get immuneTo;
 
-  static List<Type> get allTypes => [
-        Normal,
-        Fire,
-        Water,
-        Electric,
-        Grass,
-        Ice,
-        Fighting,
-        Poison,
-        Ground,
-        Flying,
-        Psychic,
-        Bug,
-        Rock,
-        Ghost,
-        Dragon,
-        Dark,
-        Steel,
-        Fairy
-      ];
-
   /// # toJson(`Map<String, dynamic> json`)
   /// ## Creates a TypeElement instance from JSON.
   /// Returns a TypeElement instance.
