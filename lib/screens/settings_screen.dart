@@ -31,7 +31,7 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: (theme) {
                     final provider =
                         Provider.of<ThemeManager>(context, listen: false);
-                    print(theme);
+                    // print(theme);
                     provider.toggleTheme(theme);
                   })),
           const Divider(),

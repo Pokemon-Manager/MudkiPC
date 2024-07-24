@@ -78,6 +78,7 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: index,
+      elevation: 80.0,
       onTap: (int index) {
         onDestinationSelected(index);
       },
@@ -145,7 +146,7 @@ class Destinations {
     List<BottomNavigationBarItem> destinationsWigets = [];
     for (Destination destination in destinations) {
       destinationsWigets.add(BottomNavigationBarItem(
-          icon: Icon(destination.icon), label: destination.label));
+          icon: Icon(destination.icon, size: 40.0), label: destination.label));
     }
     return destinationsWigets;
   }

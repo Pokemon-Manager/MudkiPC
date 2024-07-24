@@ -41,4 +41,8 @@ class SpeciesEntry extends StatelessWidget {
               ))),
     );
   }
+
+  void dispose() {
+    species.ignore();
+  }
 }

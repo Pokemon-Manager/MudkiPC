@@ -218,7 +218,7 @@ abstract class TypeElement {
 mixin ElementFunctions implements TypeElement {
   @override
   Widget getIcon() {
-    return SvgPicture.asset("assets/svg/$name.svg", height: 60);
+    return Center(child: SvgPicture.asset("assets/svg/$name.svg", height: 60));
   }
 
   @override

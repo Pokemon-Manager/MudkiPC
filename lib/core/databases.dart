@@ -26,7 +26,7 @@ final class PokeAPI {
       db; // The database object that is accessed to fetch data. See `Global.db` in the `access/db` folder for the SQLite database used.
   static Queue queue = Queue(
       delay: const Duration(
-          microseconds:
+          milliseconds:
               100)); /* This queue is to make sure that multiple requests are not made at the same time, 
   as it could result in an overflow or an asynchronous error.*/
 
