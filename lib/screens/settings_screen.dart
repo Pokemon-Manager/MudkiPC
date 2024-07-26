@@ -86,9 +86,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             dense: true,
           ),
           ListTile(
-            title: const Text("Clear Database Cache"),
+            title: const Text("Clear Global Database Cache"),
             subtitle: const Text(
-                "Deletes the database cache and recreates it. Useful for when any data is corrupted. Userdata is not affected."),
+                "Deletes the Global database cache and recreates it. Useful for if you have an old version of the database cache, or if you have a corrupted cache."),
             onTap: () {
               PokeAPI.recreate();
             },
@@ -96,7 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             title: const Text("Clear User Database"),
             subtitle: const Text(
-                "Deletes the user database (i.e. All data parsed from files, like your pokemon, trainers, and save backups). Files are not affected, however be sure to back up your save file before doing this."),
+                "Deletes the user database (i.e. All data parsed from files, like your pokemon, trainers, and save backups). Files are not affected, however be sure to back up your save files before doing this just in case."),
             onTap: () {
               PC.recreate();
             },

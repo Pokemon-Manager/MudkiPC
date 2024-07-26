@@ -55,7 +55,8 @@ class Pokemon {
       required this.move2ID,
       required this.move3ID,
       required this.move4ID,
-      required this.otID});
+      required this.otID,
+      this.uniqueID});
 
   /// Sets the nickname of the pokemon.
   /// @param nickname - The nickname of the pokemon.
@@ -153,6 +154,7 @@ class Pokemon {
 
   factory Pokemon.fromDB(Map<String, dynamic> query) {
     Pokemon newPokemon = Pokemon(
+        uniqueID: query['uniqueID'],
         speciesID: query['speciesID'],
         nickName: query['nickName'],
         pokemonID: query['pokemonID'],

@@ -11,7 +11,7 @@ There are two databases in the app. There is the PokeAPI database that is used t
 
 The other database, [PC] is used to store dynamic and ever changing data like the user's Pokémon, their trainers, and other fluctating data. It also uses a SQLite database.
 
-Both have the same structure, so they work exactly the same way. If you want to fetch for data, use the functions that start with `fetch`. For example, use functions named `fetchPokemon`, `fetchTrainer`, `fetchSpecies`, etc. There is also `fetch` functions that start with a underscore. Those are for internal use only, to force me and other developers to always add a fetch request to the queue rather than directly accessing the database. Every other function is just for logic purposes (e.g. `amountOfEntries` is just for getting the max amount of entries for the list and grid views, without need null logic for them).
+Both have the same structure, so they work exactly the same way. If you want to fetch for data, use the functions that start with `fetch`. For example, use functions named `fetchPokemon`, `fetchTrainer`, `fetchSpecies`, etc. There is also `fetch` functions that start with a underscore. Those are for internal use only, to force me and other developers to always add a fetch request to the queue rather than directly accessing the database. Every other function is just for logic purposes (e.g. `amountOfEntries` is just for getting the max amount of entries for the list and grid views, without needing null logic for them).
 
 If you are still confused on what the difference is between [PokeAPI] and the [PC] class, remember this:
 - PC = User's Data (Pokemon, Items, etc.) This is not consitent.
@@ -26,9 +26,10 @@ final class PokeAPI {
       db; // The database object that is accessed to fetch data. See `Global.db` in the `access/db` folder for the SQLite database used.
   static Queue queue = Queue(
       delay: const Duration(
-          milliseconds:
-              100)); /* This queue is to make sure that multiple requests are not made at the same time, 
+          microseconds:
+              10)); /* This queue is to make sure that multiple requests are not made at the same time, 
   as it could result in an overflow or an asynchronous error.*/
+  static Pachinko pachinko = Pachinko();
 
   /// # `Future<void>` create() async
   /// ## Checks to see if the database exists and if it doesn't, it extracts it from the asset bundle.
@@ -75,15 +76,27 @@ final class PokeAPI {
   /// ## See [fetchSpecies] for details.
   /// This function is what actually fetches the data from the database.
   static Future<Species?> _fetchSpecies(int id) async {
-    List<Map<String, Object?>>? query = (await db?.rawQuery("""
+    List<Map<String, Object?>>? query = await db?.rawQuery("""
       SELECT * FROM pokemon
       INNER JOIN pokemon_species ON pokemon.species_id = pokemon_species.id 
       AND pokemon.id = ?;
-        """, [id]));
+        """, [id]);
     if (query == null || query.isEmpty) {
       return null;
     }
     return Species.fromDB(query.first);
+  }
+
+  static Future<List<Map<String, Object?>>> searchSpecies() async {
+    List<Map<String, Object?>>? x;
+    if (PokeAPI.pachinko.pins.isEmpty) {
+      x = await db?.rawQuery('SELECT * FROM pokemon_species;');
+    } else {
+      x = await db?.rawQuery(
+          'SELECT id AS speciesID, * FROM pokemon_species WHERE ${PokeAPI.pachinko.formSQLStatement()};',
+          PokeAPI.pachinko.formArguments());
+    }
+    return x!;
   }
 
   /// # `Future<List<Move?>>` fetchSpecies(`int id`) async
@@ -162,6 +175,21 @@ final class PokeAPI {
         .replaceAll(RegExp('\n'), ' ');
   }
 
+  static Future<List<Map<String, Object?>>?> getSpeciesSuggestions(
+      String name) async {
+    return queue.add(() async => _getSpeciesSuggestions(name));
+  }
+
+  static Future<List<Map<String, Object?>>?> _getSpeciesSuggestions(
+      String name) async {
+    int languageId = LocaleIDs.getIDFromLocale(Platform.localeName);
+    List<Map<String, Object?>>? query = (await db?.rawQuery("""
+      SELECT * FROM pokemon_species
+      INNER JOIN pokemon_species_names ON id = pokemon_species_id AND local_language_id = ? AND (name LIKE ? OR id = ?) LIMIT 10;
+    """, [languageId, "%$name%", name]));
+    return query;
+  }
+
   static Future<Typing> fetchTypingForSpecies(int id) async {
     return queue.add(() async => _fetchTypingForSpecies(id));
   }
@@ -188,7 +216,14 @@ final class PokeAPI {
   }
 
   static Future<int?> amountOfEntries(String table) async {
-    var x = await db?.rawQuery('SELECT * FROM $table;');
+    var x;
+    if (pachinko.pins.isEmpty) {
+      x = await db?.rawQuery('SELECT * FROM $table;');
+    } else {
+      x = await db?.rawQuery(
+          'SELECT * FROM $table WHERE ${pachinko.formSQLStatement()};',
+          pachinko.formArguments());
+    }
     int? count = x?.length;
     return count;
   }
@@ -327,6 +362,18 @@ final class PC {
 
   static Future<bool> isEmpty(String table) async {
     return await amountOfEntries(table) == 0;
+  }
+
+  static Future<List<Pokemon>> search() async {
+    List<Map<String, Object?>>? x;
+    if (PokeAPI.pachinko.pins.isEmpty) {
+      x = await db?.rawQuery('SELECT * FROM pokemons;');
+    } else {
+      x = await db?.rawQuery(
+          'SELECT * FROM pokemons WHERE ${PokeAPI.pachinko.formSQLStatement()};',
+          PokeAPI.pachinko.formArguments());
+    }
+    return x!.map((e) => Pokemon.fromDB(e)).toList();
   }
 }
 

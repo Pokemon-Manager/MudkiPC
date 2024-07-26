@@ -17,6 +17,22 @@ class PCView extends StatefulWidget {
 
 class _PCViewState extends State<PCView> {
   @override
+  void initState() {
+    PokeAPI.pachinko.addListener(refresh);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    PokeAPI.pachinko.removeListener(refresh);
+    super.dispose();
+  }
+
+  void refresh() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AsyncPlaceholder(
         future: PC.isEmpty("pokemons"),
@@ -29,20 +45,21 @@ class _PCViewState extends State<PCView> {
                 icon: Icons.notification_important_rounded);
           } else {
             body = AsyncPlaceholder(
-                future: PC.amountOfEntries("pokemons"),
-                childBuilder: (amount) {
+                future: PC.search(),
+                childBuilder: (List<Pokemon> pokemons) {
                   return GridView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: amount,
+                    itemCount: pokemons.length,
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(10),
                     clipBehavior: Clip.antiAlias,
                     itemBuilder: (BuildContext context, int index) {
                       return PokemonSlot(
-                          uniqueID: index + 1,
+                          uniqueID: pokemons[index].uniqueID!,
                           onTap: () {
                             context.push("/preview",
-                                extra: PC.fetchPokemon(index + 1));
+                                extra:
+                                    PC.fetchPokemon(pokemons[index].uniqueID!));
                           });
                     },
                     gridDelegate:

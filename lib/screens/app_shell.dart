@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mudkip_frontend/core/databases.dart';
+import 'package:mudkip_frontend/core/search.dart';
 
 // ignore: must_be_immutable
 class AppShell extends StatefulWidget {
@@ -15,10 +17,62 @@ class AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
 
   @override
+  void initState() {
+    PokeAPI.pachinko.addListener(() => setState(() {}));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    PokeAPI.pachinko.removeListener(() => setState(() {}));
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final showRail = MediaQuery.of(context).size.width >= 600;
     return Scaffold(
-      appBar: AppBar(title: const Text('MudkiPC')),
+      appBar: AppBar(title: const Text('MudkiPC'), actions: [
+        if (showRail)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 400,
+              child: SearchAnchor.bar(
+                suggestionsBuilder: (context, search) async {
+                  return await PokeAPI.pachinko
+                      .generateSuggestions(context, search);
+                },
+                barLeading: SizedBox(
+                    height: 100,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: PokeAPI.pachinko.getChips())),
+                searchController: PokeAPI.pachinko.searchController,
+              ),
+            ),
+          )
+        else
+          SearchAnchor(
+              viewLeading: Wrap(alignment: WrapAlignment.start, children: [
+                ...PokeAPI.pachinko.getChips().map((chip) {
+                  return SizedBox(width: 100, child: chip);
+                })
+              ]),
+              builder: (context, search) {
+                return IconButton(
+                    onPressed: () {
+                      PokeAPI.pachinko.searchController.openView();
+                    },
+                    icon: const Icon(size: 30, Icons.search));
+              },
+              suggestionsBuilder: (context, search) async {
+                return await PokeAPI.pachinko
+                    .generateSuggestions(context, search);
+              },
+              searchController: PokeAPI.pachinko.searchController),
+        const SizedBox(width: 20),
+      ]),
       drawer: Drawer(
           width: 300,
           child: ListView(
@@ -146,7 +200,7 @@ class Destinations {
     List<BottomNavigationBarItem> destinationsWigets = [];
     for (Destination destination in destinations) {
       destinationsWigets.add(BottomNavigationBarItem(
-          icon: Icon(destination.icon, size: 32.0), label: destination.label));
+          icon: Icon(destination.icon, size: 25.0), label: destination.label));
     }
     return destinationsWigets;
   }

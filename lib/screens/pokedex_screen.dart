@@ -4,24 +4,46 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/species_entry.dart';
 
-class PokeDexView extends StatelessWidget {
+class PokeDexView extends StatefulWidget {
   const PokeDexView({super.key});
+
+  @override
+  State<PokeDexView> createState() => _PokeDexViewState();
+}
+
+class _PokeDexViewState extends State<PokeDexView> {
+  @override
+  void initState() {
+    PokeAPI.pachinko.addListener(refresh);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    PokeAPI.pachinko.removeListener(refresh);
+    super.dispose();
+  }
+
+  void refresh() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return AsyncPlaceholder(
-        future: PokeAPI.amountOfEntries("pokemon_species"),
-        childBuilder: (amount) {
+        future: PokeAPI.searchSpecies(),
+        childBuilder: (List<Map<String, Object?>> species) {
           return ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: amount,
+            itemCount: species.length,
             itemExtent: 100,
             itemBuilder: (context, index) {
+              Future<Species?> future =
+                  PokeAPI.fetchSpecies(species[index]["id"] as int);
               return SpeciesEntry(
-                  species: PokeAPI.fetchSpecies(index + 1),
+                  species: future,
                   onTap: () {
-                    context.push("/preview",
-                        extra: PokeAPI.fetchSpecies(index + 1));
+                    context.push("/preview", extra: future);
                   });
             },
           );
