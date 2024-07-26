@@ -146,7 +146,7 @@ class Destinations {
     List<BottomNavigationBarItem> destinationsWigets = [];
     for (Destination destination in destinations) {
       destinationsWigets.add(BottomNavigationBarItem(
-          icon: Icon(destination.icon, size: 40.0), label: destination.label));
+          icon: Icon(destination.icon, size: 32.0), label: destination.label));
     }
     return destinationsWigets;
   }

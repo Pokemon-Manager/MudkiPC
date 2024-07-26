@@ -90,7 +90,8 @@ class AbilityPin extends Pin {
         id: compare,
         isNameTable: true,
       )),
-      text: const Text("", style: TextStyle(fontSize: 13)),
+      builder: (context, name) =>
+          Text(name, style: const TextStyle(fontSize: 13)),
     ));
   }
 }
@@ -124,7 +125,8 @@ class MovePin extends Pin {
         id: compare,
         isNameTable: true,
       )),
-      text: const Text("", style: TextStyle(fontSize: 13)),
+      builder: (context, name) =>
+          Text(name, style: const TextStyle(fontSize: 13)),
     ));
   }
 }

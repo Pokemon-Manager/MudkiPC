@@ -32,11 +32,11 @@ class SpeciesEntry extends StatelessWidget {
                   const SizedBox(width: 10.0),
                   TextWithLoaderBuffer(
                       future: species.getName(),
-                      text: Text(
-                        "",
-                        textAlign: TextAlign.left,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ))
+                      builder: (context, name) => Text(
+                            name,
+                            textAlign: TextAlign.left,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ))
                 ]),
               ))),
     );

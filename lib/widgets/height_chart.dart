@@ -20,8 +20,8 @@ class HeightIndicator extends StatefulWidget {
 class _HeightIndicatorState extends State<HeightIndicator> {
   static const double averageMaleHeight = 171.45;
   static const double averageFemaleHeight = 162.56;
-  static const double minHeight = 54.6;
-  static const double maxHeight = 272;
+  // static const double minHeight = 54;
+  // static const double maxHeight = 272;
   static const double defaultChartHeight = 500;
   double humanHeight = 171.45;
   HeightChartGender gender = Settings.heightChartGender;

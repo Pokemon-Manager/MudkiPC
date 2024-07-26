@@ -36,7 +36,8 @@ class PokemonSlot extends StatelessWidget {
                   ),
                 ),
                 TextWithLoaderBuffer(
-                    future: value.getNickname(), text: const Text("")),
+                    future: value.getNickname(),
+                    builder: (context, name) => Text(name)),
               ]);
             },
           ),
