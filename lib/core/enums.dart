@@ -1,5 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
+enum HeightChartGender { male, female }
+
+enum HeightChartFormat { metric, imperial }
+
 /// # Elements
 /// ## A class that contains the ids of elements of the games.
 /// ### Constants:

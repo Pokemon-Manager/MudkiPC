@@ -9,10 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:mudkip_frontend/screens.dart';
 
-Future<void> doPrefs() async {
-  return;
-}
-
 ThemeManager themeManager = ThemeManager();
 late PackageInfo packageInfo;
 final router = GoRouter(initialLocation: "/pc", routes: <RouteBase>[
@@ -88,7 +84,7 @@ void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
-  await doPrefs();
+  await Settings.doPrefs();
   packageInfo = await PackageInfo.fromPlatform();
   await PokeAPI.create();
   await PC.create();

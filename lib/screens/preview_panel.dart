@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/element_bar.dart';
+import 'package:mudkip_frontend/widgets/height_chart.dart';
 import 'package:mudkip_frontend/widgets/stat_chart.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
@@ -45,7 +46,8 @@ class PreviewPanel extends StatelessWidget {
                 imageUrl: species.getFrontImageUrl(),
                 description: species.getDescription(),
                 baseStats: species.getBaseStats(),
-                typing: species.getTyping());
+                typing: species.getTyping(),
+                height: species.height);
           });
     }
     return Scaffold(
@@ -55,9 +57,10 @@ class PreviewPanel extends StatelessWidget {
           }),
           title: const Text("Preview"),
         ),
-        body: Padding(
+        body: Container(
           padding: const EdgeInsets.all(8.0),
-          child: previewWidget,
+          child: SingleChildScrollView(
+              scrollDirection: Axis.vertical, child: previewWidget),
         ));
   }
 }
@@ -73,6 +76,7 @@ class PreviewInfo extends StatelessWidget {
   Stats? effortStats;
   Stats? individualStats;
   Future<Typing>? typing;
+  int? height;
   PreviewInfo({
     super.key,
     required this.title,
@@ -84,6 +88,7 @@ class PreviewInfo extends StatelessWidget {
     this.effortStats,
     this.individualStats,
     this.typing,
+    this.height,
   });
   @override
   Widget build(BuildContext context) {
@@ -158,6 +163,10 @@ class PreviewInfo extends StatelessWidget {
       ));
     }
 
-    return ListView(scrollDirection: Axis.vertical, children: children);
+    if (height != null) {
+      children.add(
+          HeightIndicator(pokemonHeight: height! / 1.0, imageUrl: imageUrl!));
+    }
+    return Column(children: children);
   }
 }

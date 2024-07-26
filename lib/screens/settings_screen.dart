@@ -5,9 +5,14 @@ import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeManager>(context);
@@ -21,7 +26,8 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         children: [
           const ListTile(
-            title: Text("General"),
+            title: Text("General",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             dense: true,
           ),
           ListTile(
@@ -34,9 +40,49 @@ class SettingsScreen extends StatelessWidget {
                     // print(theme);
                     provider.toggleTheme(theme);
                   })),
+          const ListTile(
+            title: Text("Height Chart",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          ListTile(
+            title: const Text("Default Human Gender"),
+            trailing: SegmentedButton(
+                showSelectedIcon: false,
+                segments: const [
+                  ButtonSegment(
+                      value: HeightChartGender.male,
+                      icon: Icon(Icons.male_rounded)),
+                  ButtonSegment(
+                      value: HeightChartGender.female,
+                      icon: Icon(Icons.female_rounded))
+                ],
+                selected: <HeightChartGender>{Settings.heightChartGender},
+                onSelectionChanged: (gender) async {
+                  await Settings.setHeightChartGender(gender.first);
+                  setState(() {});
+                }),
+          ),
+          ListTile(
+              title: const Text("Length Format"),
+              trailing: SegmentedButton(
+                  segments: const [
+                    ButtonSegment(
+                        value: HeightChartFormat.metric, label: Text("Metric")),
+                    ButtonSegment(
+                        value: HeightChartFormat.imperial,
+                        label: Text("Imperial"))
+                  ],
+                  selected: <HeightChartFormat>{
+                    Settings.heightChartFormat
+                  },
+                  onSelectionChanged: (format) async {
+                    await Settings.setHeightChartFormat(format.first);
+                    setState(() {});
+                  })),
           const Divider(),
           const ListTile(
-            title: Text("Data Management"),
+            title: Text("Data Management",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             dense: true,
           ),
           ListTile(
@@ -57,7 +103,8 @@ class SettingsScreen extends StatelessWidget {
           ),
           const Divider(),
           const ListTile(
-            title: Text("Debugging"),
+            title: Text("Debugging",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             dense: true,
           ),
           ListTile(

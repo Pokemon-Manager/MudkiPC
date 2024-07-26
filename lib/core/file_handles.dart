@@ -4,18 +4,19 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 
 /// ### Compatible Extensions:
 /// - pk6 (A Single Pokémon + Basic Trainer Info)
+/// - pk7 (A Single Pokémon + Basic Trainer Info)
 /// ### Planned Compatible Extensions:
 /// - pk1 (A Single Pokémon + Basic Trainer Info)
 /// - pk2 (A Single Pokémon + Basic Trainer Info)
 /// - pk3 (A Single Pokémon + Basic Trainer Info)
 /// - pk4 (A Single Pokémon + Basic Trainer Info)
 /// - pk5 (A Single Pokémon + Basic Trainer Info)
-/// - pk7 (A Single Pokémon + Basic Trainer Info)
 /// - pk8 (A Single Pokémon + Basic Trainer Info)
 /// - pk9 (A Single Pokémon + Basic Trainer Info)
 /// - sav (Trainer Data + All Their Pokémon)
 /// - json (A Single Pokémon + Basic Trainer Info, or Trainer Data + All Their Pokémons. Requires JSON export to be implemented.)
 /// - db (All Pokémon Manager Data. Requires DB export to be implemented.)
+/// - png (Pokémon Card. Requires PNG export to be implemented.)
 class FileHandle {
   List<Datablock> datablocks = [];
   List<int> data = [];

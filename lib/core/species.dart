@@ -24,11 +24,14 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 
 class Species {
   int id;
-
+  int height = 0;
+  int weight = 0;
   Species({required this.id});
 
   factory Species.fromDB(Map query) {
     Species newSpecies = Species(id: query["id"] as int);
+    newSpecies.height = query["height"] as int;
+    newSpecies.weight = query["weight"] as int;
     return newSpecies;
   }
 

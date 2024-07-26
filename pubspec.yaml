@@ -58,6 +58,8 @@ dependencies:
   shared_preferences: ^2.2.3
   provider: ^6.1.2
   introduction_screen: ^3.1.14
+  geekyants_flutter_gauges: ^1.0.4
+  converter: ^0.4.0
 
 dev_dependencies:
   flutter_test:
@@ -98,6 +100,7 @@ flutter:
     - assets/db/
     - assets/svg/
     - assets/images/sprites/
+    - assets/images/artwork/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

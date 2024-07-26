@@ -18,7 +18,8 @@ class StatChart extends StatelessWidget {
         future: getDataSets(),
         childBuilder: (dataSets) {
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 40.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
             child: AspectRatio(
               aspectRatio: 1.7,
               child: RadarChart(RadarChartData(
@@ -32,21 +33,21 @@ class StatChart extends StatelessWidget {
                       );
                     case 1:
                       return const RadarChartTitle(
-                        text: 'Attack',
+                        text: 'Atk',
                         angle: usedAngle,
                       );
                     case 2:
                       return const RadarChartTitle(
-                          text: 'Defense', angle: usedAngle);
+                          text: 'Def', angle: usedAngle);
                     case 3:
                       return const RadarChartTitle(
-                          text: 'Speed', angle: usedAngle);
+                          text: 'Spe', angle: usedAngle);
                     case 4:
                       return const RadarChartTitle(
-                          text: 'Special Attack', angle: usedAngle);
+                          text: 'Sp. Atk', angle: usedAngle);
                     case 5:
                       return const RadarChartTitle(
-                          text: 'Special Defense', angle: usedAngle);
+                          text: 'Sp. Def', angle: usedAngle);
                     default:
                       return const RadarChartTitle(text: '');
                   }
@@ -55,7 +56,6 @@ class StatChart extends StatelessWidget {
                 radarShape: RadarShape.polygon,
                 radarBorderData: const BorderSide(color: Colors.blue, width: 2),
                 radarBackgroundColor: Colors.transparent,
-                radarTouchData: RadarTouchData(touchCallback: null),
                 borderData: FlBorderData(show: false),
               )),
             ),
