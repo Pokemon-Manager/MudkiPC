@@ -14,13 +14,13 @@ class PokeDexView extends StatefulWidget {
 class _PokeDexViewState extends State<PokeDexView> {
   @override
   void initState() {
-    PokeAPI.pachinko.addListener(refresh);
+    MudkiPC.pachinko.addListener(refresh);
     super.initState();
   }
 
   @override
   void dispose() {
-    PokeAPI.pachinko.removeListener(refresh);
+    MudkiPC.pachinko.removeListener(refresh);
     super.dispose();
   }
 

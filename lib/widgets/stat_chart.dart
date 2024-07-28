@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 
+/// # `Class` StatChart extends `StatelessWidget`
+/// ## A widget that displays the stats of a pokemon.
+/// Shows the stats as a radar chart.
+/// Takes in a `baseFuture` and `iv` and `ev` parameters.
+/// `iv` and `ev` are optional and can be null.
+/// `baseFuture` is required and is a future that returns the base stats of the species.
 class StatChart extends StatelessWidget {
   const StatChart(
       {super.key,

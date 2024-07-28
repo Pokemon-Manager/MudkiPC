@@ -18,13 +18,13 @@ class PCView extends StatefulWidget {
 class _PCViewState extends State<PCView> {
   @override
   void initState() {
-    PokeAPI.pachinko.addListener(refresh);
+    MudkiPC.pachinko.addListener(refresh);
     super.initState();
   }
 
   @override
   void dispose() {
-    PokeAPI.pachinko.removeListener(refresh);
+    MudkiPC.pachinko.removeListener(refresh);
     super.dispose();
   }
 
@@ -55,7 +55,7 @@ class _PCViewState extends State<PCView> {
                     clipBehavior: Clip.antiAlias,
                     itemBuilder: (BuildContext context, int index) {
                       return PokemonSlot(
-                          uniqueID: pokemons[index].uniqueID!,
+                          pokemon: PC.fetchPokemon(pokemons[index].uniqueID!),
                           onTap: () {
                             context.push("/preview",
                                 extra:

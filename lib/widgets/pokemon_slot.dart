@@ -3,9 +3,18 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 
+/// # `Class` PokemonSlot extends `StatelessWidget`
+/// ## A widget that displays a pokemon in the PC.
+/// Shows the pokemon's sprite and the pokemon's name.
+/// Takes in a `pokemon` and `onTap` function.
+/// The `onTap` function is called when the pokemon is clicked.
+/// The `pokemon` is the future that returns the pokemon from the PC.
+/// ```dart
+/// PokemonSlot(pokemon: PC.fetchPokemon(/*The unique ID of the pokemon*/), onTap: () {/*Do something when the pokemon is clicked. Usually a navigation to another screen, especially to the preview screen.*/})
+/// ```
 class PokemonSlot extends StatelessWidget {
-  const PokemonSlot({super.key, required this.uniqueID, required this.onTap});
-  final int uniqueID;
+  const PokemonSlot({super.key, required this.pokemon, required this.onTap});
+  final Future<Pokemon?> pokemon;
   final Function onTap;
 
   @override
@@ -17,7 +26,7 @@ class PokemonSlot extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: AsyncPlaceholder(
-            future: PC.fetchPokemon(uniqueID),
+            future: pokemon,
             childBuilder: (value) {
               return Column(children: [
                 Expanded(

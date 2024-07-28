@@ -18,14 +18,19 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 /// - db (All Pokémon Manager Data. Requires DB export to be implemented.)
 /// - png (Pokémon Card. Requires PNG export to be implemented.)
 class FileHandle {
-  List<Datablock> datablocks = [];
-  List<int> data = [];
-  File file;
-  Uint8List? fileData;
-  PKMDBFolder folder;
-  FileHandle({required this.file, required this.folder});
-  static const List<String> compatibleExtensions = ["pk6", "pk7"];
+  List<Datablock> datablocks = []; // The datablocks of the file.
+  List<int> data = []; // The data of the file.
+  File file; // The file.
+  Uint8List? fileData; // The data of the file.
+  PKMDBFolder folder; // The folder that the file is in.
+  FileHandle({required this.file, required this.folder}); // Constructor.
+  static const List<String> compatibleExtensions = [
+    "pk6",
+    "pk7"
+  ]; // Add more extensions as needed
 
+  /// # `bool` isCompatibleFile(`File file`)
+  /// ## A function that checks if a file is compatible.
   static bool isCompatibleFile(File file) {
     if (compatibleExtensions.contains(file.path.split('.').last)) {
       return true;
@@ -33,7 +38,7 @@ class FileHandle {
     return false;
   }
 
-  /// # toAssociatedHandle(`File file`, `PKMDBFolder? folder`)
+  /// # `FileHandle` toAssociatedHandle(`File file`, `PKMDBFolder? folder`)
   /// ## A function that returns the corresponding FileHandle based on the file extension.
   factory FileHandle.toAssociatedHandle(File file, PKMDBFolder folder) {
     switch (file.path.split('.').last) {
@@ -46,17 +51,22 @@ class FileHandle {
     }
   }
 
+  /// # `void` addDatablock(`Datablock datablock`)
+  /// ## A function that adds a datablock to the file.
   void addDatablock(Datablock datablock) {
     datablocks.add(datablock);
   }
 
+  /// # `void` removeDatablock(`Datablock datablock`)
+  /// ## A function that removes a datablock from the file.
   void removeDatablock(Datablock datablock) {
     datablocks.remove(datablock);
   }
 
   /// # divideIntoDatablocks()
   /// ## A function that divides the file into datablocks.
-  /// This function does not return anything, and must be overridden in subclasses. For more info on datablocks, see [Datablock] in `datablocks.dart`.
+  /// This function does not return anything, and must be overridden in subclasses.
+  /// For more info on datablocks, see [Datablock] in `datablocks.dart`.
   /// ```dart
   /// class ExampleFile extends FileHandle {
   ///   @override
@@ -87,6 +97,9 @@ class FileHandle {
     data = fileData!.toList();
   }
 
+  /// # `Future<void>` parseDatablocks()
+  /// ## A function that calls [divideIntoDatablocks] and calls the [parse] function of each datablock in the file.
+  /// This function does not return anything.
   Future<void> parseDatablocks() async {
     extractFromFile();
     divideIntoDatablocks();
@@ -103,6 +116,8 @@ class FileHandle {
   }
 }
 
+/// # `Class` PK6File extends `FileHandle`
+/// ## A class that represents a PK6 file.
 class PK6File extends FileHandle {
   PK6File({required super.file, required super.folder});
 
@@ -112,6 +127,8 @@ class PK6File extends FileHandle {
   }
 }
 
+/// # `Class` PK7File extends `FileHandle`
+/// ## A class that represents a PK7 file.
 class PK7File extends FileHandle {
   PK7File({required super.file, required super.folder});
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// # `Class` AsyncPlaceholder extends `StatelessWidget`
+/// ## A widget that displays a placeholder while a future is loading.
+/// Shows a circular progress indicator while the future is loading.
 class AsyncPlaceholder extends StatelessWidget {
   const AsyncPlaceholder(
       {super.key, required this.future, required this.childBuilder});

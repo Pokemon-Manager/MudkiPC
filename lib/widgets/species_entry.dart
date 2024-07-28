@@ -3,6 +3,12 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 
+/// # `Class` SpeciesEntry extends `StatelessWidget`
+/// ## A widget that displays a pokemon in the PC.
+/// Shows the pokemon's sprite and the pokemon's name.
+/// Takes in a `species` and `onTap` function.
+/// The `onTap` function is called when the pokemon is clicked.
+/// The `species` is used to fetch the pokemon from the PC.
 class SpeciesEntry extends StatelessWidget {
   const SpeciesEntry({super.key, required this.species, required this.onTap});
   final Future<Species?> species;

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geekyants_flutter_gauges/geekyants_flutter_gauges.dart';
 import 'package:converter/converter.dart';
-import 'package:mudkip_frontend/core/enums.dart';
+import 'package:mudkip_frontend/core/constants.dart';
 import 'package:mudkip_frontend/core/settings.dart';
 
 // ignore: must_be_immutable

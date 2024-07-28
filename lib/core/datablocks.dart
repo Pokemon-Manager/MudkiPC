@@ -186,6 +186,9 @@ mixin Gen3PokemonFormat implements Datablock {
     return moves;
   }
 
+  /// # `Trainer` getOT(`int offset`)
+  /// ## A function that returns the trainer of the Pokemon.
+  /// This function returns a [Trainer] object.
   Trainer getOT(offset) {
     return Trainer(
         name: getString(offset + 0xB0, 24),

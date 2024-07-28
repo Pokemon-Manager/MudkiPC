@@ -134,6 +134,8 @@ class Pokemon {
     return hashCode;
   }
 
+  /// # `Map<String, Object?>` toDB()
+  /// ## Converts the pokemon to a map that can be stored in the database.
   Map<String, Object?> toDB() {
     return {
       "nickName": nickName,
@@ -152,6 +154,8 @@ class Pokemon {
     };
   }
 
+  /// # `Pokemon.fromDB(Map<String, dynamic> query)`
+  /// ## Creates a [Pokemon] from a map that was retrieved from the database.
   factory Pokemon.fromDB(Map<String, dynamic> query) {
     Pokemon newPokemon = Pokemon(
         uniqueID: query['uniqueID'],

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mudkip_frontend/core/databases.dart';
-import 'package:mudkip_frontend/core/search.dart';
+import 'package:mudkip_frontend/pokemon_manager.dart';
 
 // ignore: must_be_immutable
 class AppShell extends StatefulWidget {
@@ -18,13 +17,13 @@ class AppShellState extends State<AppShell> {
 
   @override
   void initState() {
-    PokeAPI.pachinko.addListener(() => setState(() {}));
+    MudkiPC.pachinko.addListener(() => setState(() {}));
     super.initState();
   }
 
   @override
   void dispose() {
-    PokeAPI.pachinko.removeListener(() => setState(() {}));
+    MudkiPC.pachinko.removeListener(() => setState(() {}));
     super.dispose();
   }
 
@@ -40,37 +39,37 @@ class AppShellState extends State<AppShell> {
               width: 400,
               child: SearchAnchor.bar(
                 suggestionsBuilder: (context, search) async {
-                  return await PokeAPI.pachinko
+                  return await MudkiPC.pachinko
                       .generateSuggestions(context, search);
                 },
                 barLeading: SizedBox(
                     height: 100,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: PokeAPI.pachinko.getChips())),
-                searchController: PokeAPI.pachinko.searchController,
+                        children: MudkiPC.pachinko.getChips())),
+                searchController: MudkiPC.pachinko.searchController,
               ),
             ),
           )
         else
           SearchAnchor(
               viewLeading: Wrap(alignment: WrapAlignment.start, children: [
-                ...PokeAPI.pachinko.getChips().map((chip) {
+                ...MudkiPC.pachinko.getChips().map((chip) {
                   return SizedBox(width: 100, child: chip);
                 })
               ]),
               builder: (context, search) {
                 return IconButton(
                     onPressed: () {
-                      PokeAPI.pachinko.searchController.openView();
+                      MudkiPC.pachinko.searchController.openView();
                     },
                     icon: const Icon(size: 30, Icons.search));
               },
               suggestionsBuilder: (context, search) async {
-                return await PokeAPI.pachinko
+                return await MudkiPC.pachinko
                     .generateSuggestions(context, search);
               },
-              searchController: PokeAPI.pachinko.searchController),
+              searchController: MudkiPC.pachinko.searchController),
         const SizedBox(width: 20),
       ]),
       drawer: Drawer(

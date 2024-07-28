@@ -24,21 +24,14 @@ If you are still confused on what the difference is between [PokeAPI] and the [P
 final class PokeAPI {
   static Database?
       db; // The database object that is accessed to fetch data. See `Global.db` in the `access/db` folder for the SQLite database used.
-  static Queue queue = Queue(
-      delay: const Duration(
-          microseconds:
-              10)); /* This queue is to make sure that multiple requests are not made at the same time, 
-  as it could result in an overflow or an asynchronous error.*/
-  static Pachinko pachinko = Pachinko();
+  static Logger log = Logger("PokeAPI"); // Used for logging.
 
   /// # `Future<void>` create() async
   /// ## Checks to see if the database exists and if it doesn't, it extracts it from the asset bundle.
-  /// The database is stored in the `access/db/` and is named `Global.db`.
+  /// The database is stored in the `assets/db/` and is named `Global.db`.
   static Future<void> create() async {
-    Directory directory =
-        await getApplicationCacheDirectory(); // Gets the cache directory for the device.
     File globalFile = File(
-        "${directory.path}/MudkiPC/db/Global.db"); // Initializes the file object to check if the database exists.
+        "${await MudkiPC.cacheFolder}MudkiPC/db/Global.db"); // Initializes the file object to check if the database exists.
     if (!(globalFile.existsSync())) {
       ByteData data = await rootBundle.load(
           "assets/db/Global.db"); // Loads the database from the asset bundle.
@@ -46,15 +39,15 @@ final class PokeAPI {
       globalFile.writeAsBytesSync(data.buffer
           .asUint8List()); // Writes the data from the asset bundle to the created file.
     }
-    PokeAPI.db = await openDatabase("${directory.path}/MudkiPC/db/Global.db",
+    PokeAPI.db = await openDatabase(
+        "${await MudkiPC.cacheFolder}MudkiPC/db/Global.db",
         onConfigure: _onConfigure); // Opens the database.
     return;
   }
 
   static recreate() async {
-    Directory directory = await getApplicationCacheDirectory();
     await databaseFactory
-        .deleteDatabase("${directory.path}/MudkiPC/db/Global.db");
+        .deleteDatabase("${await MudkiPC.cacheFolder}MudkiPC/db/Global.db");
     await PokeAPI.create();
   }
 
@@ -69,39 +62,41 @@ final class PokeAPI {
   /// Returns a [Species] object. It fetches from multiple tables and combines them into one object.
   /// Adds the request for the species to the queue to be fetched later.
   static Future<Species?> fetchSpecies(int id) async {
-    return queue.add(() => _fetchSpecies(id));
+    return MudkiPC.queue.add(() => _fetchSpecies(id));
   }
 
   /// # `Future<Species?>` _fetchSpecies(`int id`) async
   /// ## See [fetchSpecies] for details.
   /// This function is what actually fetches the data from the database.
   static Future<Species?> _fetchSpecies(int id) async {
-    List<Map<String, Object?>>? query = await db?.rawQuery("""
+    List<Map<String, Object?>>? results = await db?.rawQuery("""
       SELECT * FROM pokemon
       INNER JOIN pokemon_species ON pokemon.species_id = pokemon_species.id 
       AND pokemon.id = ?;
         """, [id]);
-    if (query == null || query.isEmpty) {
+    if (results == null || results.isEmpty) {
       return null;
     }
-    return Species.fromDB(query.first);
+    return Species.fromDB(results.first);
   }
 
+  /// # `Future<List<Map<String, Object?>>>` searchSpecies() async
+  /// ## Does a search on the species table.
+  /// The search is done using the [Pachinko] object inside the [PokeAPI].
   static Future<List<Map<String, Object?>>> searchSpecies() async {
     List<Map<String, Object?>>? x;
-    if (PokeAPI.pachinko.pins.isEmpty) {
+    if (MudkiPC.pachinko.pins.isEmpty) {
       x = await db?.rawQuery('SELECT * FROM pokemon_species;');
     } else {
       x = await db?.rawQuery(
-          'SELECT id AS speciesID, * FROM pokemon_species WHERE ${PokeAPI.pachinko.formSQLStatement()};',
-          PokeAPI.pachinko.formArguments());
+          'SELECT id AS speciesID, * FROM pokemon_species WHERE ${MudkiPC.pachinko.formSQLStatement()};',
+          MudkiPC.pachinko.formArguments());
     }
     return x!;
   }
 
   /// # `Future<List<Move?>>` fetchSpecies(`int id`) async
   /// ## Fetches a species from PokeAPI.
-  ///
   static Future<List<Move?>> fetchMoves(List<int> ids) async {
     List<Move?> data = [];
     for (var id in ids) {
@@ -114,7 +109,7 @@ final class PokeAPI {
   /// ## Fetches a move from PokeAPI.
   /// Adds the request for the move to the queue to be fetched later.
   static Future<Move?> fetchMove(int id) {
-    return queue.add(() => _fetchMove(id));
+    return MudkiPC.queue.add(() => _fetchMove(id));
   }
 
   /// # `Future<Move?>` _fetchMove(`int id`) async
@@ -124,25 +119,36 @@ final class PokeAPI {
     if (id == 0) {
       return null;
     }
-    Map<String, Object?> query = (await db?.rawQuery("""
+    Map<String, Object?> results = (await db?.rawQuery("""
       SELECT * FROM moves
       WHERE moves.id = ?;
     """, [id]))!.first;
-    query = changeEmptyStringsToNull(query);
-    return Move.fromDB(query);
+    results = changeEmptyStringsToNull(results);
+    return Move.fromDB(results);
   }
 
+  /// # `Future<Stats>` fetchBaseStats(`int id`) async
+  /// ## Fetches the base stats from PokeAPI.
+  /// Adds the request for the base stats to the queue to be fetched later.
+  /// This function will always return a [Stats] object for the given species.
   static Future<Stats> fetchBaseStats(int id) async {
+    return MudkiPC.queue.add(() => _fetchBaseStats(id));
+  }
+
+  /// # `Future<Stats>` _fetchBaseStats(`int id`) async
+  /// ## See [fetchBaseStats] for details.
+  /// This function is what actually fetches the data from the database.
+  static Future<Stats> _fetchBaseStats(int id) async {
     List<Map<String, Object?>> stats = [];
     for (var i in [1, 2, 3, 4, 5, 6]) {
-      List<Map<String, Object?>>? query = (await db?.rawQuery("""
+      List<Map<String, Object?>>? results = (await db?.rawQuery("""
       SELECT * FROM pokemon_stats
       WHERE pokemon_id = ? AND stat_id = ?;
     """, [id, i]));
-      if (query == null || query.isEmpty) {
+      if (results == null || results.isEmpty) {
         continue;
       }
-      stats.add(query.first);
+      stats.add(results.first);
     }
     return Stats(
         hp: stats[0]["base_stat"] as int,
@@ -153,10 +159,17 @@ final class PokeAPI {
         speed: stats[5]["base_stat"] as int);
   }
 
+  /// # `Future<String>` fetchString(`LanguageBinding binding`) async
+  /// ## Fetches a string from the database.
+  /// Adds the request for the string to the queue to be fetched later.
+  /// The reason for this asynchronous fetch of strings is for multi-language support by using the names and descriptions already inside the PokeAPI database.
   static Future<String> fetchString(LanguageBinding binding) async {
-    return queue.add(() async => _fetchString(binding));
+    return MudkiPC.queue.add(() async => _fetchString(binding));
   }
 
+  /// # `Future<String>` _fetchString(`LanguageBinding binding`) async
+  /// ## See [fetchString] for details.
+  /// This function uses a `LanguageBinding` object to fetch the string from the database.
   static Future<String> _fetchString(LanguageBinding binding) async {
     int languageId = LocaleIDs.getIDFromLocale(Platform.localeName);
     String table = binding.table;
@@ -167,68 +180,77 @@ final class PokeAPI {
     } else {
       languageColumn = "language_id";
     }
-    List<Map<String, Object?>>? query = (await db?.rawQuery("""
+    List<Map<String, Object?>>? results = (await db?.rawQuery("""
       SELECT * FROM $table
       WHERE $idColumn = ? AND $languageColumn = ?;
     """, [binding.id, languageId]));
-    return (query!.last[binding.stringColumn] as String)
+    return (results!.last[binding.stringColumn] as String)
         .replaceAll(RegExp('\n'), ' ');
   }
 
-  static Future<List<Map<String, Object?>>?> getSpeciesSuggestions(
-      String name) async {
-    return queue.add(() async => _getSpeciesSuggestions(name));
-  }
-
-  static Future<List<Map<String, Object?>>?> _getSpeciesSuggestions(
-      String name) async {
-    int languageId = LocaleIDs.getIDFromLocale(Platform.localeName);
-    List<Map<String, Object?>>? query = (await db?.rawQuery("""
-      SELECT * FROM pokemon_species
-      INNER JOIN pokemon_species_names ON id = pokemon_species_id AND local_language_id = ? AND (name LIKE ? OR id = ?) LIMIT 10;
-    """, [languageId, "%$name%", name]));
-    return query;
-  }
-
+  /// # `Future<Typing>` fetchTypingForSpecies(`int id`) async
+  /// ## Fetches a typing from PokeAPI.
+  /// Adds the request for the typing to the queue to be fetched later.
+  /// This function will always return a [Typing] object for the given species.
   static Future<Typing> fetchTypingForSpecies(int id) async {
-    return queue.add(() async => _fetchTypingForSpecies(id));
+    return MudkiPC.queue.add(() async => _fetchTypingForSpecies(id));
   }
 
+  /// # `Future<Typing>` _fetchTypingForSpecies(`int id`) async
+  /// ## See [fetchTypingForSpecies] for details.
+  /// This function is what actually fetches the data from the database.
   static Future<Typing> _fetchTypingForSpecies(int id) async {
-    List<Map<String, Object?>>? query = (await db?.rawQuery("""
+    List<Map<String, Object?>>? results = (await db?.rawQuery("""
       SELECT * FROM pokemon_types
       WHERE pokemon_types.pokemon_id = ?;
     """, [id]));
-    return Typing.fromDB(query!);
+    return Typing.fromDB(results!);
   }
 
+  /// # `Map<String, Object?>` changeEmptyStringsToNull(`Map<String, Object?> results`)
+  /// ## A fix for a werid quirk of the SQLite database.
+  /// The problem lies in the fact that for some reason, sqflite returns null values as an empty string.
+  /// Which is fine for varibles that are Strings, but not for numbers.
+  /// As a result, Dart will catch a cast mismatch and throw an error.
+  /// This function fixes that issue by replacing the empty string with null.
+  /// Currently the only function that uses this is the `_fetchMove` function,
+  /// however if the issue pops up in the future, all results should be
+  /// passed through this function before being returned.
   static Map<String, Object?> changeEmptyStringsToNull(
-      Map<String, Object?> query) {
-    Map<String, Object?> newQuery = {};
-    for (var key in query.keys) {
-      if (query[key] == "") {
-        newQuery[key] = null;
+      Map<String, Object?> results) {
+    Map<String, Object?> newResults = {};
+    for (var key in results.keys) {
+      if (results[key] == "") {
+        newResults[key] = null;
         continue;
       }
-      newQuery[key] = query[key];
+      newResults[key] = results[key];
     }
-    return newQuery;
+    return newResults;
   }
 
-  static Future<int?> amountOfEntries(String table) async {
-    var x;
-    if (pachinko.pins.isEmpty) {
-      x = await db?.rawQuery('SELECT * FROM $table;');
-    } else {
-      x = await db?.rawQuery(
-          'SELECT * FROM $table WHERE ${pachinko.formSQLStatement()};',
-          pachinko.formArguments());
-    }
-    int? count = x?.length;
-    return count;
+  /// # `Future<List<Map<String, Object?>>>` getSpeciesSuggestions(`String name`) async
+  /// ## Gets all the species entries that match the name.
+  /// Adds the request for the species suggestions to the queue to be fetched later.
+  /// Any entries that match the name in the current language will be returned.
+  /// Only returns 10 results at a time for better performance.
+  static Future<List<Map<String, Object?>>?> getSpeciesSuggestions(
+      String name) async {
+    return MudkiPC.queue.add(() async => _getSpeciesSuggestions(name));
   }
 
-  static search(String query) async {}
+  /// # `Future<List<Map<String, Object?>>>` _getSpeciesSuggestions(`String name`) async
+  /// ## See [getSpeciesSuggestions] for details.
+  /// This function is what actually fetches the data from the database.
+  static Future<List<Map<String, Object?>>?> _getSpeciesSuggestions(
+      String name) async {
+    int languageId = LocaleIDs.getIDFromLocale(Platform.localeName);
+    List<Map<String, Object?>>? results = (await db?.rawQuery("""
+      SELECT * FROM pokemon_species
+      INNER JOIN pokemon_species_names ON id = pokemon_species_id AND local_language_id = ? AND (name LIKE ? OR id = ?) LIMIT 10;
+    """, [languageId, "%$name%", name]));
+    return results;
+  }
 
   // static Future<Ability> getAbility(int id) async {
   //   final response = await fetchPokeAPI("ability","$id");
@@ -259,19 +281,27 @@ class LanguageBinding {
 /// # PC
 /// ## Represents the user's collection of [Pokemon], [Species], and [Trainer]s.
 final class PC {
-  static Database? db;
-  static Queue queue = Queue(delay: const Duration(microseconds: 100));
-  static Stream<bool> isReady = const Stream.empty();
-  static List<PKMDBFolder> pkmdbs = [];
+  static Database? db; // The database instance.
+  static Queue queue = Queue(
+      delay: const Duration(
+          microseconds: 100)); // The queue for database operations.
+  static List<PKMDBFolder> pkmdbs = []; // The list of PKMDB folders in the PC.
 
+  /// # `Future<PC>` create()
+  /// ## Creates the user's PC.
+  /// Creates the PC as a singleton.
   static create() async {
     Directory directory = await getApplicationDocumentsDirectory();
     Database db = await databaseFactory.openDatabase(
         "${directory.path}/MudkiPC/db/User.db",
         options: OpenDatabaseOptions(onConfigure: _onConfigure));
-    return PC.fromDB(db);
+    return PC.createTables(db);
   }
 
+  /// # `Future<void>` recreate()
+  /// ## Recreates the user's PC.
+  /// Deletes the user's SQLite Database inside the user folder and rebuilds a new one.
+  /// Use for reset the application.
   static void recreate() async {
     Directory directory = await getApplicationDocumentsDirectory();
     databaseFactory.deleteDatabase("${directory.path}/MudkiPC/db/User.db");
@@ -284,12 +314,12 @@ final class PC {
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
-  /// # `Future<void>` fromDB(`Database db`)
-  ///
-  static Future<void> fromDB(Database db) async {
+  /// # `Future<void>` createTables(`Database db`)
+  /// ## Creates the tables in the database.
+  static Future<void> createTables(Database db) async {
     await db.execute("""CREATE TABLE IF NOT EXISTS trainers (
       trainerID INTEGER PRIMARY KEY AUTOINCREMENT,
-      id INTEGER,
+      id INTEGER UNIQUE,
       name TEXT,
       gameID INTEGER,
       gender INTEGER
@@ -314,44 +344,75 @@ final class PC {
     PC.db = db;
   }
 
+  /// # `Future<int?>` amountOfEntries(String table)
+  /// ## Returns the amount of entries in a table.
   static Future<int?> amountOfEntries(String table) async {
     var x = await db?.rawQuery('SELECT * FROM $table;');
     int? count = x?.length;
     return count;
   }
 
+  /// # `Future<void>` addPokemon(`Pokemon pokemon`)
+  /// ## Adds a [Pokemon] to the `pokemons` table.
   static Future<void> addPokemon(Pokemon pokemon) async {
     // print("Adding ${pokemon.nickName}");
     await db?.insert("pokemons", pokemon.toDB());
     return;
   }
 
+  /// # `Future<void>` addPokemonList(`List<Pokemon> pokemonList`)
+  /// ## Adds a list of [Pokemon] to the `pokemons` table.
+  /// Adds a list of [Pokemon] to the `pokemons` table.
   static Future<void> addPokemonList(List<Pokemon> pokemonList) async {
     for (var pokemon in pokemonList) {
       await addPokemon(pokemon);
     }
   }
 
+  /// # `Future<int?>` addTrainer(`Trainer trainer`)
+  /// ## Adds a [Trainer] to the `trainers` table.
+  /// Adds a [Trainer] to the `trainers` table.
   static Future<int?> addTrainer(Trainer trainer) async {
-    return db?.insert("trainers", trainer.toDB());
+    await db?.insert("trainers", trainer.toDB(),
+        conflictAlgorithm: ConflictAlgorithm.ignore);
+    return findTrainerID(trainer);
   }
 
-  /// #removePokemon(`Pokemon pokemon`)
-  /// ## Removes a [Pokemon] from the list of [pokemons].
+  /// # `Future<int?>` findTrainerID(`Trainer trainer`)
+  /// ## Finds the ID of a [Trainer] in the `trainers` table.
+  /// Finds the ID of a [Trainer] in the `trainers` table.
+  static Future<int?> findTrainerID(Trainer trainer) async {
+    List<Map<String, Object?>>? results = await db?.query("trainers",
+        where: "id = ? AND gameID = ? AND name = ?",
+        whereArgs: [trainer.id, trainer.gameID, trainer.name]);
+    return results?.first["trainerID"] as int?;
+  }
+
+  /// # `void` removePokemon(`Pokemon pokemon`)
+  /// ## Removes a [Pokemon] from the table of [pokemons].
   static void removePokemon(Pokemon pokemon) {}
 
+  /// # `Future<Pokemon>` fetchPokemon(`int id`)
+  /// ## Fetches a [Pokemon] from the table of [pokemons].
+  /// Fetches a [Pokemon] from the table of [pokemons].
   static Future<Pokemon> fetchPokemon(int id) async {
     return queue.add(() async => _fetchPokemon(id));
   }
 
+  /// # `Future<Pokemon>` _fetchPokemon(`int id`)
+  /// ## See [fetchPokemon] for details.
+  /// This function is what actually fetches the [Pokemon] from the database.
   static Future<Pokemon> _fetchPokemon(int id) async {
-    List<Map<String, Object?>>? query = (await db?.rawQuery("""
+    List<Map<String, Object?>>? results = (await db?.rawQuery("""
       SELECT * FROM pokemons
       WHERE pokemons.uniqueID = ?;
     """, [id]));
-    return Pokemon.fromDB(query!.first);
+    return Pokemon.fromDB(results!.first);
   }
 
+  /// # `Future<void>` openFolder(`String path`)
+  /// ## Opens a folder and extracts the data from it.
+  /// Creates a [PKMDBFolder] and extracts the data from the folder.
   static Future<void> openFolder(String path) async {
     PKMDBFolder pkmdb = PKMDBFolder(path: path);
     pkmdb.loadFolder();
@@ -360,23 +421,29 @@ final class PC {
     return;
   }
 
+  /// # `Future<bool>` isEmpty(String table)
+  /// ## Checks if a table is empty.
   static Future<bool> isEmpty(String table) async {
     return await amountOfEntries(table) == 0;
   }
 
+  /// # `Future<List<Pokemon>>` search()
+  /// ## Searches for pokemons in the database.
   static Future<List<Pokemon>> search() async {
     List<Map<String, Object?>>? x;
-    if (PokeAPI.pachinko.pins.isEmpty) {
+    if (MudkiPC.pachinko.pins.isEmpty) {
       x = await db?.rawQuery('SELECT * FROM pokemons;');
     } else {
       x = await db?.rawQuery(
-          'SELECT * FROM pokemons WHERE ${PokeAPI.pachinko.formSQLStatement()};',
-          PokeAPI.pachinko.formArguments());
+          'SELECT * FROM pokemons WHERE ${MudkiPC.pachinko.formSQLStatement()};',
+          MudkiPC.pachinko.formArguments());
     }
     return x!.map((e) => Pokemon.fromDB(e)).toList();
   }
 }
 
+/// # `class` PKMDBFolder
+/// ## A class that represents a folder that has been imported.
 class PKMDBFolder {
   String path;
   List<Pokemon> pokemons = [];
@@ -387,12 +454,16 @@ class PKMDBFolder {
 
   PKMDBFolder({required this.path});
 
+  /// # `void` loadFolder()
+  /// ## Loads the folder and lists all of the files into the [files] variable.
   void loadFolder() {
     directory = Directory(path);
     files = directory.listSync();
     return;
   }
 
+  /// # `void` openCompatibleFiles()
+  /// ## Opens all compatible files in the folder.
   void openCompatibleFiles() {
     for (FileSystemEntity entity in files) {
       if (entity is File) {
@@ -404,6 +475,8 @@ class PKMDBFolder {
     }
   }
 
+  /// # `Future<void>` extractAllData()
+  /// ## Calls [parseDatablocks] on all of the [FileHandle]s in [openFiles].
   Future<void> extractAllData() async {
     for (FileHandle file in openFiles) {
       await file.parseDatablocks();

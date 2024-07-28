@@ -85,3 +85,11 @@ class Species {
         isNameTable: false));
   }
 }
+
+/// # `Class` Form extends `Species`
+/// ## Acts as a interface for getting information about an alternate [Form] of a [Species].
+/// TODO: Add form support.
+class Form extends Species {
+  int formID = 0;
+  Form({required super.id});
+}

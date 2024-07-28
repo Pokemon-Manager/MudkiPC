@@ -1,4 +1,5 @@
-import 'package:mudkip_frontend/core/enums.dart';
+import 'package:mudkip_frontend/core/constants.dart';
+import 'package:mudkip_frontend/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings {
@@ -64,5 +65,28 @@ class Settings {
       }
     }
     return;
+  }
+
+  static Future<bool> hasUpdated() async {
+    if (prefs.getString("version") == null) {
+      await prefs.setString("version", packageInfo.buildNumber);
+      return false;
+    }
+    if (prefs.getString("version") != packageInfo.buildNumber) {
+      List<int> originalVersion = prefs
+          .getString("version")!
+          .split('.')
+          .map((x) => int.parse(x))
+          .toList();
+      List<int> currentVersion =
+          packageInfo.buildNumber.split('.').map((x) => int.parse(x)).toList();
+      if (currentVersion[0] > originalVersion[0] ||
+          currentVersion[1] > originalVersion[1] ||
+          currentVersion[2] > originalVersion[2]) {
+        await prefs.setString("version", packageInfo.buildNumber);
+        return true;
+      }
+    }
+    return false;
   }
 }

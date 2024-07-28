@@ -3,12 +3,17 @@ import 'package:mudkip_frontend/core/databases.dart';
 import 'package:mudkip_frontend/main.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 
+/// # `Class` Pachinko with `ChangeNotifier`
+/// ## A class that contains functions for searching in the application.
+/// Contains a list of pins, a search controller, and a function to generate suggestions.
 class Pachinko with ChangeNotifier {
   List<Pin> pins = [];
   SearchController searchController = SearchController();
   Future<List<ListTile>> generateSuggestions(
       BuildContext context, SearchController search) async {
+    // Generate suggestions for the search bar.
     List<String> initialSuggestions = [
+      // The initial suggestions
       "nickname:",
       "species:",
       "knownMove:",
@@ -23,17 +28,24 @@ class Pachinko with ChangeNotifier {
         .where((element) =>
             element.startsWith(search.value.text) &&
             element != search.value.text)
-        .toList();
-    List<Map<String, Object?>>? query;
+        .toList(); // Gets the suggestions that start with the search bar text.
+    Function onSelected = (int value) {
+      search.text = finalSuggestions[value] ?? "";
+    };
     if (finalSuggestions.isEmpty && search.value.text.contains(":")) {
       switch (search.value.text.split(":")[0]) {
         case "species":
-          query = await PokeAPI.getSpeciesSuggestions(
-              search.value.text.split(":")[1]);
+          List<Map<String, Object?>>? query =
+              await PokeAPI.getSpeciesSuggestions(
+                  search.value.text.split(":")[1]);
           List<String?> suggestions = [];
           for (var element in query!) {
             suggestions.add(element["name"] as String?);
           }
+          onSelected = (int value) {
+            species(query[value]["id"] as int);
+            clearSearchBar();
+          };
           finalSuggestions = suggestions;
           break;
       }
@@ -42,24 +54,17 @@ class Pachinko with ChangeNotifier {
       return ListTile(
         title: Text(finalSuggestions[index] ?? ""),
         onTap: () {
-          if (finalSuggestions[index] != null) {
-            if (search.value.text.contains(":")) {
-              switch (search.value.text.split(":")[0]) {
-                case "species":
-                  species(query?[index]["id"] as int);
-                  break;
-              }
-              searchController.clear();
-              searchController.closeView("");
-              notifyListeners();
-              router.refresh();
-            } else {
-              search.text = finalSuggestions[index]!;
-            }
-          }
+          onSelected(index);
         },
       );
     });
+  }
+
+  void clearSearchBar() {
+    searchController.clear();
+    searchController.closeView("");
+    notifyListeners();
+    router.refresh();
   }
 
   String formSQLStatement() {
@@ -178,7 +183,7 @@ class SpeciesPin extends Pin {
         builder: (context, name) =>
             Text(name, style: const TextStyle(fontSize: 13)),
       ),
-      deleteIcon: Icon(Icons.delete),
+      deleteIcon: const Icon(Icons.delete),
       onDeleted: () {
         pachinkoMachine.remove(this);
       },

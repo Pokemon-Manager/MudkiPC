@@ -1,5 +1,13 @@
 // ignore_for_file: constant_identifier_names
 
+/*
+  Name: Constants
+  Purpose: A file that contains all the enums used in the app.
+
+  Most of these enums are already inside of the `Global.db` file, however you sould always use these instead.
+  The reason for this because these are just numbers that never change. They get additions, but are not refactored.
+  This is done for performance, readability, and most importantly to make coding for extremly complex systems way easier. Such as elements, games transfers, and exp growth.
+*/
 enum HeightChartGender { male, female }
 
 enum HeightChartFormat { metric, imperial }
@@ -26,6 +34,9 @@ enum HeightChartFormat { metric, imperial }
 /// - Dark
 /// - Steel
 /// - Fairy
+/// - Stellar
+/// - Unknown
+/// - Shadow
 final class Elements {
   static const int none = 0;
   static const int normal = 1;

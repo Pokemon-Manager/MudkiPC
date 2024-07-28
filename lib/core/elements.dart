@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 
-/// # Typing
+/// # `Class` Typing
 /// ## A class that represents the typing of a [Species] or [Move].
 ///
 /// Try to always use [isSingleType] to check if the typing is single or dual, before trying to access type2.
@@ -249,7 +249,6 @@ mixin ElementFunctions implements TypeElement {
 /// - Fighting
 /// ### Resist To:
 /// - Ghost
-
 class Normal with ElementFunctions implements TypeElement {
   @override
   String get name => 'normal';
@@ -632,9 +631,26 @@ class Fairy with ElementFunctions implements TypeElement {
   List<Type> get immuneTo => [Dragon];
 }
 
+/// # Stellar
+/// ## A class that represents the Stellar type.
+/// TODO: Learn what the stellar type really is.
 class Stellar with ElementFunctions implements TypeElement {
   @override
   String get name => 'stellar';
+  @override
+  List<Type> get weakTo => [];
+  @override
+  List<Type> get resistTo => [];
+  @override
+  List<Type> get immuneTo => [];
+}
+
+/// # Unknown
+/// ## A class that represents the Unknown type.
+/// TODO: Learn what the unknown type really is.
+class Unknown with ElementFunctions implements TypeElement {
+  @override
+  String get name => 'unknown';
   @override
   List<Type> get weakTo => [];
   @override

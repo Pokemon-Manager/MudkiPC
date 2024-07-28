@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:mudkip_frontend/screens/app_shell.dart';
 import 'package:mudkip_frontend/theme/theme_constants.dart';
@@ -11,6 +13,7 @@ import 'package:mudkip_frontend/screens.dart';
 
 ThemeManager themeManager = ThemeManager();
 late PackageInfo packageInfo;
+late File logFile;
 final router = GoRouter(initialLocation: "/pc", routes: <RouteBase>[
   GoRoute(
       path: "/settings",
@@ -81,6 +84,19 @@ final router = GoRouter(initialLocation: "/pc", routes: <RouteBase>[
 ]);
 
 void main(List<String> args) async {
+  logFile = File("${await MudkiPC.userFolder}log.txt");
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.onRecord.listen((record) {
+    // ignore: avoid_print
+    print("${record.level.name}: ${record.time}: ${record.message}");
+    if (record.level == Level.INFO ||
+        record.level == Level.WARNING ||
+        record.level == Level.SEVERE) {
+      logFile.writeAsStringSync(
+          '\n${record.level.name}: ${record.time}: ${record.message}',
+          mode: FileMode.append);
+    }
+  });
   WidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
