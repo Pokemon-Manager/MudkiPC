@@ -1,6 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mudkip_frontend/main.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/universal_builder.dart';
 
 // ignore: must_be_immutable
 class AppShell extends StatefulWidget {
@@ -12,7 +16,7 @@ class AppShell extends StatefulWidget {
   AppShellState createState() => AppShellState();
 }
 
-class AppShellState extends State<AppShell> {
+class AppShellState extends State<AppShell> with UniversalBuilder {
   int _selectedIndex = 0;
 
   @override
@@ -28,16 +32,16 @@ class AppShellState extends State<AppShell> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildAndroid(BuildContext context) {
     final showRail = MediaQuery.of(context).size.width >= 600;
-    return Scaffold(
-      appBar: AppBar(title: const Text('MudkiPC'), actions: [
+    return material.Scaffold(
+      appBar: material.AppBar(title: const Text('MudkiPC'), actions: [
         if (showRail)
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
               width: 400,
-              child: SearchAnchor.bar(
+              child: material.SearchAnchor.bar(
                 suggestionsBuilder: (context, search) async {
                   return await MudkiPC.pachinko
                       .generateSuggestions(context, search);
@@ -52,18 +56,18 @@ class AppShellState extends State<AppShell> {
             ),
           )
         else
-          SearchAnchor(
+          material.SearchAnchor(
               viewLeading: Wrap(alignment: WrapAlignment.start, children: [
                 ...MudkiPC.pachinko.getChips().map((chip) {
                   return SizedBox(width: 100, child: chip);
                 })
               ]),
               builder: (context, search) {
-                return IconButton(
+                return material.IconButton(
                     onPressed: () {
                       MudkiPC.pachinko.searchController.openView();
                     },
-                    icon: const Icon(size: 30, Icons.search));
+                    icon: const Icon(size: 30, material.Icons.search));
               },
               suggestionsBuilder: (context, search) async {
                 return await MudkiPC.pachinko
@@ -72,20 +76,20 @@ class AppShellState extends State<AppShell> {
               searchController: MudkiPC.pachinko.searchController),
         const SizedBox(width: 20),
       ]),
-      drawer: Drawer(
+      drawer: material.Drawer(
           width: 300,
           child: ListView(
             children: [
-              ListTile(
+              material.ListTile(
                 title: const Text("Settings"),
-                leading: const Icon(Icons.settings),
+                leading: const Icon(material.Icons.settings),
                 onTap: () {
                   context.push("/settings");
                 },
               ),
-              ListTile(
+              material.ListTile(
                 title: const Text("About"),
-                leading: const Icon(Icons.info),
+                leading: const Icon(material.Icons.info),
                 onTap: () {
                   context.push("/about");
                 },
@@ -118,6 +122,25 @@ class AppShellState extends State<AppShell> {
       ),
     );
   }
+
+  @override
+  Widget buildWindows(BuildContext context) {
+    return fluent.NavigationView(
+      pane: fluent.NavigationPane(
+          selected: _selectedIndex,
+          items: Destinations.getDestinationsForWindowsPane(widget.child),
+          onItemPressed: (int index) {
+            _selectedIndex = index;
+            context.go(Destinations.getPath(index));
+          }),
+      appBar: const fluent.NavigationAppBar(
+          title: Text("MudkiPC",
+              style: TextStyle(
+                  fontSize: 32, fontWeight: material.FontWeight.bold)),
+          leading: null,
+          automaticallyImplyLeading: false),
+    );
+  }
 }
 
 // ignore: must_be_immutable
@@ -129,7 +152,7 @@ class BottomNavBar extends StatelessWidget {
   Function onDestinationSelected;
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
+    return material.BottomNavigationBar(
       currentIndex: index,
       elevation: 80.0,
       onTap: (int index) {
@@ -149,12 +172,12 @@ class SideNavRail extends StatelessWidget {
   Function onDestinationSelected;
   @override
   Widget build(BuildContext context) {
-    return NavigationRail(
+    return material.NavigationRail(
       selectedIndex: index,
       onDestinationSelected: (int index) {
         onDestinationSelected(index);
       },
-      labelType: NavigationRailLabelType.all,
+      labelType: material.NavigationRailLabelType.all,
       destinations: Destinations.getDestinationsForRail(),
     );
   }
@@ -162,22 +185,48 @@ class SideNavRail extends StatelessWidget {
 
 class Destination {
   String label;
-  IconData icon;
+  Map<String, IconData> icons;
+  List<fluent.CommandBarItem>? actions = [];
   String path;
 
-  Destination({required this.label, required this.icon, required this.path});
+  Destination(
+      {required this.label,
+      required this.icons,
+      required this.path,
+      required this.actions});
 }
 
 class PCDestination extends Destination {
-  PCDestination() : super(label: 'PC', icon: Icons.home, path: '/pc');
+  PCDestination()
+      : super(
+            label: 'PC',
+            icons: {
+              "android": material.Icons.grid_view_rounded,
+              "windows": fluent.FluentIcons.grid_view_medium
+            },
+            path: '/pc',
+            actions: [
+              fluent.CommandBarBuilderItem(
+                  builder: (context, wrappedItem, child) =>
+                      const fluent.Tooltip(message: "Add to PC"),
+                  wrappedItem: fluent.CommandBarButton(
+                      onPressed: () {
+                        print("Add to PC");
+                      },
+                      icon: const fluent.Icon(fluent.FluentIcons.add))),
+            ]);
 }
 
 class PokeDexDestination extends Destination {
   PokeDexDestination()
       : super(
             label: 'PokéDex',
-            icon: Icons.phone_android_rounded,
-            path: '/pokedex');
+            icons: {
+              "android": material.Icons.phone_android_rounded,
+              "windows": fluent.FluentIcons.book_answers
+            },
+            path: '/pokedex',
+            actions: []);
 }
 
 class Destinations {
@@ -186,22 +235,43 @@ class Destinations {
     PokeDexDestination(),
   ];
 
-  static List<NavigationRailDestination> getDestinationsForRail() {
-    List<NavigationRailDestination> destinationsWigets = [];
+  static List<material.NavigationRailDestination> getDestinationsForRail() {
+    List<material.NavigationRailDestination> destinationsWigets = [];
     for (Destination destination in destinations) {
-      destinationsWigets.add(NavigationRailDestination(
-          icon: Icon(destination.icon), label: Text(destination.label)));
+      destinationsWigets.add(material.NavigationRailDestination(
+          icon: Icon(destination.icons["android"]),
+          label: Text(destination.label)));
     }
     return destinationsWigets;
   }
 
-  static List<BottomNavigationBarItem> getDestinationsForBar() {
-    List<BottomNavigationBarItem> destinationsWigets = [];
+  static List<material.BottomNavigationBarItem> getDestinationsForBar() {
+    List<material.BottomNavigationBarItem> destinationsWigets = [];
     for (Destination destination in destinations) {
       destinationsWigets.add(BottomNavigationBarItem(
-          icon: Icon(destination.icon, size: 25.0), label: destination.label));
+          icon: Icon(destination.icons["android"], size: 25.0),
+          label: destination.label));
     }
     return destinationsWigets;
+  }
+
+  static List<fluent.NavigationPaneItem> getDestinationsForWindowsPane(
+      Widget child) {
+    List<fluent.NavigationPaneItem> destinationsWidgets = [];
+    for (Destination destination in destinations) {
+      destinationsWidgets.add(fluent.PaneItem(
+          icon: Icon(destination.icons["windows"]),
+          title: Text(destination.label),
+          body: child));
+    }
+    destinationsWidgets.add(fluent.PaneItemSeparator());
+    destinationsWidgets.add(fluent.PaneItemAction(
+        icon: const Icon(fluent.FluentIcons.settings),
+        onTap: () {
+          router.push('/settings');
+        },
+        title: const Text("Settings")));
+    return destinationsWidgets;
   }
 
   static String getPath(int index) => destinations[index].path;

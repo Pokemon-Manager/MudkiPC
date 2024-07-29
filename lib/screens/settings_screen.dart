@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart' as material;
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:mudkip_frontend/main.dart';
+
+import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
-import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,49 +15,38 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with UniversalBuilder {
   @override
-  Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeManager>(context);
-    return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(onPressed: () {
+  Widget buildAndroid(BuildContext context) {
+    return material.Scaffold(
+      appBar: material.AppBar(
+        leading: material.BackButton(onPressed: () {
           context.pop();
         }),
         title: const Text("Settings"),
       ),
       body: ListView(
         children: [
-          const ListTile(
+          const material.ListTile(
             title: Text("General",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             dense: true,
           ),
-          ListTile(
-              title: const Text("Dark Mode"),
-              trailing: Switch.adaptive(
-                  value: themeProvider.themeMode == ThemeMode.dark,
-                  onChanged: (theme) {
-                    final provider =
-                        Provider.of<ThemeManager>(context, listen: false);
-                    // print(theme);
-                    provider.toggleTheme(theme);
-                  })),
-          const ListTile(
+          const material.ListTile(
             title: Text("Height Chart",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           ),
-          ListTile(
+          material.ListTile(
             title: const Text("Default Human Gender"),
-            trailing: SegmentedButton(
+            trailing: material.SegmentedButton(
                 showSelectedIcon: false,
                 segments: const [
-                  ButtonSegment(
+                  material.ButtonSegment(
                       value: HeightChartGender.male,
-                      icon: Icon(Icons.male_rounded)),
-                  ButtonSegment(
+                      icon: Icon(material.Icons.male_rounded)),
+                  material.ButtonSegment(
                       value: HeightChartGender.female,
-                      icon: Icon(Icons.female_rounded))
+                      icon: Icon(material.Icons.female_rounded))
                 ],
                 selected: <HeightChartGender>{Settings.heightChartGender},
                 onSelectionChanged: (gender) async {
@@ -62,13 +54,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   setState(() {});
                 }),
           ),
-          ListTile(
+          material.ListTile(
               title: const Text("Length Format"),
-              trailing: SegmentedButton(
+              trailing: material.SegmentedButton(
                   segments: const [
-                    ButtonSegment(
+                    material.ButtonSegment(
                         value: HeightChartFormat.metric, label: Text("Metric")),
-                    ButtonSegment(
+                    material.ButtonSegment(
                         value: HeightChartFormat.imperial,
                         label: Text("Imperial"))
                   ],
@@ -79,13 +71,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     await Settings.setHeightChartFormat(format.first);
                     setState(() {});
                   })),
-          const Divider(),
-          const ListTile(
+          const material.Divider(),
+          const material.ListTile(
             title: Text("Data Management",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             dense: true,
           ),
-          ListTile(
+          material.ListTile(
             title: const Text("Clear Global Database Cache"),
             subtitle: const Text(
                 "Deletes the Global database cache and recreates it. Useful for if you have an old version of the database cache, or if you have a corrupted cache."),
@@ -93,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               PokeAPI.recreate();
             },
           ),
-          ListTile(
+          material.ListTile(
             title: const Text("Clear User Database"),
             subtitle: const Text(
                 "Deletes the user database (i.e. All data parsed from files, like your pokemon, trainers, and save backups). Files are not affected, however be sure to back up your save files before doing this just in case."),
@@ -101,13 +93,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               PC.recreate();
             },
           ),
-          const Divider(),
-          const ListTile(
+          const material.Divider(),
+          const material.ListTile(
             title: Text("Debugging",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             dense: true,
           ),
-          ListTile(
+          material.ListTile(
               title: const Text("Global.db Cache Path"),
               subtitle: FutureBuilder(
                 future: getApplicationCacheDirectory(),
@@ -119,7 +111,133 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   }
                 },
               )),
-          ListTile(
+          material.ListTile(
+              title: const Text("User Path"),
+              subtitle: FutureBuilder(
+                future: getApplicationDocumentsDirectory(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(snapshot.data!.path);
+                  } else {
+                    return const Text("Loading...");
+                  }
+                },
+              )),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildWindows(BuildContext context) {
+    return fluent.NavigationView(
+      appBar: fluent.NavigationAppBar(
+        leading: SizedBox(
+          width: 40,
+          height: 40,
+          child: fluent.IconButton(
+              icon: const Icon(fluent.FluentIcons.back),
+              onPressed: () {
+                router.pop();
+              }),
+        ),
+        title: const Text("Settings"),
+      ),
+      content: ListView(
+        children: [
+          const fluent.ListTile(
+            title: Text("General",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ),
+          const fluent.ListTile(
+            title: Text("Height Chart",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          fluent.ListTile(
+            title: const Text("Default Human Gender"),
+            trailing: fluent.DropDownButton(
+              title: Text(Settings.heightChartGenderAsString),
+              items: [
+                fluent.MenuFlyoutItem(
+                  onPressed: () {
+                    setState(() {
+                      Settings.setHeightChartGender(HeightChartGender.male);
+                    });
+                  },
+                  text: const Text("Male"),
+                ),
+                fluent.MenuFlyoutItem(
+                  onPressed: () {
+                    setState(() {
+                      Settings.setHeightChartGender(HeightChartGender.female);
+                    });
+                  },
+                  text: const Text("Female"),
+                ),
+              ],
+            ),
+          ),
+          fluent.ListTile(
+              title: const Text("Length Format"),
+              trailing: fluent.DropDownButton(
+                  title: Text(Settings.heightChartFormatAsString),
+                  items: [
+                    fluent.MenuFlyoutItem(
+                        onPressed: () {
+                          setState(() {
+                            Settings.setHeightChartFormat(
+                                HeightChartFormat.metric);
+                          });
+                        },
+                        text: const Text("Metric")),
+                    fluent.MenuFlyoutItem(
+                        onPressed: () {
+                          setState(() {
+                            Settings.setHeightChartFormat(
+                                HeightChartFormat.imperial);
+                          });
+                        },
+                        text: const Text("Imperial"))
+                  ])),
+          const fluent.Divider(),
+          const fluent.ListTile(
+            title: Text("Data Management",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ),
+          fluent.ListTile(
+            title: const Text("Clear Global Database Cache"),
+            subtitle: const Text(
+                "Deletes the Global database cache and recreates it. Useful for if you have an old version of the database cache, or if you have a corrupted cache."),
+            onPressed: () {
+              PokeAPI.recreate();
+            },
+          ),
+          fluent.ListTile(
+            title: const Text("Clear User Database"),
+            subtitle: const Text(
+                "Deletes the user database (i.e. All data parsed from files, like your pokemon, trainers, and save backups). Files are not affected, however be sure to back up your save files before doing this just in case."),
+            onPressed: () {
+              PC.recreate();
+            },
+          ),
+          const fluent.Divider(),
+          const fluent.ListTile(
+            title: Text("Debugging",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ),
+          fluent.ListTile(
+              title: const Text("Global.db Cache Path"),
+              subtitle: FutureBuilder(
+                future: getApplicationCacheDirectory(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(snapshot.data!.path);
+                  } else {
+                    return const Text("Loading...");
+                  }
+                },
+              )),
+          fluent.ListTile(
               title: const Text("User Path"),
               subtitle: FutureBuilder(
                 future: getApplicationDocumentsDirectory(),

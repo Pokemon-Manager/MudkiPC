@@ -1,5 +1,8 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:flutter/widgets.dart';
+import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
@@ -15,7 +18,7 @@ class PCView extends StatefulWidget {
   State<PCView> createState() => _PCViewState();
 }
 
-class _PCViewState extends State<PCView> {
+class _PCViewState extends State<PCView> with UniversalBuilder {
   @override
   void initState() {
     MudkiPC.pachinko.addListener(refresh);
@@ -33,7 +36,7 @@ class _PCViewState extends State<PCView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildAndroid(BuildContext context) {
     return AsyncPlaceholder(
         future: PC.isEmpty("pokemons"),
         childBuilder: (isEmpty) {
@@ -42,7 +45,7 @@ class _PCViewState extends State<PCView> {
             body = WarningPage(
                 title: "Your PC is empty",
                 description: 'Add some Pokémon by pressing the + button',
-                icon: Icons.notification_important_rounded);
+                icon: material.Icons.notification_important_rounded);
           } else {
             body = AsyncPlaceholder(
                 future: PC.search(),
@@ -70,13 +73,13 @@ class _PCViewState extends State<PCView> {
                   );
                 });
           }
-          return Scaffold(
+          return material.Scaffold(
               floatingActionButtonLocation: ExpandableFab.location,
               floatingActionButton: ExpandableFab(
                 distance: 90.0,
                 childrenOffset: const Offset(1.0, 1.0),
                 openButtonBuilder: RotateFloatingActionButtonBuilder(
-                  child: const Icon(Icons.add),
+                  child: const Icon(material.Icons.add),
                   fabSize: ExpandableFabSize.regular,
                   heroTag: "add",
                   shape: const CircleBorder(),
@@ -85,40 +88,41 @@ class _PCViewState extends State<PCView> {
                   size: 60,
                   builder: (BuildContext context, void Function()? onPressed,
                       Animation<double> progress) {
-                    return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
+                    return material.ElevatedButton(
+                      style: material.ElevatedButton.styleFrom(
                         shape: const CircleBorder(),
                         padding: const EdgeInsets.all(20),
                       ),
                       onPressed: onPressed,
-                      iconAlignment: IconAlignment.end,
+                      iconAlignment: material.IconAlignment.end,
                       child: const Icon(
-                        Icons.close_rounded,
+                        material.Icons.close_rounded,
                         size: 35,
                       ),
                     );
                   },
                 ),
                 children: [
-                  FloatingActionButton(
+                  material.FloatingActionButton(
                       heroTag: "addFile",
                       tooltip: "Add File",
-                      child: const Icon(Icons.upload_file_rounded,
+                      child: const Icon(material.Icons.upload_file_rounded,
                           semanticLabel: "Add File"),
                       onPressed: () async {
                         FilePicker.platform.pickFiles().then((result) {});
                       }),
-                  FloatingActionButton(
+                  material.FloatingActionButton(
                       heroTag: "addFolder",
                       tooltip: "Add Folder",
-                      child: const Icon(Icons.drive_folder_upload_rounded),
+                      child: const Icon(
+                          material.Icons.drive_folder_upload_rounded),
                       onPressed: () {
                         FilePicker.platform.getDirectoryPath().then((result) {
                           if (result != null && context.mounted) {
-                            showDialog(
+                            material.showDialog(
                               // ignore: use_build_context_synchronously
                               context: context,
-                              builder: (context) => AlertDialog(
+                              builder: (context) => material.AlertDialog(
                                 content: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -129,7 +133,7 @@ class _PCViewState extends State<PCView> {
                                         child: const Text(
                                             "Fetching Pokémon from Folder...")),
                                     const SizedBox(height: 10),
-                                    const CircularProgressIndicator(),
+                                    const material.CircularProgressIndicator(),
                                   ],
                                 ),
                               ),
@@ -149,5 +153,67 @@ class _PCViewState extends State<PCView> {
               ),
               body: body);
         });
+  }
+
+  @override
+  Widget buildWindows(BuildContext context) {
+    return fluent.ScaffoldPage(
+      header: material.Padding(
+        padding: const EdgeInsets.only(
+          right: 16.0,
+          bottom: 8.0,
+        ),
+        child: fluent.CommandBar(
+            crossAxisAlignment: fluent.CrossAxisAlignment.center,
+            mainAxisAlignment: fluent.MainAxisAlignment.end,
+            primaryItems: [
+              fluent.CommandBarButton(
+                onPressed: () {
+                  print("Pressed");
+                },
+                icon: const Icon(fluent.FluentIcons.add),
+                label: const Text("Add"),
+              )
+            ]),
+      ),
+      content: AsyncPlaceholder(
+          future: PC.isEmpty("pokemons"),
+          childBuilder: (isEmpty) {
+            Widget body = const Placeholder();
+            if (isEmpty) {
+              body = WarningPage(
+                  title: "Your PC is empty",
+                  description: 'Add some Pokémon by pressing the + button',
+                  icon: fluent.FluentIcons.warning);
+            } else {
+              body = AsyncPlaceholder(
+                  future: PC.search(),
+                  childBuilder: (List<Pokemon> pokemons) {
+                    return GridView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: pokemons.length,
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.all(10),
+                      clipBehavior: Clip.antiAlias,
+                      itemBuilder: (BuildContext context, int index) {
+                        return PokemonSlot(
+                            pokemon: PC.fetchPokemon(pokemons[index].uniqueID!),
+                            onTap: () {
+                              context.push("/preview",
+                                  extra: PC
+                                      .fetchPokemon(pokemons[index].uniqueID!));
+                            });
+                      },
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              maxCrossAxisExtent: 300),
+                    );
+                  });
+            }
+            return body;
+          }),
+    );
   }
 }

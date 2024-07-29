@@ -58,7 +58,6 @@ dependencies:
   geekyants_flutter_gauges: ^1.0.4
   converter: ^0.4.0
   fluent_ui: ^4.9.0
-  flutter_platform_widgets: ^7.0.1
 
 dev_dependencies:
   flutter_test:

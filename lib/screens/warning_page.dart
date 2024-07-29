@@ -1,7 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:flutter/material.dart' as material;
+
+import 'package:mudkip_frontend/universal_builder.dart';
 
 // ignore: must_be_immutable
-class WarningPage extends StatelessWidget {
+class WarningPage extends StatelessWidget with UniversalBuilder {
   WarningPage(
       {super.key,
       required this.title,
@@ -10,18 +14,33 @@ class WarningPage extends StatelessWidget {
 
   String title = "In development";
   String description = "This feature is not yet implemented.";
-  IconData icon = Icons.notification_important_rounded;
+  IconData icon = material.Icons.notification_important_rounded;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildAndroid(BuildContext context) {
     return Center(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Icon(Icons.notification_important_rounded, size: 100),
-        Text(title, style: Theme.of(context).textTheme.titleLarge),
-        Text(description, style: Theme.of(context).textTheme.titleMedium)
+        const Icon(material.Icons.notification_important_rounded, size: 100),
+        Text(title, style: material.Theme.of(context).textTheme.titleLarge),
+        Text(description,
+            style: material.Theme.of(context).textTheme.titleMedium)
+      ],
+    ));
+  }
+
+  @override
+  Widget buildWindows(BuildContext context) {
+    return Center(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Icon(fluent.FluentIcons.warning, size: 100),
+        Text(title),
+        Text(description)
       ],
     ));
   }

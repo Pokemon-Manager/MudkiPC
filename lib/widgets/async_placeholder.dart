@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mudkip_frontend/universal_builder.dart';
 
 /// # `Class` AsyncPlaceholder extends `StatelessWidget`
 /// ## A widget that displays a placeholder while a future is loading.
@@ -23,7 +24,7 @@ class AsyncPlaceholder extends StatelessWidget {
                 child: SizedBox(
                     width: 100,
                     height: 100,
-                    child: CircularProgressIndicator()),
+                    child: UniversalCircularProgressIndicator()),
               ),
             ));
           }

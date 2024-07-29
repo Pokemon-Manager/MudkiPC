@@ -17,7 +17,6 @@ MudkiPC is a brand new application app, that is built from the ground up to be a
 
 ![Screenshot 2024-07-14 134209](https://github.com/user-attachments/assets/a328fd94-92f7-4a53-84d0-d0155af42fb3)
 ![Screenshot 2024-07-14 134238](https://github.com/user-attachments/assets/2cc5bf95-8ab4-427c-bdf4-f8e8155e1452)
-![alt text](image.png)
 
 # Key Features:
 
@@ -30,6 +29,20 @@ Step aside Hex Editors, MudkiPC is now the easiest way to edit your trainers and
 MudkiPC is built using Dart & Flutter, which in layman's terms mean that it can run any modern device, including Linux and mobile!
 
 (MacOS and iOS versions are currently impossible for me to compile, as I do not have a Mac system. Looking into getting one though!)
+
+## Native Look & Feel 🖱️
+
+Every operating system has their own unique look and feel, and everyone prefers one over the other. So, why not talor MudkiPC to every preference? MudkiPC will look, feel, and act like it was made specifically for your device, leaning into the strengths of your OS. If you prefer different look or want your phone and desktop to look the same, you can change it on the fly.
+
+### Windows
+
+![alt text](.github\images\image.png)
+
+### Android
+
+![Screenshot 2024-07-14 134209](https://github.com/user-attachments/assets/a328fd94-92f7-4a53-84d0-d0155af42fb3)
+
+### And more to come...
 
 ## Blazingly Fast 🚀
 

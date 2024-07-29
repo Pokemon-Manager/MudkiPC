@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-
+import 'package:flutter/widgets.dart';
+import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mudkip_frontend/screens/app_shell.dart';
-import 'package:mudkip_frontend/theme/theme_constants.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:provider/provider.dart';
@@ -37,28 +36,6 @@ final router = GoRouter(initialLocation: "/pc", routes: <RouteBase>[
             builder: (context, state) {
               return const PCView();
             },
-            routes: [
-              GoRoute(
-                path: 'fetching',
-                builder: (context, state) {
-                  return AlertDialog(
-                    content: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                            margin: const EdgeInsets.only(left: 7),
-                            child:
-                                const Text("Fetching Pokémon from Folder...")),
-                        const SizedBox(height: 10),
-                        const CircularProgressIndicator(),
-                      ],
-                    ),
-                  );
-                },
-              )
-            ],
             pageBuilder: (context, state) {
               return CustomTransitionPage<void>(
                 key: UniqueKey(),
@@ -121,23 +98,7 @@ void main(List<String> args) async {
         create: (context) => ThemeManager(),
         builder: (context, _) {
           final themeProvider = Provider.of<ThemeManager>(context);
-          return MaterialApp.router(
-              title: "Pokémon Manager",
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: themeProvider.themeMode,
-              supportedLocales: const [
-                Locale('en', 'US'),
-                Locale('fr', 'FR'),
-                Locale('ja', 'JP'),
-                Locale('ko', 'KR'),
-                Locale('es', 'ES'),
-                Locale('zh', 'CN'),
-                Locale('it', 'IT')
-              ],
-              routeInformationParser: router.routeInformationParser,
-              routerDelegate: router.routerDelegate,
-              routeInformationProvider: router.routeInformationProvider);
+          return UniversalBuilder.buildApp(themeProvider);
         }));
   }
 }

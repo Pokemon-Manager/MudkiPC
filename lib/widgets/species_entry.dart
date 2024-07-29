@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
@@ -19,7 +20,7 @@ class SpeciesEntry extends StatelessWidget {
     return Container(
       height: 100,
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 4.0),
-      child: ElevatedButton(
+      child: UniversalButton(
           onPressed: () => onTap(),
           child: Padding(
               padding: const EdgeInsets.all(1.0),
@@ -41,7 +42,6 @@ class SpeciesEntry extends StatelessWidget {
                       builder: (context, name) => Text(
                             name,
                             textAlign: TextAlign.left,
-                            style: Theme.of(context).textTheme.titleMedium,
                           ))
                 ]),
               ))),

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geekyants_flutter_gauges/geekyants_flutter_gauges.dart';
 import 'package:converter/converter.dart';
 import 'package:mudkip_frontend/core/constants.dart';
@@ -75,13 +75,11 @@ class _HeightIndicatorState extends State<HeightIndicator> {
                     value: calulatePokemonHeight() * 100,
                     width: 20,
                     height: 5,
-                    color: Colors.red,
                     shape: PointerShape.rectangle,
                     pointerPosition: PointerPosition.left,
                   ),
                   Pointer(
                       shape: PointerShape.rectangle,
-                      color: Colors.blue,
                       value: calulateHumanHeight() * 100,
                       pointerPosition: PointerPosition.left,
                       width: 20,
@@ -94,8 +92,6 @@ class _HeightIndicatorState extends State<HeightIndicator> {
                 rulers: RulerStyle(
                   rulerPosition: RulerPosition.right,
                   textStyle: TextStyle(
-                      color:
-                          Theme.of(context).primaryTextTheme.bodyLarge?.color,
                       fontSize: const TextScaler.linear(1.0).scale(16.0),
                       fontWeight: FontWeight.normal),
                   // showSecondaryRulers: false,

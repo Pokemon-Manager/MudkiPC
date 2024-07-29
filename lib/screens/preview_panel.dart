@@ -1,4 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:flutter/widgets.dart';
+import 'package:mudkip_frontend/universal_builder.dart';
+
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/element_bar.dart';
 import 'package:mudkip_frontend/widgets/height_chart.dart';
@@ -29,9 +33,9 @@ class PreviewPanel extends StatelessWidget {
           });
     }
 
-    return Scaffold(
-        appBar: AppBar(
-          leading: BackButton(onPressed: () {
+    return material.Scaffold(
+        appBar: material.AppBar(
+          leading: material.BackButton(onPressed: () {
             context.pop();
           }),
           title: const Text("Preview"),
@@ -104,7 +108,7 @@ class PokemonPreview extends StatelessWidget {
                     height: 28,
                     width: 16,
                     child: Center(
-                      child: VerticalDivider(
+                      child: material.VerticalDivider(
                         endIndent: 4,
                       ),
                     )),
@@ -115,7 +119,8 @@ class PokemonPreview extends StatelessWidget {
                 child: Text("#${pokemon.speciesID}",
                     style: TextStyle(
                         fontSize: 24,
-                        color: Theme.of(context).secondaryHeaderColor)),
+                        color:
+                            material.Theme.of(context).secondaryHeaderColor)),
               ),
             ]),
         SizedBox(
@@ -139,14 +144,15 @@ class PokemonPreview extends StatelessWidget {
 }
 
 // ignore: must_be_immutable
-class SpeciesPreview extends StatelessWidget {
+class SpeciesPreview extends StatelessWidget with UniversalBuilder {
   Species species;
   SpeciesPreview({
     super.key,
     required this.species,
   });
+
   @override
-  Widget build(BuildContext context) {
+  Widget buildAndroid(BuildContext context) {
     return Column(children: [
       Container(
         // The species's sprite.
@@ -179,10 +185,67 @@ class SpeciesPreview extends StatelessWidget {
           height: 48,
           child: Text("#${species.id}",
               style: TextStyle(
-                  fontSize: 24, color: Theme.of(context).secondaryHeaderColor)),
+                  fontSize: 24,
+                  color: material.Theme.of(context).secondaryHeaderColor)),
         ),
       ]),
       SizedBox(
+          height: 48,
+          child: ElementBar(
+              typing: species.getTyping())), // The typing of the species.
+      StatChart(
+        // The stats of the species.
+        baseFuture: species.getBaseStats(),
+        iv: null,
+        ev: null,
+      ),
+      HeightIndicator(
+        // The height of the species.
+        pokemonHeight: species.height * 1.0,
+        imageUrl: "assets/images/sprites/${species.id}.png",
+      ),
+    ]);
+  }
+
+  @override
+  Widget buildWindows(BuildContext context) {
+    return fluent.Column(children: [
+      fluent.Container(
+        // The species's sprite.
+        height: 250,
+        alignment: Alignment.bottomCenter,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: fluent.SizedBox(
+            height: 200,
+            width: 200,
+            child: fluent.AspectRatio(
+              aspectRatio: 1,
+              child: fluent.Image(
+                  fit: fluent.BoxFit.contain,
+                  filterQuality: FilterQuality.none,
+                  image: AssetImage("assets/images/sprites/${species.id}.png")),
+            ),
+          ),
+        ),
+      ),
+      TextWithLoaderBuffer(
+          // The species's name.
+          future: species.getName(),
+          builder: (context, name) => fluent.Text(name,
+              style: const fluent.TextStyle(
+                  fontSize: 48, fontWeight: FontWeight.bold))),
+      fluent.Row(mainAxisAlignment: fluent.MainAxisAlignment.center, children: [
+        // The species's ID.
+        fluent.SizedBox(
+          height: 48,
+          child: fluent.Text("#${species.id}",
+              style: fluent.TextStyle(
+                  fontSize: 24,
+                  color: material.Theme.of(context).secondaryHeaderColor)),
+        ),
+      ]),
+      fluent.SizedBox(
           height: 48,
           child: ElementBar(
               typing: species.getTyping())), // The typing of the species.

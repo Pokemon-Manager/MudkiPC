@@ -1,5 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 
@@ -60,8 +60,8 @@ class StatChart extends StatelessWidget {
                 },
                 dataSets: dataSets,
                 radarShape: RadarShape.polygon,
-                radarBorderData: const BorderSide(color: Colors.blue, width: 2),
-                radarBackgroundColor: Colors.transparent,
+                // radarBorderData: const BorderSide(color: Colors.blue, width: 2),
+                // radarBackgroundColor: Colors.transparent,
                 borderData: FlBorderData(show: false),
               )),
             ),
@@ -81,8 +81,8 @@ class StatChart extends StatelessWidget {
           RadarEntry(value: base.specialAttack * 1.0),
           RadarEntry(value: base.specialDefense * 1.0),
         ],
-        fillColor: Colors.blue.shade500.withOpacity(0.5),
-        borderColor: Colors.blue.shade500,
+        // fillColor: Colors.blue.shade500.withOpacity(0.5),
+        // borderColor: Colors.blue.shade500,
         entryRadius: 1));
     if (iv != null) {
       dataSets.add(RadarDataSet(
@@ -105,8 +105,8 @@ class StatChart extends StatelessWidget {
                 value: (base.specialDefense * 1.0) +
                     ((iv!.specialDefense * 1.0 / 32.0) * 255.0) * 1.2),
           ],
-          fillColor: Colors.teal.shade500.withOpacity(0.5),
-          borderColor: Colors.teal.shade500,
+          // fillColor: Colors.teal.shade500.withOpacity(0.5),
+          // borderColor: Colors.teal.shade500,
           entryRadius: 1));
     }
     if (ev != null) {
@@ -137,8 +137,8 @@ class StatChart extends StatelessWidget {
                     ((iv!.specialDefense * 1.0 / 32.0) * 255.0) +
                     (ev!.specialDefense * 1.0) * 2),
           ],
-          fillColor: Colors.green.shade500.withOpacity(0.5),
-          borderColor: Colors.green.shade500,
+          // fillColor: Colors.green.shade500.withOpacity(0.5),
+          // borderColor: Colors.green.shade500,
           entryRadius: 1));
     }
     return dataSets.reversed.toList();

@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mudkip_frontend/universal_builder.dart';
 
 // ignore: must_be_immutable
 
@@ -26,7 +27,7 @@ class TextWithLoaderBuffer extends StatelessWidget {
           return const AspectRatio(
               aspectRatio: 1,
               child: Center(
-                child: LinearProgressIndicator(),
+                child: UniversalLinearProgressIndicator(),
               ));
         }
       },

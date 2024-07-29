@@ -43,6 +43,22 @@ class Settings {
     }
   }
 
+  static String get heightChartFormatAsString {
+    if (heightChartFormat == HeightChartFormat.metric) {
+      return "Metric";
+    } else {
+      return "Imperial";
+    }
+  }
+
+  static String get heightChartGenderAsString {
+    if (heightChartGender == HeightChartGender.male) {
+      return "Male";
+    } else {
+      return "Female";
+    }
+  }
+
   static Future<void> resetToDefaults() async {
     await prefs.clear();
     await setEmptyToDefaults();
