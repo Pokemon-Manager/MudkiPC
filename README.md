@@ -36,7 +36,7 @@ Every operating system has their own unique look and feel, so why not talor Mudk
 
 ### Windows
 
-![alt text](.github\images\image.png)
+![image](https://github.com/user-attachments/assets/54670f90-dabe-4163-86d5-69393fad08c6)
 
 ### Android
 
