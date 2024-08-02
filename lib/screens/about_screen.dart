@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' as material;
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:macos_ui/macos_ui.dart' as macos;
 import 'package:flutter/widgets.dart';
 
 import 'package:mudkip_frontend/universal_builder.dart';
@@ -31,6 +32,11 @@ class AboutScreen extends StatelessWidget with UniversalBuilder {
           padding: const EdgeInsets.all(8.0),
           child: buildMarkdown(),
         ));
+  }
+
+  @override
+  Widget buildMacOS(BuildContext context) {
+    return macos.MacosScaffold(children: [buildMarkdown()]);
   }
 
   Widget buildMarkdown() => MarkdownWidget(

@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart' as material;
+import 'package:macos_ui/macos_ui.dart' as macos;
+import 'package:flutter/cupertino.dart' as cupertino;
 
 import 'package:mudkip_frontend/universal_builder.dart';
 
@@ -40,6 +42,21 @@ class WarningPage extends StatelessWidget with UniversalBuilder {
       children: [
         const Icon(fluent.FluentIcons.warning, size: 100),
         Text(title),
+        Text(description)
+      ],
+    ));
+  }
+
+  @override
+  Widget buildMacOS(BuildContext context) {
+    return Center(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const macos.MacosIcon(cupertino.CupertinoIcons.question_circle_fill,
+            size: 75),
+        Text(title, style: const TextStyle(fontSize: 24)),
         Text(description)
       ],
     ));

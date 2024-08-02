@@ -32,23 +32,11 @@ final router = GoRouter(initialLocation: "/pc", routes: <RouteBase>[
   ShellRoute(
       routes: <RouteBase>[
         GoRoute(
-            path: "/pc",
-            builder: (context, state) {
-              return const PCView();
-            },
-            pageBuilder: (context, state) {
-              return CustomTransitionPage<void>(
-                key: UniqueKey(),
-                child: const PCView(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  );
-                },
-              );
-            }),
+          path: "/pc",
+          builder: (context, state) {
+            return const PCView();
+          },
+        ),
         GoRoute(
             path: "/pokedex",
             builder: (context, state) {

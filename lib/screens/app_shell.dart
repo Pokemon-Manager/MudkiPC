@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart' as material;
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:macos_ui/macos_ui.dart' as macos;
+import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mudkip_frontend/main.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+// import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/universal_builder.dart';
 
 // ignore: must_be_immutable
@@ -20,61 +22,12 @@ class AppShellState extends State<AppShell> with UniversalBuilder {
   int _selectedIndex = 0;
 
   @override
-  void initState() {
-    MudkiPC.pachinko.addListener(() => setState(() {}));
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    MudkiPC.pachinko.removeListener(() => setState(() {}));
-    super.dispose();
-  }
-
-  @override
   Widget buildAndroid(BuildContext context) {
     final showRail = MediaQuery.of(context).size.width >= 600;
     return material.Scaffold(
-      appBar: material.AppBar(title: const Text('MudkiPC'), actions: [
-        if (showRail)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: 400,
-              child: material.SearchAnchor.bar(
-                suggestionsBuilder: (context, search) async {
-                  return await MudkiPC.pachinko
-                      .generateSuggestions(context, search);
-                },
-                barLeading: SizedBox(
-                    height: 100,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: MudkiPC.pachinko.getChips())),
-                searchController: MudkiPC.pachinko.searchController,
-              ),
-            ),
-          )
-        else
-          material.SearchAnchor(
-              viewLeading: Wrap(alignment: WrapAlignment.start, children: [
-                ...MudkiPC.pachinko.getChips().map((chip) {
-                  return SizedBox(width: 100, child: chip);
-                })
-              ]),
-              builder: (context, search) {
-                return material.IconButton(
-                    onPressed: () {
-                      MudkiPC.pachinko.searchController.openView();
-                    },
-                    icon: const Icon(size: 30, material.Icons.search));
-              },
-              suggestionsBuilder: (context, search) async {
-                return await MudkiPC.pachinko
-                    .generateSuggestions(context, search);
-              },
-              searchController: MudkiPC.pachinko.searchController),
-        const SizedBox(width: 20),
+      appBar: material.AppBar(title: const Text('MudkiPC'), actions: const [
+        UniversalSearchBar(),
+        SizedBox(width: 20),
       ]),
       drawer: material.Drawer(
           width: 300,
@@ -127,6 +80,7 @@ class AppShellState extends State<AppShell> with UniversalBuilder {
   Widget buildWindows(BuildContext context) {
     return fluent.NavigationView(
       pane: fluent.NavigationPane(
+          autoSuggestBox: const UniversalSearchBar(),
           selected: _selectedIndex,
           items: Destinations.getDestinationsForWindowsPane(widget.child),
           onItemPressed: (int index) {
@@ -139,6 +93,33 @@ class AppShellState extends State<AppShell> with UniversalBuilder {
                   fontSize: 32, fontWeight: material.FontWeight.bold)),
           leading: null,
           automaticallyImplyLeading: false),
+    );
+  }
+
+  @override
+  Widget buildMacOS(BuildContext context) {
+    return macos.MacosWindow(
+      sidebar: macos.Sidebar(
+        top: const UniversalSearchBar(),
+        bottom: Row(children: [
+          macos.MacosIconButton(
+              icon: const Icon(cupertino.CupertinoIcons.settings),
+              onPressed: () {
+                context.push("/settings");
+              })
+        ]),
+        builder: (context, scrollController) {
+          return macos.SidebarItems(
+              items: Destinations.getDestinationsForMacOS(),
+              currentIndex: _selectedIndex,
+              onChanged: (int index) {
+                _selectedIndex = index;
+                context.go(Destinations.getPath(index));
+              });
+        },
+        minWidth: 300,
+      ),
+      child: widget.child,
     );
   }
 }
@@ -202,7 +183,8 @@ class PCDestination extends Destination {
             label: 'PC',
             icons: {
               "android": material.Icons.grid_view_rounded,
-              "windows": fluent.FluentIcons.grid_view_medium
+              "windows": fluent.FluentIcons.grid_view_medium,
+              "macos": cupertino.CupertinoIcons.square_grid_2x2,
             },
             path: '/pc',
             actions: [
@@ -223,7 +205,8 @@ class PokeDexDestination extends Destination {
             label: 'PokéDex',
             icons: {
               "android": material.Icons.phone_android_rounded,
-              "windows": fluent.FluentIcons.book_answers
+              "windows": fluent.FluentIcons.book_answers,
+              "macos": cupertino.CupertinoIcons.book,
             },
             path: '/pokedex',
             actions: []);
@@ -272,6 +255,16 @@ class Destinations {
         },
         title: const Text("Settings")));
     return destinationsWidgets;
+  }
+
+  static List<macos.SidebarItem> getDestinationsForMacOS() {
+    List<macos.SidebarItem> destinationsWigets = [];
+    for (Destination destination in destinations) {
+      destinationsWigets.add(macos.SidebarItem(
+          leading: Center(child: Icon(destination.icons["macos"])),
+          label: Text(destination.label)));
+    }
+    return destinationsWigets;
   }
 
   static String getPath(int index) => destinations[index].path;

@@ -32,7 +32,7 @@ MudkiPC is built using Dart & Flutter, which in layman's terms mean that it can 
 
 ## Native Look & Feel 🖱️
 
-Every operating system has their own unique look and feel, and everyone prefers one over the other. So, why not talor MudkiPC to every preference? MudkiPC will look, feel, and act like it was made specifically for your device, leaning into the strengths of your OS. If you prefer different look or want your phone and desktop to look the same, you can change it on the fly.
+Every operating system has their own unique look and feel, so why not talor MudkiPC to the OS itself? MudkiPC will look, feel, and act like it was made specifically for your device, leaning into the strengths of your OS. If you prefer different look or want your phone and desktop to look the same, you can change it on the fly.
 
 ### Windows
 

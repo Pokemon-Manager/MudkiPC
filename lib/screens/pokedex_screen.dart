@@ -1,4 +1,10 @@
 import 'package:flutter/widgets.dart';
+// import 'package:flutter/material.dart' as material;
+// import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:macos_ui/macos_ui.dart' as macos;
+// import 'package:flutter/cupertino.dart' as cupertino;
+import 'package:mudkip_frontend/universal_builder.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
@@ -11,7 +17,7 @@ class PokeDexView extends StatefulWidget {
   State<PokeDexView> createState() => _PokeDexViewState();
 }
 
-class _PokeDexViewState extends State<PokeDexView> {
+class _PokeDexViewState extends State<PokeDexView> with UniversalBuilder {
   @override
   void initState() {
     MudkiPC.pachinko.addListener(refresh);
@@ -28,8 +34,7 @@ class _PokeDexViewState extends State<PokeDexView> {
     setState(() {});
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildList(BuildContext context) {
     return AsyncPlaceholder(
         future: PokeAPI.searchSpecies(),
         childBuilder: (List<Map<String, Object?>> species) {
@@ -48,5 +53,27 @@ class _PokeDexViewState extends State<PokeDexView> {
             },
           );
         });
+  }
+
+  @override
+  Widget buildAndroid(BuildContext context) {
+    return buildList(context);
+  }
+
+  @override
+  Widget buildWindows(BuildContext context) {
+    return buildList(context);
+  }
+
+  @override
+  Widget buildMacOS(BuildContext context) {
+    return macos.MacosScaffold(
+        toolBar: const macos.ToolBar(
+          title: Text("PokéDex"),
+        ),
+        children: [
+          macos.ContentArea(
+              builder: (context, scrollController) => buildList(context))
+        ]);
   }
 }
