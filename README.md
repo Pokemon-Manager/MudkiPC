@@ -8,7 +8,7 @@
 
 ## What is MudkiPC?
 
-MudkiPC is a brand new application app, that is built from the ground up to be a simple yet feature rich Pokémon editor and compendium.
+MudkiPC is a brand new application that is built from the ground up to be a simple yet feature rich Pokémon editor and compendium.
 
 <p align="right"><img src="https://i.pinimg.com/originals/9b/c3/10/9bc31023146c13370fb2ec9418eb3eaf.png" width="230" height="230" border="0"/>
 </p>
