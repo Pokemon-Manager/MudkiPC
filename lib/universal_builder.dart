@@ -11,7 +11,7 @@ import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:mudkip_frontend/main.dart';
 
 mixin UniversalBuilder {
-  static String? overridePlatform = "macos";
+  static String? overridePlatform = "";
 
   static Widget buildApp(ThemeManager themeProvider) {
     String platform = Platform.operatingSystem;
