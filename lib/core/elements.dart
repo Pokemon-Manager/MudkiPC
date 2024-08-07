@@ -51,6 +51,9 @@ class Typing {
     return 1.0;
   }
 
+  /// # toJson()
+  /// ## Converts this Typing instance to a JSON object.
+  /// TODO: Remove this function. Not needed right now, and needs to be refactored in the future.
   factory Typing.fromJson(dynamic json) {
     if (json is List<dynamic>) {
       if (json.length == 1) {
@@ -67,6 +70,9 @@ class Typing {
     }
   }
 
+  /// # fromDB(`List<Map<String, Object?>> query`)
+  /// ## Creates a Typing instance from a database query.
+  /// Returns a Typing instance.
   factory Typing.fromDB(List<Map<String, Object?>> query) {
     if (query.length == 1) {
       return Typing(type1: TypeElement.fromDB(query.first));
@@ -77,6 +83,9 @@ class Typing {
     }
   }
 
+  /// # toJson()
+  /// ## Converts this Typing instance to a JSON object.
+  /// TODO: Remove this function. Not needed right now, and needs to be refactored in the future.
   Map<String, dynamic> toJson() {
     if (isSingleType()) {
       return {"type1": type1.toJson()};
@@ -85,6 +94,9 @@ class Typing {
     }
   }
 }
+
+/// # `Class` TypeElement
+/// ## A class that represents the a single type.
 
 abstract class TypeElement {
   String get name;

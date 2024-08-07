@@ -1,6 +1,6 @@
 import 'package:mudkip_frontend/pokemon_manager.dart';
 
-/// # Move
+/// # `Class` Move
 /// ## A class that represents a move from a Game.
 class Move {
   int id = 0; // ID of the move.

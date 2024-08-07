@@ -1,6 +1,6 @@
 import 'package:mudkip_frontend/pokemon_manager.dart';
 
-/// # Pokémon
+/// # `Class` Pokémon
 /// ## A class that represents a Pokémon from a Game. Extends the Species class.
 /// This class contains all possible information about a Pokémon.
 /// ### Variables:
@@ -8,7 +8,6 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 /// - [gender] is the gender of the pokemon.
 /// - [level] is the level of the pokemon.
 /// - [exp] is the current experience of the pokemon.
-/// - []
 /// - [species] is the species of the pokemon.
 /// - [ivStats] is the IVs of the Pokémon.
 /// - [evStats] is the EVs of the Pokémon.

@@ -132,6 +132,9 @@ class Pachinko with ChangeNotifier {
   }
 }
 
+/// # `Class` Suggestion
+/// ## A class that represents a suggestion for the search bar.
+/// Contains a name, an id, and an onSelect function. There are different implementations of this class for each platform.
 class Suggestion {
   String name;
   int id;

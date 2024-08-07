@@ -2,6 +2,19 @@ import 'package:mudkip_frontend/core/constants.dart';
 import 'package:mudkip_frontend/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// # `Class` Settings
+/// ## A class that represents the settings of the application.
+/// ### Constants:
+/// - `defaultSettings`: The default settings of the application.
+/// - `doPrefs`: Sets the default settings of the application.
+/// - `setHeightChartGender`: Sets the gender of the height chart.
+/// - `setHeightChartFormat`: Sets the format of the height chart.
+/// - `heightChartGender`: Gets the gender of the height chart.
+/// - `heightChartFormat`: Gets the format of the height chart.
+/// - `resetToDefaults`: Resets the settings to the default settings.
+/// - `resetHeightChart`: Resets the height chart to the default settings.
+/// - `setEmptyToDefaults`: Sets the empty settings to the default settings.
+/// - `hasUpdated`: Checks if the application has been updated.
 class Settings {
   static late SharedPreferences prefs;
   static const Map<String, dynamic> defaultSettings = {

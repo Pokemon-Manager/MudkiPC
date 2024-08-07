@@ -1,3 +1,5 @@
+/// # `Class` Trainer
+/// ## A class that represents a trainer.
 class Trainer {
   String name;
   int gameID;

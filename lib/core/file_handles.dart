@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:mudkip_frontend/pokemon_manager.dart';
 
+/// # `Class` FileHandle
+/// ## A class that represents a file handle.
 /// ### Compatible Extensions:
 /// - pk6 (A Single Pokémon + Basic Trainer Info)
 /// - pk7 (A Single Pokémon + Basic Trainer Info)

@@ -2,11 +2,11 @@
 
 /*
   Name: Constants
-  Purpose: A file that contains all the enums used in the app.
+  Purpose: A file that contains all the enums and constants used in the app.
 
-  Most of these enums are already inside of the `Global.db` file, however you sould always use these instead.
+  Most of these constants are already inside of the `Global.db` file, however you sould always use these instead.
   The reason for this because these are just numbers that never change. They get additions, but are not refactored.
-  This is done for performance, readability, and most importantly to make coding for extremly complex systems way easier. Such as elements, games transfers, and exp growth.
+  This is done for performance, readability, and most importantly to make coding for extremely complex systems way easier. Such as elements, game transfers, and exp growth.
 */
 enum HeightChartGender { male, female }
 

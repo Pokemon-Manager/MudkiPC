@@ -10,6 +10,8 @@ import 'package:mudkip_frontend/pokemon_manager.dart';
 ///   future: PokeAPI.fetchSpecies(1),
 ///   childBuilder: (species) => SpeciesEntry(species: species),
 /// );
+///
+/// TextWithLoaderBuffer(future: PC.fetchPokemon(1).then((value) => (value! as Pokemon).getSpecies().then((value) => (value! as Species).getName()) as Future<String>));
 /// ```
 ///
 /// There are some instances where you may want to first fetch a Pokemon and then get its Species,

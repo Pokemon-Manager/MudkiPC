@@ -1,6 +1,6 @@
 import 'package:mudkip_frontend/pokemon_manager.dart';
 
-/// # Ability
+/// # `Class` Ability
 /// ## A class that represents an ability from a Game.
 class Ability {
   String name = ""; // Name of the ability.
