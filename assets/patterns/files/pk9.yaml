@@ -1,0 +1,4 @@
+# pk9
+# Description: Represents a PK9 file.
+imports:
+  - { path: datablocks/PK9Datablock.yaml, address: 0x00 }
