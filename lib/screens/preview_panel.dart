@@ -10,7 +10,7 @@ import 'package:mudkip_frontend/widgets/element_bar.dart';
 import 'package:mudkip_frontend/widgets/height_chart.dart';
 import 'package:mudkip_frontend/widgets/stat_chart.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 import 'package:go_router/go_router.dart';
 
 // ignore: must_be_immutable

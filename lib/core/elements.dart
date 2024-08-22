@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 
 /// # `Class` Typing
 /// ## A class that represents the typing of a [Species] or [Move].

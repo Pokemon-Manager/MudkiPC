@@ -1,4 +1,4 @@
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 
 /// # `Class` Species
 /// ## Acts as a interface for getting information about a [Species].

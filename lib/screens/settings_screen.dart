@@ -7,7 +7,7 @@ import 'package:mudkip_frontend/main.dart';
 
 import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 import 'package:path_provider/path_provider.dart';
 
 /* 

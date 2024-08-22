@@ -4,7 +4,7 @@ import 'package:flutter/material.dart' as material;
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:macos_ui/macos_ui.dart' as macos;
 import 'package:flutter/widgets.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 
 import 'package:mudkip_frontend/theme/theme_constants.dart';
 import 'package:mudkip_frontend/theme/theme_manager.dart';

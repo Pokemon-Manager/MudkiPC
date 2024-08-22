@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mudkip_frontend/screens/app_shell.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';

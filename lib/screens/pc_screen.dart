@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/pokemon_slot.dart';
 import 'package:mudkip_frontend/screens/warning_page.dart';

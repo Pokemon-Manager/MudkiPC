@@ -1,4 +1,4 @@
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 
 /// # `Class` Pokémon
 /// ## A class that represents a Pokémon from a Game. Extends the Species class.

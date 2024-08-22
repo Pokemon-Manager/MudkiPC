@@ -1,0 +1,103 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter test --machine --name ^Arceus Bridge Test( \(variant: .*\))?$ --run-skipped -d windows C:\Repos\mudkipc\test\arceus_bridge_test.dart
+
+## exception
+
+PathAccessException: PathAccessException: Cannot create file, path = 'build\unit_test_assets\assets/images/sprites/10045.png' (OS Error: The process cannot access the file because it is being used by another process.
+, errno = 32)
+
+```
+#0      _File.throwIfError (dart:io/file_impl.dart:675:7)
+#1      _File.createSync (dart:io/file_impl.dart:306:5)
+#2      ForwardingFile.createSync (package:file/src/forwarding/forwarding_file.dart:26:16)
+#3      ErrorHandlingFile.createSync.<anonymous closure> (package:flutter_tools/src/base/error_handling_io.dart:282:22)
+#4      _runSync (package:flutter_tools/src/base/error_handling_io.dart:587:14)
+#5      ErrorHandlingFile.createSync (package:flutter_tools/src/base/error_handling_io.dart:281:5)
+#6      ErrorHandlingFile.copySync.<anonymous closure> (package:flutter_tools/src/base/error_handling_io.dart:319:24)
+#7      _runSync (package:flutter_tools/src/base/error_handling_io.dart:587:14)
+#8      ErrorHandlingFile.copySync (package:flutter_tools/src/base/error_handling_io.dart:318:5)
+#9      writeBundle.<anonymous closure> (package:flutter_tools/src/bundle_builder.dart:233:19)
+<asynchronous suspension>
+#10     Future.wait.<anonymous closure> (dart:async/future.dart:534:21)
+<asynchronous suspension>
+#11     writeBundle (package:flutter_tools/src/bundle_builder.dart:187:3)
+<asynchronous suspension>
+#12     TestCommand._buildTestAsset (package:flutter_tools/src/commands/test.dart:692:7)
+<asynchronous suspension>
+#13     TestCommand.runCommand (package:flutter_tools/src/commands/test.dart:414:7)
+<asynchronous suspension>
+#14     FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1396:27)
+<asynchronous suspension>
+#15     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:153:19)
+<asynchronous suspension>
+#16     CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#17     FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:372:9)
+<asynchronous suspension>
+#18     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:153:19)
+<asynchronous suspension>
+#19     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:308:5)
+<asynchronous suspension>
+#20     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:130:9)
+<asynchronous suspension>
+#21     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:153:19)
+<asynchronous suspension>
+#22     main (package:flutter_tools/executable.dart:93:3)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel beta, 3.23.0-0.1.pre, on Microsoft Windows [Version 10.0.22631.4037], locale en-US)
+    • Flutter version 3.23.0-0.1.pre on channel beta at C:\FlutterSDK\flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 2feea7a407 (3 months ago), 2024-06-06 10:19:10 +0700
+    • Engine revision bb10c54666
+    • Dart version 3.5.0 (build 3.5.0-180.3.beta)
+    • DevTools version 2.36.0
+
+[✓] Windows Version (Installed version of Windows is version 10 or higher)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 35.0.0)
+    • Android SDK at C:\Users\Colly\AppData\Local\Android\sdk
+    • Platform android-35, build-tools 35.0.0
+    • Java binary at: C:\Program Files\Android\Android Studio\jbr\bin\java
+    • Java version OpenJDK Runtime Environment (build 17.0.10+0--11609105)
+    • All Android licenses accepted.
+
+[✓] Chrome - develop for the web
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[✓] Visual Studio - develop Windows apps (Visual Studio Community 2022 17.11.0 Preview 2.1)
+    • Visual Studio at C:\Program Files\Microsoft Visual Studio\2022\Preview
+    • Visual Studio Community 2022 version 17.11.35017.193
+    • The current Visual Studio installation is a pre-release version. It may not be supported by Flutter yet.
+    • Windows 10 SDK version 10.0.26100.0
+
+[✓] Android Studio (version 2024.1)
+    • Android Studio at C:\Program Files\Android\Android Studio
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 17.0.10+0--11609105)
+
+[✓] VS Code (version 1.92.2)
+    • VS Code at C:\Users\Colly\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.94.0
+
+[✓] Connected device (3 available)
+    • Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.22631.4037]
+    • Chrome (web)      • chrome  • web-javascript • Google Chrome 127.0.6533.120
+    • Edge (web)        • edge    • web-javascript • Microsoft Edge 127.0.2651.98
+
+[✓] Network resources
+    • All expected network resources are available.
+
+• No issues found!
+```

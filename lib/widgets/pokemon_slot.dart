@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:mudkip_frontend/universal_builder.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 

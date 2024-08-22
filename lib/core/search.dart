@@ -287,8 +287,7 @@ class KnownMovePin extends MovePin {
   bool get isForUserPokemon => true;
   KnownMovePin(super.compare, super.pachinkoMachine);
   @override
-  String get sqlStatement =>
-      "move1ID = ? OR move2ID = ? OR move3ID = ? OR move4ID = ?";
+  String get sqlStatement => "move1 = ? OR move2 = ? OR move3 = ? OR move4 = ?";
 }
 
 class LearnableMovePin extends MovePin {

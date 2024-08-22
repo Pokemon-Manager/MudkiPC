@@ -1,4 +1,4 @@
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 
 /// # `Class` Ability
 /// ## A class that represents an ability from a Game.

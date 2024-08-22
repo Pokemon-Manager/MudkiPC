@@ -4,7 +4,6 @@ import 'package:macos_ui/macos_ui.dart' as macos;
 import 'package:flutter/widgets.dart';
 
 import 'package:mudkip_frontend/universal_builder.dart';
-import 'package:mudkip_frontend/core/file_handles.dart';
 import 'package:mudkip_frontend/main.dart';
 import 'package:markdown_widget/markdown_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -49,7 +48,6 @@ class AboutScreen extends StatelessWidget with UniversalBuilder {
 Flutter is an open-source UI toolkit for building beautiful, natively compiled, multi-platform applications on the web, desktop, iOS, and Android.
 
 ##### Currently Supported File Formats:
-  ${FileHandle.compatibleExtensions.map((e) => "- *.$e").join("\n  ")}
 
 ##### Credits:
 - [Flutter](https://flutter.dev/)

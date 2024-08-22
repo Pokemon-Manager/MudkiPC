@@ -1,0 +1,286 @@
+# PK8Datablock
+# Description: PK8Datablock is a data block that repersents the addresses and formats of a Pokemon from Generation 8.
+
+encryption_constant:
+  size: u32
+  address: 0x00
+sanity:
+  size: u16
+  address: 0x04
+checksum:
+  size: u16
+  address: 0x06
+nickname:
+  size: char16[0x0C]
+  address: 0x58
+species_id:
+  size: u16
+  address: 0x08
+held_item:
+  size: u16
+  address: 0x0A
+id32:
+  size: u32
+  address: 0x0C
+tid16:
+  size: u16
+  address: 0x0C
+sid16:
+  size: u16
+  address: 0x0E
+exp:
+  size: u32
+  address: 0x10
+ability:
+  size: u16
+  address: 0x14
+ability_span:
+  address: 0x16
+  bits:
+    ability_number: 7
+    is_hidden: 1
+marking_value:
+  size: u16
+  address: 0x10
+pid:
+  size: u32
+  address: 0x1C
+nature:
+  size: u8
+  address: 0x20
+stat_nature:
+  size: u8
+  address: 0x21
+form:
+  size: u16
+  address: 0x24
+ev_hp:
+  size: u8
+  address: 0x26
+ev_atk:
+  size: u8
+  address: 0x27
+ev_def:
+  size: u8
+  address: 0x28
+ev_spe:
+  size: u8
+  address: 0x29
+ev_spa:
+  size: u8
+  address: 0x2A
+ev_spd:
+  size: u8
+  address: 0x2B
+contest_cool:
+  size: u8
+  address: 0x2C
+contest_beauty:
+  size: u8
+  address: 0x2D
+contest_cute:
+  size: u8
+  address: 0x2E
+contest_smart:
+  size: u8
+  address: 0x2F
+contest_tough:
+  size: u8
+  address: 0x30
+contest_sheen:
+  size: u8
+  address: 0x31
+pokerus_state:
+  address: 0x32
+  bits:
+    pokerus_days: 4
+    pokerus_strain: 4
+ribbon_flags:
+  address: 0x34
+  bits:
+    champion_kalos: 1
+    champion_g3: 1
+    champion_sinnoh: 1
+    best_friends: 1
+    training: 1
+    battler_skillful: 1
+    battler_expert: 1
+    effort: 1
+    alert: 1
+    shock: 1
+    downcast: 1
+    careless: 1
+    relax: 1
+    snooze: 1
+    smile: 1
+    gorgeous: 1
+    royal: 1
+    gorgeous_royal: 1
+    artist: 1
+    footprint: 1
+    record: 1
+    legend: 1
+    country: 1
+    national: 1
+    earth: 1
+    world: 1
+    classic: 1
+    premier: 1
+    event: 1
+    birthday: 1
+    special: 1
+    souvenir: 1
+    wishing: 1
+    champion_battle: 1
+    champion_regional: 1
+    champion_national: 1
+    champion_world: 1
+    has_contest_memory: 1
+    champion_g6_hoenn: 1
+    contest_star: 1
+    master_coolness: 1
+    master_beauty: 1
+    master_cuteness: 1
+    master_cleverness: 1
+    master_toughness: 1
+    champion_alola: 1
+    battle_royale: 1
+    battle_tree_great: 1
+    battle_tree_master: 1
+    champion_galar: 1
+    tower_master: 1
+    master_rank: 1
+    mark_lunchtime: 1
+    mark_sleepy_time: 1
+    mark_dusk: 1
+    mark_dawn: 1
+    mark_cloudy: 1
+    mark_rainy: 1
+    mark_stormy: 1
+    mark_snowy: 1
+    mark_blizzard: 1
+    mark_dry: 1
+    mark_sandstorm: 1
+    padding1: pad 1
+    count_memory_contest: 8
+    count_memory_battle: 8
+    padding2: pad 16
+    mark_misty: 1
+    mark_destiny: 1
+    mark_fishing: 1
+    mark_curry: 1
+    mark_uncommon: 1
+    mark_rare: 1
+    mark_rowdy: 1
+    mark_absent_minded: 1
+    mark_jittery: 1
+    mark_excited: 1
+    mark_charismatic: 1
+    mark_calmness: 1
+    mark_intense: 1
+    mark_zoned_out: 1
+    mark_joyful: 1
+    mark_angry: 1
+    mark_smiley: 1
+    mark_teary: 1
+    mark_upbeat: 1
+    mark_peeved: 1
+    mark_intellectual: 1
+    mark_ferocious: 1
+    mark_crafty: 1
+    mark_scowling: 1
+    mark_kindly: 1
+    mark_flustered: 1
+    mark_pumped_up: 1
+    mark_zero_energy: 1
+    mark_prideful: 1
+    mark_unsure: 1
+    mark_humble: 1
+    mark_thorny: 1
+    mark_vigor: 1
+    mark_slump: 1
+    hisui: 1
+    twinkling_star: 1
+    champion_paldea: 1
+    mark_jumbo: 1
+    mark_mini: 1
+    mark_itemfinder: 1
+    mark_partner: 1
+    mark_gourmand: 1
+    once_in_a_lifetime: 1
+    mark_alpha: 1
+    mark_mightiest: 1
+    mark_titan: 1
+    partner: 1
+    rib45_7: 1
+    rib46_0: 1
+    rib46_1: 1
+    rib46_2: 1
+    rib46_3: 1
+    rib46_4: 1
+    rib46_5: 1
+    rib46_6: 1
+    rib46_7: 1
+    rib47_0: 1
+    rib47_1: 1
+    rib47_2: 1
+    rib47_3: 1
+    rib47_4: 1
+    rib47_5: 1
+    rib47_6: 1
+    rib47_7: 1
+gender_span:
+  address: 0x22
+  bits:
+    fateful_encounter: 1
+    gender: 3
+ot_nickname:
+  size: char16[0x0C]
+  address: 0xF8
+height_scalar:
+  size: u8
+  address: 0x48
+weight_scalar:
+  size: u8
+  address: 0x49
+scale:
+  size: u8
+  address: 0x4A
+ht_gender:
+  size: u8
+  address: 0xC2
+move1:
+  size: u16
+  address: 0x72
+move2:
+  size: u16
+  address: 0x74
+move3:
+  size: u16
+  address: 0x76
+move4:
+  size: u16
+  address: 0x78
+relearn_move1:
+  size: u16
+  address: 0x82
+relearn_move2:
+  size: u16
+  address: 0x84
+relearn_move3:
+  size: u16
+  address: 0x86
+relearn_move4:
+  size: u16
+  address: 0x88
+iv_span:
+  address: 0x8C
+  bits:
+    iv_hp: 5
+    iv_atk: 5
+    iv_def: 5
+    iv_spe: 5
+    iv_spa: 5
+    iv_spd: 5
+    is_egg: 1
+    is_nicknamed: 1

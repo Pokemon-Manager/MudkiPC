@@ -1,4 +1,4 @@
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 
 /// # `Class` Move
 /// ## A class that represents a move from a Game.

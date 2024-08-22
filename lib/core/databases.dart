@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/core/arceus.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:queue/queue.dart';
 /* 
 Name: Databases
@@ -30,15 +30,7 @@ final class PokeAPI {
   /// ## Checks to see if the database exists and if it doesn't, it extracts it from the asset bundle.
   /// The database is stored in the `assets/db/` and is named `Global.db`.
   static Future<void> create() async {
-    File globalFile = File(
-        "${await MudkiPC.cacheFolder}MudkiPC/db/Global.db"); // Initializes the file object to check if the database exists.
-    if (!(globalFile.existsSync())) {
-      ByteData data = await rootBundle.load(
-          "assets/db/Global.db"); // Loads the database from the asset bundle.
-      globalFile.createSync(recursive: true); // Creates the file.
-      globalFile.writeAsBytesSync(data.buffer
-          .asUint8List()); // Writes the data from the asset bundle to the created file.
-    }
+    await MudkiPC.extractFileFromAssets("db/Global.db");
     PokeAPI.db = await openDatabase(
         "${await MudkiPC.cacheFolder}MudkiPC/db/Global.db",
         onConfigure: _onConfigure); // Opens the database.
@@ -448,7 +440,6 @@ class PKMDBFolder {
   String path;
   List<Pokemon> pokemons = [];
   List<FileSystemEntity> files = [];
-  List<FileHandle> openFiles = [];
   List<Trainer> trainers = [];
   Directory directory = Directory("");
 
@@ -468,9 +459,8 @@ class PKMDBFolder {
     for (FileSystemEntity entity in files) {
       if (entity is File) {
         File file = entity;
-        if (FileHandle.isCompatibleFile(file)) {
-          openFiles.add(FileHandle.toAssociatedHandle(file, this));
-        }
+        String extension = file.path.split(".").last;
+        Arceus.read(file.path, "./patterns/files/$extension.yaml");
       }
     }
   }
@@ -478,9 +468,6 @@ class PKMDBFolder {
   /// # `Future<void>` extractAllData()
   /// ## Calls [parseDatablocks] on all of the [FileHandle]s in [openFiles].
   Future<void> extractAllData() async {
-    for (FileHandle file in openFiles) {
-      await file.parseDatablocks();
-    }
     await PC.addPokemonList(pokemons);
     return;
   }

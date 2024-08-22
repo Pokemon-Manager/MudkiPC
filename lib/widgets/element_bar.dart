@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:mudkip_frontend/pokemon_manager.dart';
+import 'package:mudkip_frontend/mudkipc.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 
 /// # `Class` ElementBar extends `StatelessWidget`
