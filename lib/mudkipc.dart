@@ -52,10 +52,8 @@ class MudkiPC {
     if (path.startsWith("assets/")) {
       path = path.substring(7);
     }
-    print("Copying $path");
-    print("To ${await MudkiPC.cacheFolder}/$path");
     File globalFile = File(
-        "${await MudkiPC.cacheFolder}/$path"); // Initializes the file object to check if the database exists.
+        "${await MudkiPC.cacheFolder}$path"); // Initializes the file object to check if the database exists.
     if (!(globalFile.existsSync())) {
       ByteData data = await rootBundle
           .load("assets/$path"); // Loads the database from the asset bundle.

@@ -6,31 +6,25 @@ class Arceus {
     if (Platform.isWindows) {
       await MudkiPC.extractFileFromAssets("arceus/windows/arceus.exe");
     }
-    MudkiPC.extractFolderFromAssets("patterns/");
+    await MudkiPC.extractFolderFromAssets("patterns/");
   }
 
   /// # static `Future<dynamic>` _run(List<String> args) async
   /// ## Runs the arceus command with the given arguments.
   /// Do not call this function directly. Use the `read` or any other function.
   static Future<dynamic> _run(List<String> args) async {
-    await _start();
+    await Arceus._start();
     ProcessResult? result;
     if (Platform.isWindows) {
       result = await Process.run(
           "${await MudkiPC.cacheFolder}arceus/windows/arceus.exe", args,
           workingDirectory: await MudkiPC.cacheFolder);
     }
-
-    if (result!.exitCode == 0) {
-      return result.stdout;
-    }
+    return result?.stdout;
   }
 
   static Future<dynamic> read(String filepath, String pattern) async {
-    print(filepath);
-    if (filepath.endsWith(".pk9")) {
-      return await _run(
-          ["pattern", "parse", "--file", filepath, "--pattern", pattern]);
-    }
+    return await _run(
+        ["pattern", "read", "--file", filepath, "--pattern", pattern]);
   }
 }

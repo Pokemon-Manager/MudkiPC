@@ -277,7 +277,6 @@ final class PC {
   static Queue queue = Queue(
       delay: const Duration(
           microseconds: 100)); // The queue for database operations.
-  static List<PKMDBFolder> pkmdbs = []; // The list of PKMDB folders in the PC.
 
   /// # `Future<PC>` create()
   /// ## Creates the user's PC.
@@ -404,13 +403,22 @@ final class PC {
 
   /// # `Future<void>` openFolder(`String path`)
   /// ## Opens a folder and extracts the data from it.
-  /// Creates a [PKMDBFolder] and extracts the data from the folder.
   static Future<void> openFolder(String path) async {
-    PKMDBFolder pkmdb = PKMDBFolder(path: path);
-    pkmdb.loadFolder();
-    pkmdb.openCompatibleFiles();
-    await pkmdb.extractAllData();
-    return;
+    for (var entry in Directory(path).listSync()) {
+      if (entry is! File) continue;
+      dynamic result;
+      if (entry.path.endsWith(".pk9")) {
+        result = await Arceus.read(entry.path, "./patterns/files/pk9.yaml");
+      } else if (entry.path.endsWith(".pk8")) {
+        result = await Arceus.read(entry.path, "./patterns/files/pk8.yaml");
+      } else if (entry.path.endsWith(".pk7")) {
+        result = await Arceus.read(entry.path, "./patterns/files/pk7.yaml");
+      }
+
+      if (result != null && result is Map<String, dynamic>) {
+        await addPokemon(Pokemon.fromArceus(result));
+      }
+    }
   }
 
   /// # `Future<bool>` isEmpty(String table)
@@ -431,44 +439,5 @@ final class PC {
           MudkiPC.pachinko.formArguments());
     }
     return x!.map((e) => Pokemon.fromDB(e)).toList();
-  }
-}
-
-/// # `class` PKMDBFolder
-/// ## A class that represents a folder that has been imported.
-class PKMDBFolder {
-  String path;
-  List<Pokemon> pokemons = [];
-  List<FileSystemEntity> files = [];
-  List<Trainer> trainers = [];
-  Directory directory = Directory("");
-
-  PKMDBFolder({required this.path});
-
-  /// # `void` loadFolder()
-  /// ## Loads the folder and lists all of the files into the [files] variable.
-  void loadFolder() {
-    directory = Directory(path);
-    files = directory.listSync();
-    return;
-  }
-
-  /// # `void` openCompatibleFiles()
-  /// ## Opens all compatible files in the folder.
-  void openCompatibleFiles() {
-    for (FileSystemEntity entity in files) {
-      if (entity is File) {
-        File file = entity;
-        String extension = file.path.split(".").last;
-        Arceus.read(file.path, "./patterns/files/$extension.yaml");
-      }
-    }
-  }
-
-  /// # `Future<void>` extractAllData()
-  /// ## Calls [parseDatablocks] on all of the [FileHandle]s in [openFiles].
-  Future<void> extractAllData() async {
-    await PC.addPokemonList(pokemons);
-    return;
   }
 }
