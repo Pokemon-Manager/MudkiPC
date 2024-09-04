@@ -21,7 +21,6 @@ mixin UniversalBuilder {
 
   static Widget buildApp(ThemeManager themeProvider) {
     String platform = Platform.operatingSystem;
-    print("Platform: $platform");
     if (overridePlatform != null) {
       platform = overridePlatform!;
     }
