@@ -8,8 +8,9 @@ checksum:
   size: u16
   address: 0x06
 nickname:
+  endAtZero: true
   size: char16[0x0C]
-  address: 0x58
+  address: 0x40
 species_id:
   size: u16
   address: 0x08
@@ -136,5 +137,9 @@ ot_first_meet:
     met_level: 7
     ot_gender: 1
 ot_nickname:
+  endAtZero: true
   size: char16[0x0C]
   address: 0xB0
+version:
+  size: u8
+  address: 0xDF

@@ -11,6 +11,7 @@ checksum:
   size: u16
   address: 0x06
 nickname:
+  endAtZero: true
   size: char16[0x0C]
   address: 0x58
 species_id:
@@ -235,6 +236,7 @@ gender_span:
     fateful_encounter: 1
     gender: 3
 ot_nickname:
+  endAtZero: true
   size: char16[0x0C]
   address: 0xF8
 height_scalar:
@@ -284,3 +286,6 @@ iv_span:
     iv_spd: 5
     is_egg: 1
     is_nicknamed: 1
+version:
+  size: u8
+  address: 0xDE

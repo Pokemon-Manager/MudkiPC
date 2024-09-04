@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:mudkip_frontend/mudkipc.dart';
 
 class Arceus {
@@ -20,11 +21,14 @@ class Arceus {
           "${await MudkiPC.cacheFolder}arceus/windows/arceus.exe", args,
           workingDirectory: await MudkiPC.cacheFolder);
     }
+    if (result?.exitCode != 0) {
+      throw Exception(result?.stderr);
+    }
     return result?.stdout;
   }
 
   static Future<dynamic> read(String filepath, String pattern) async {
-    return await _run(
-        ["pattern", "read", "--file", filepath, "--pattern", pattern]);
+    return jsonDecode(await _run(
+        ["pattern", "read", "--file", filepath, "--pattern", pattern]));
   }
 }

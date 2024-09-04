@@ -49,7 +49,7 @@ final router = GoRouter(initialLocation: "/pc", routes: <RouteBase>[
 ]);
 
 void main(List<String> args) async {
-  logFile = File("${await MudkiPC.userFolder}log.txt");
+  logFile = File("${await MudkiPC.cacheFolder}log.txt");
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print

@@ -3,8 +3,8 @@
 class Trainer {
   String name;
   int gameID;
-  int id;
-  Trainer({required this.name, required this.gameID, required this.id});
+  int? id;
+  Trainer({required this.name, required this.gameID, this.id});
 
   Map<String, Object?> toDB() {
     return {"name": name, "gameID": gameID, "id": id, "gender": 0};

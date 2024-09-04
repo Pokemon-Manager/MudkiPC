@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:mudkip_frontend/core/arceus.dart';
 import 'package:mudkip_frontend/mudkipc.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:queue/queue.dart';
 /* 
 Name: Databases
@@ -31,15 +30,14 @@ final class PokeAPI {
   /// The database is stored in the `assets/db/` and is named `Global.db`.
   static Future<void> create() async {
     await MudkiPC.extractFileFromAssets("db/Global.db");
-    PokeAPI.db = await openDatabase(
-        "${await MudkiPC.cacheFolder}MudkiPC/db/Global.db",
+    PokeAPI.db = await openDatabase("${await MudkiPC.cacheFolder}db/Global.db",
         onConfigure: _onConfigure); // Opens the database.
     return;
   }
 
   static recreate() async {
     await databaseFactory
-        .deleteDatabase("${await MudkiPC.cacheFolder}MudkiPC/db/Global.db");
+        .deleteDatabase("${await MudkiPC.cacheFolder}db/Global.db");
     await PokeAPI.create();
   }
 
@@ -282,11 +280,10 @@ final class PC {
   /// ## Creates the user's PC.
   /// Creates the PC as a singleton.
   static create() async {
-    Directory directory = await getApplicationDocumentsDirectory();
     Database db = await databaseFactory.openDatabase(
-        "${directory.path}/MudkiPC/db/User.db",
+        "${await MudkiPC.cacheFolder}db/User.db",
         options: OpenDatabaseOptions(onConfigure: _onConfigure));
-    return PC.createTables(db);
+    return await PC.createTables(db);
   }
 
   /// # `Future<void>` recreate()
@@ -294,8 +291,7 @@ final class PC {
   /// Deletes the user's SQLite Database inside the user folder and rebuilds a new one.
   /// Use for reset the application.
   static void recreate() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    databaseFactory.deleteDatabase("${directory.path}/MudkiPC/db/User.db");
+    databaseFactory.deleteDatabase("${await MudkiPC.cacheFolder}db/User.db");
     PC.create();
   }
 
@@ -376,7 +372,15 @@ final class PC {
     List<Map<String, Object?>>? results = await db?.query("trainers",
         where: "id = ? AND gameID = ? AND name = ?",
         whereArgs: [trainer.id, trainer.gameID, trainer.name]);
-    return results?.first["trainerID"] as int?;
+    if (results!.isEmpty) return null;
+    return results.first["trainerID"] as int?;
+  }
+
+  static Future<int?> findTrainerIDByName(String name) async {
+    List<Map<String, Object?>>? results =
+        await db?.query("trainers", where: "name = ?", whereArgs: [name]);
+    if (results!.isEmpty) return null;
+    return results.first["trainerID"] as int?;
   }
 
   /// # `void` removePokemon(`Pokemon pokemon`)
@@ -414,8 +418,16 @@ final class PC {
       } else if (entry.path.endsWith(".pk7")) {
         result = await Arceus.read(entry.path, "./patterns/files/pk7.yaml");
       }
-
+      print(result);
+      if (result == null) print("Failed to read ${entry.path}");
       if (result != null && result is Map<String, dynamic>) {
+        result["otID"] =
+            await findTrainerIDByName(result["ot_nickname"] as String);
+        if (result["otID"] == null) {
+          result["otID"] = await addTrainer(Trainer(
+              name: result["ot_nickname"] as String,
+              gameID: result["version"]));
+        }
         await addPokemon(Pokemon.fromArceus(result));
       }
     }

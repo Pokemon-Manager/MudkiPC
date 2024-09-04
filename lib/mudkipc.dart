@@ -61,6 +61,11 @@ class MudkiPC {
       globalFile.writeAsBytesSync(data.buffer
           .asUint8List()); // Writes the data from the asset bundle to the created file.
     }
+    else {
+      if (globalFile.readAsBytesSync() != (await rootBundle.load("assets/$path")).buffer.asUint8List()) {
+        globalFile.writeAsBytesSync((await rootBundle.load("assets/$path")).buffer.asUint8List());
+      }
+    }
     return globalFile.path;
   }
 
