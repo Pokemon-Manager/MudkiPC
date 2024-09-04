@@ -418,8 +418,6 @@ final class PC {
       } else if (entry.path.endsWith(".pk7")) {
         result = await Arceus.read(entry.path, "./patterns/files/pk7.yaml");
       }
-      print(result);
-      if (result == null) print("Failed to read ${entry.path}");
       if (result != null && result is Map<String, dynamic>) {
         result["otID"] =
             await findTrainerIDByName(result["ot_nickname"] as String);

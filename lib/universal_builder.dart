@@ -10,11 +10,18 @@ import 'package:mudkip_frontend/theme/theme_constants.dart';
 import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:mudkip_frontend/main.dart';
 
+/// # `mixin` UniversalBuilder
+/// ## Mix this into a widget you want to be different on each platform.
+/// There are currently three platform methods you can override:
+/// - `buildAndroidApp`
+/// - `buildWindowsApp`
+/// - `buildMacOSApp`
 mixin UniversalBuilder {
-  static String? overridePlatform = "";
+  static String? overridePlatform = "android";
 
   static Widget buildApp(ThemeManager themeProvider) {
     String platform = Platform.operatingSystem;
+    print("Platform: $platform");
     if (overridePlatform != null) {
       platform = overridePlatform!;
     }
