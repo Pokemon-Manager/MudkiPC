@@ -4,7 +4,11 @@
 
 ### The easy to use, feature-rich, cross-platform Pokémon app.
 
-#### NOTICE: This is still in alpha.
+> [!Warning]
+> This is still in alpha.
+
+> [!Note]
+> I am currently working on [Arceus](https://github.com/DrRetro2033/Arceus), which is going to be the backend of this project. So don't worry, this project is not dead.
 
 ## What is MudkiPC?
 
