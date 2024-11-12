@@ -1,4 +1,0 @@
-# pk8
-# Description: Represents a PK8 file.
-imports:
-  - { path: ./patterns/datablocks/PK8Datablock.yaml, address: 0x00 }

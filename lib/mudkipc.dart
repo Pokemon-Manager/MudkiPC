@@ -48,7 +48,8 @@ class MudkiPC {
   /// # static `Future<String?>` extractFileFromAssets(String path) async
   /// ## Extracts a file from the asset bundle, into the cache folder.
   /// Returns the path to the file.
-  static Future<String?> extractFileFromAssets(String path) async {
+  static Future<String?> extractFileFromAssets(String path,
+      {bool overwrite = false}) async {
     if (path.startsWith("assets/")) {
       path = path.substring(7);
     }
@@ -60,24 +61,27 @@ class MudkiPC {
       globalFile.createSync(recursive: true); // Creates the file.
       globalFile.writeAsBytesSync(data.buffer
           .asUint8List()); // Writes the data from the asset bundle to the created file.
-    }
-    else {
-      if (globalFile.readAsBytesSync() != (await rootBundle.load("assets/$path")).buffer.asUint8List()) {
-        globalFile.writeAsBytesSync((await rootBundle.load("assets/$path")).buffer.asUint8List());
+    } else {
+      if (overwrite) {
+        globalFile.writeAsBytesSync(
+            (await rootBundle.load("assets/$path")).buffer.asUint8List());
       }
     }
     return globalFile.path;
   }
 
-  static Future<void> extractFolderFromAssets(String path) async {
+  static Future<bool> doesAssetFileExist(String path) async {
+    if (path.startsWith("assets/")) {
+      path = path.substring(7);
+    }
     final manifestContent = await rootBundle.loadString('AssetManifest.json');
 
     final Map<String, dynamic> manifestMap = jsonDecode(manifestContent);
-    final patternPaths = manifestMap.keys
-        .where((String key) => key.contains('patterns/'))
-        .toList();
-    for (String path in patternPaths) {
-      await MudkiPC.extractFileFromAssets(path);
+
+    if (!manifestMap.containsKey(path)) {
+      return false;
+    } else {
+      return true;
     }
   }
 }

@@ -289,7 +289,7 @@ final class PC {
   /// # `Future<void>` recreate()
   /// ## Recreates the user's PC.
   /// Deletes the user's SQLite Database inside the user folder and rebuilds a new one.
-  /// Use for reset the application.
+  /// Use for reset the application
   static void recreate() async {
     databaseFactory.deleteDatabase("${await MudkiPC.cacheFolder}db/User.db");
     PC.create();
@@ -411,21 +411,23 @@ final class PC {
     for (var entry in Directory(path).listSync()) {
       if (entry is! File) continue;
       dynamic result;
+      if (entry.path.endsWith(".pk7")) {
+        result = await Arceus.read(entry.path);
+      }
+      if (entry.path.endsWith(".pk8")) {
+        result = await Arceus.read(entry.path);
+      }
       if (entry.path.endsWith(".pk9")) {
-        result = await Arceus.read(entry.path, "./patterns/files/pk9.yaml");
-      } else if (entry.path.endsWith(".pk8")) {
-        result = await Arceus.read(entry.path, "./patterns/files/pk8.yaml");
-      } else if (entry.path.endsWith(".pk7")) {
-        result = await Arceus.read(entry.path, "./patterns/files/pk7.yaml");
+        result = await Arceus.read(entry.path);
       }
       if (result != null && result is Map<String, dynamic>) {
         result["otID"] =
-            await findTrainerIDByName(result["ot_nickname"] as String);
+            await findTrainerIDByName(result["otNickname"] as String);
         if (result["otID"] == null) {
           result["otID"] = await addTrainer(Trainer(
-              name: result["ot_nickname"] as String,
-              gameID: result["version"]));
+              name: result["otNickname"] as String, gameID: result["version"]));
         }
+        // print(result);
         await addPokemon(Pokemon.fromArceus(result));
       }
     }

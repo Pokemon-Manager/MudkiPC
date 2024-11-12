@@ -92,10 +92,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/
-    - assets/patterns/
-    - assets/patterns/files/
-    - assets/patterns/datablocks/
+    - assets/arceus/
     - assets/arceus/windows/
     - assets/db/
     - assets/svg/

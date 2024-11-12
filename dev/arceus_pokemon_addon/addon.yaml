@@ -1,0 +1,12 @@
+name: Pokemon Addon
+description: An addon to read and write to Pokemon files.
+arceus-compatible-version: 0.0.0
+version: 0.0.1
+authors:
+  - DrRetro
+compatible-files:
+  - .pk9
+  - .pk8
+  - .pk7
+feature-set: pattern
+entrypoint: main.lua

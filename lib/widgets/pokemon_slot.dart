@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:mudkip_frontend/mudkipc.dart';
@@ -35,14 +36,7 @@ class PokemonSlot extends StatelessWidget {
                     alignment: Alignment.center,
                     width: 150,
                     height: 150,
-                    child: Image(
-                      width: 150,
-                      height: 150,
-                      fit: BoxFit.contain,
-                      filterQuality: FilterQuality.none,
-                      image: AssetImage(
-                          "assets/images/sprites/${value!.speciesID}.png"),
-                    ),
+                    child: getImage(value),
                   ),
                 ),
                 TextWithLoaderBuffer(
@@ -52,5 +46,19 @@ class PokemonSlot extends StatelessWidget {
             },
           ),
         ));
+  }
+
+  Widget getImage(Pokemon? value) {
+    try {
+      return Image(
+        width: 150,
+        height: 150,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.none,
+        image: AssetImage("assets/images/sprites/${value?.speciesID}.png"),
+      );
+    } catch (e) {
+      return const Icon(Icons.question_mark);
+    }
   }
 }

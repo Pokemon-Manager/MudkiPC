@@ -54,7 +54,7 @@ class Pokemon {
       required this.move2ID,
       required this.move3ID,
       required this.move4ID,
-      required this.otID,
+      this.otID,
       this.uniqueID});
 
   /// Sets the nickname of the pokemon.
@@ -176,30 +176,28 @@ class Pokemon {
 
   static Pokemon fromArceus(Map<String, dynamic> result) {
     return Pokemon(
-      speciesID: result['species_id'],
-      nickName: result['nickname'],
-      exp: result['exp'],
-      iv: Stats(
-          hp: result['iv_hp'],
-          attack: result['iv_atk'],
-          defense: result['iv_def'],
-          specialAttack: result['iv_spa'],
-          specialDefense: result['iv_spd'],
-          speed: result['iv_spe']),
-      ev: Stats(
-          hp: result['ev_hp'],
-          attack: result['ev_atk'],
-          defense: result['ev_def'],
-          specialAttack: result['ev_spa'],
-          specialDefense: result['ev_spd'],
-          speed: result['ev_spe']),
-      gender: result['gender'],
-      abilityID: result['ability'],
-      move1ID: result['move1'],
-      move2ID: result['move2'],
-      move3ID: result['move3'],
-      move4ID: result['move4'],
-      otID: result['otID'],
-    );
+        speciesID: result['speciesID'],
+        nickName: result['nickname'],
+        exp: result['exp'],
+        iv: Stats(
+            hp: result["ivSpan"]['ivHp'],
+            attack: result["ivSpan"]['ivAtk'],
+            defense: result["ivSpan"]['ivDef'],
+            specialAttack: result["ivSpan"]['ivSpAtk'],
+            specialDefense: result["ivSpan"]['ivSpDef'],
+            speed: result["ivSpan"]['ivSpeed']),
+        ev: Stats(
+            hp: result['evHp'],
+            attack: result['evAtk'],
+            defense: result['evDef'],
+            specialAttack: result['evSpAtk'],
+            specialDefense: result['evSpDef'],
+            speed: result['evSpeed']),
+        gender: result['genderSpan']['gender'],
+        abilityID: result['ability'],
+        move1ID: result['move1'],
+        move2ID: result['move2'],
+        move3ID: result['move3'],
+        move4ID: result['move4']);
   }
 }

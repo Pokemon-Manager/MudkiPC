@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geekyants_flutter_gauges/geekyants_flutter_gauges.dart';
 import 'package:converter/converter.dart';
 import 'package:mudkip_frontend/core/constants.dart';
 import 'package:mudkip_frontend/core/settings.dart';
+import 'package:mudkip_frontend/main.dart';
 
 // ignore: must_be_immutable
 class HeightIndicator extends StatefulWidget {
@@ -90,10 +92,18 @@ class _HeightIndicatorState extends State<HeightIndicator> {
                   borderRadius: 5,
                 ),
                 rulers: RulerStyle(
-                  rulerPosition: RulerPosition.right,
+                  primaryRulerColor: themeManager.themeMode == ThemeMode.dark
+                      ? Colors.white
+                      : Colors.black,
+                  secondaryRulerColor: themeManager.themeMode == ThemeMode.dark
+                      ? Colors.white
+                      : Colors.black,
                   textStyle: TextStyle(
-                      fontSize: const TextScaler.linear(1.0).scale(16.0),
-                      fontWeight: FontWeight.normal),
+                    color: themeManager.themeMode == ThemeMode.dark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                  rulerPosition: RulerPosition.right,
                   // showSecondaryRulers: false,
                 ),
               ),

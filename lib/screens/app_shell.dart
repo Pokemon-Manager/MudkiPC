@@ -27,7 +27,7 @@ class AppShellState extends State<AppShell> with UniversalBuilder {
     return material.Scaffold(
       appBar: material.AppBar(title: const Text('MudkiPC'), actions: const [
         UniversalSearchBar(),
-        SizedBox(width: 20),
+        // SizedBox(width: 20),
       ]),
       drawer: material.Drawer(
           width: 300,
@@ -193,7 +193,7 @@ class PCDestination extends Destination {
                       const fluent.Tooltip(message: "Add to PC"),
                   wrappedItem: fluent.CommandBarButton(
                       onPressed: () {
-                        print("Add to PC");
+                        // print("Add to PC");
                       },
                       icon: const fluent.Icon(fluent.FluentIcons.add))),
             ]);

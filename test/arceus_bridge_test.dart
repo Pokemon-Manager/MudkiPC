@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import "package:mudkip_frontend/core/arceus.dart";
-import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -17,8 +16,7 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     PathProviderPlatform.instance = FakePathProviderPlatform();
     print(await Arceus.read(
-        "C:/Users/Colly/OneDrive/Documents/Pokemon/0003 - DaisyTestTES - 0B1CBBBB6F73.pk9",
-        "./patterns/files/pk9.yaml"));
+        r"C:\Users\Colly\OneDrive\Documents\Pokemon\pkmdb\525 - Rolling Rock - CCB021CC55DA.pk7"));
   });
 }
 

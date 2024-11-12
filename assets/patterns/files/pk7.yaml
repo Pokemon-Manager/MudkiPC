@@ -1,4 +1,0 @@
-# pk
-# Description: Represents a PK7 file.
-imports:
-  - { path: ./patterns/datablocks/PK7Datablock.yaml, address: 0x00 }
