@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/widgets.dart';
-import 'package:mudkip_frontend/universal_builder.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mudkip_frontend/screens/app_shell.dart';
 import 'package:mudkip_frontend/mudkipc.dart';
+import 'package:mudkip_frontend/theme/theme_constants.dart';
 import 'package:mudkip_frontend/theme/theme_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -86,7 +86,13 @@ void main(List<String> args) async {
         create: (context) => ThemeManager(),
         builder: (context, _) {
           final themeProvider = Provider.of<ThemeManager>(context);
-          return UniversalBuilder.buildApp(themeProvider);
+          return MaterialApp.router(
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: themeProvider.themeMode,
+              routerDelegate: router.routerDelegate,
+              routeInformationParser: router.routeInformationParser,
+              routeInformationProvider: router.routeInformationProvider);
         }));
   }
 }

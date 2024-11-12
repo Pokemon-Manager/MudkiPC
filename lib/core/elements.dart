@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mudkip_frontend/mudkipc.dart';
 
@@ -236,7 +236,7 @@ mixin ElementFunctions implements TypeElement {
 
   @override
   Widget getChip() {
-    return UniversalChip(avatar: getIcon(), text: name.capitalize());
+    return Chip(avatar: getIcon(), label: Text(name.capitalize()));
   }
 
   @override

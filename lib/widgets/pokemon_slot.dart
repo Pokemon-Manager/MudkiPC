@@ -1,64 +1,45 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mudkip_frontend/universal_builder.dart';
-import 'package:mudkip_frontend/mudkipc.dart';
-import 'package:mudkip_frontend/widgets/async_placeholder.dart';
-import 'package:mudkip_frontend/widgets/text_with_loader.dart';
+import "package:flutter/material.dart";
+import "package:mudkip_frontend/core/pokemon.dart";
+import "package:mudkip_frontend/widgets/async_placeholder.dart";
+import "package:mudkip_frontend/widgets/text_with_loader.dart";
 
-/// # `Class` PokemonSlot extends `StatelessWidget`
-/// ## A widget that displays a pokemon in the PC.
-/// Shows the pokemon's sprite and the pokemon's name.
-/// Takes in a `pokemon` and `onTap` function.
-/// The `onTap` function is called when the pokemon is clicked.
-/// The `pokemon` is the future that returns the pokemon from the PC.
-/// ```dart
-/// PokemonSlot(pokemon: PC.fetchPokemon(/*The unique ID of the pokemon*/), onTap: () {/*Do something when the pokemon is clicked. Usually a navigation to another screen, especially to the preview screen.*/})
-/// ```
 class PokemonSlot extends StatelessWidget {
+  final Future<Pokemon> pokemon;
+  final Function(Future<Pokemon>) onTap;
   const PokemonSlot({super.key, required this.pokemon, required this.onTap});
-  final Future<Pokemon?> pokemon;
-  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
-    return UniversalButton(
-        onPressed: () {
-          onTap();
-        },
-        child: Padding(
+    return ElevatedButton(
+      onPressed: () => onTap(pokemon),
+      child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: AsyncPlaceholder(
             future: pokemon,
-            childBuilder: (value) {
+            childBuilder: (Pokemon value) {
               return Column(children: [
                 Expanded(
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 150,
-                    height: 150,
-                    child: getImage(value),
-                  ),
+                  child: getImage(value),
                 ),
                 TextWithLoaderBuffer(
                     future: value.getNickname(),
-                    builder: (context, name) => Text(name)),
+                    builder: (context, name) => Text(name))
               ]);
             },
-          ),
-        ));
+          )),
+    );
   }
 
-  Widget getImage(Pokemon? value) {
+  Widget getImage(Pokemon value) {
     try {
       return Image(
-        width: 150,
-        height: 150,
-        fit: BoxFit.contain,
-        filterQuality: FilterQuality.none,
-        image: AssetImage("assets/images/sprites/${value?.speciesID}.png"),
-      );
-    } catch (e) {
-      return const Icon(Icons.question_mark);
+          width: 150,
+          height: 150,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.none,
+          image: value.getSprite());
+    } catch (_) {
+      return const Icon(Icons.question_mark_rounded);
     }
   }
 }

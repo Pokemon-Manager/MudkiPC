@@ -1,14 +1,6 @@
-import 'dart:async';
-
-import 'package:fluent_ui/fluent_ui.dart' as fluent;
-import 'package:macos_ui/macos_ui.dart' as macos;
-// import 'package:flutter/cupertino.dart' as cupertino;
-import 'package:flutter/material.dart' as material;
-import 'package:flutter/widgets.dart';
-
+import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/core/databases.dart';
 import 'package:mudkip_frontend/main.dart';
-import 'package:mudkip_frontend/universal_builder.dart';
 import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 
 /// # `Class` Pachinko with `ChangeNotifier`
@@ -16,7 +8,9 @@ import 'package:mudkip_frontend/widgets/text_with_loader.dart';
 /// Contains a list of pins, a search controller, and a function to generate suggestions.
 class Pachinko with ChangeNotifier {
   List<Pin> pins = [];
-  Future<List<Suggestion>> generateSuggestions(String search) async {
+  SearchController searchController = SearchController();
+  Future<List<ListTile>> generateSuggestions(
+      BuildContext context, SearchController search) async {
     // Generate suggestions for the search bar.
     List<String> initialSuggestions = [
       // The initial suggestions
@@ -31,36 +25,44 @@ class Pachinko with ChangeNotifier {
       "region:",
     ];
     List<String?> finalSuggestions = initialSuggestions
-        .where((element) => element.startsWith(search) && element != search)
+        .where((element) =>
+            element.startsWith(search.value.text) &&
+            element != search.value.text)
         .toList(); // Gets the suggestions that start with the search bar text.
-    // Function onSelected = (int value) {
-    //   search.text = finalSuggestions[value] ?? "";
-    // };
-    if (finalSuggestions.isEmpty && search.contains(":")) {
-      switch (search.split(":")[0]) {
+    Function onSelected = (int value) {
+      search.text = finalSuggestions[value] ?? "";
+    };
+    if (finalSuggestions.isEmpty && search.value.text.contains(":")) {
+      switch (search.value.text.split(":")[0]) {
         case "species":
           List<Map<String, Object?>>? query =
-              await PokeAPI.getSpeciesSuggestions(search.split(":")[1]);
+              await PokeAPI.getSpeciesSuggestions(
+                  search.value.text.split(":")[1]);
           List<String?> suggestions = [];
           for (var element in query!) {
             suggestions.add(element["name"] as String?);
           }
-          // onSelected = (int value) {
-          //   species(query[value]["id"] as int);
-          //   clearSearchBar();
-          // };
+          onSelected = (int value) {
+            species(query[value]["id"] as int);
+            clearSearchBar();
+          };
           finalSuggestions = suggestions;
           break;
       }
     }
-    List<Suggestion> finalList =
-        List.generate(finalSuggestions.length, (int index) {
-      return Suggestion(finalSuggestions[index]!, index, () {});
+    return List<ListTile>.generate(finalSuggestions.length, (index) {
+      return ListTile(
+        title: Text(finalSuggestions[index] ?? ""),
+        onTap: () {
+          onSelected(index);
+        },
+      );
     });
-    return finalList;
   }
 
   void clearSearchBar() {
+    searchController.clear();
+    searchController.closeView("");
     notifyListeners();
     router.refresh();
   }
@@ -128,38 +130,10 @@ class Pachinko with ChangeNotifier {
   void remove(Pin pin) {
     pins.remove(pin);
     notifyListeners();
+    if (searchController.isOpen) {
+      searchController.closeView("");
+    }
     router.refresh();
-  }
-}
-
-/// # `Class` Suggestion
-/// ## A class that represents a suggestion for the search bar.
-/// Contains a name, an id, and an onSelect function. There are different implementations of this class for each platform.
-class Suggestion {
-  String name;
-  int id;
-  Function? onSelect;
-  Suggestion(this.name, this.id, this.onSelect);
-
-  material.ListTile getForMaterial() {
-    return material.ListTile(
-      title: Text(name),
-      onTap: onSelect != null ? () => onSelect!() : null,
-    );
-  }
-
-  fluent.ListTile getForFluent() {
-    return fluent.ListTile(
-      title: Text(name),
-      onPressed: onSelect != null ? () => onSelect!() : null,
-    );
-  }
-
-  macos.MacosListTile getForMacOS() {
-    return macos.MacosListTile(
-      title: Text(name),
-      onClick: onSelect != null ? () => onSelect!() : null,
-    );
   }
 }
 
@@ -176,8 +150,7 @@ sealed class Pin {
   }
 
   Widget getChip() {
-    return UniversalChip(
-        avatar: const Icon(material.Icons.search), text: compare);
+    return Chip(avatar: const Icon(Icons.search), label: Text(compare));
   }
 }
 
@@ -198,7 +171,7 @@ class SpeciesPin extends Pin {
 
   @override
   Widget getChip() {
-    return material.Chip(
+    return Chip(
       label: TextWithLoaderBuffer(
         future: PokeAPI.fetchString(LanguageBinding(
           table: "pokemon_species_names",
@@ -210,7 +183,7 @@ class SpeciesPin extends Pin {
         builder: (context, name) =>
             Text(name, style: const TextStyle(fontSize: 13)),
       ),
-      deleteIcon: const Icon(material.Icons.delete),
+      deleteIcon: const Icon(Icons.delete),
       onDeleted: () {
         pachinkoMachine.remove(this);
       },
@@ -230,19 +203,18 @@ class AbilityPin extends Pin {
   String get sqlStatement => "ability_id = ?";
   @override
   Widget getChip() {
-    return UniversalChip(
-        text: "",
-        avatar: TextWithLoaderBuffer(
-          future: PokeAPI.fetchString(LanguageBinding(
-            table: "ability_names",
-            idColumn: "ability_id",
-            stringColumn: "name",
-            id: compare,
-            isNameTable: true,
-          )),
-          builder: (context, name) =>
-              Text(name, style: const TextStyle(fontSize: 13)),
-        ));
+    return Chip(
+        label: TextWithLoaderBuffer(
+      future: PokeAPI.fetchString(LanguageBinding(
+        table: "ability_names",
+        idColumn: "ability_id",
+        stringColumn: "name",
+        id: compare,
+        isNameTable: true,
+      )),
+      builder: (context, name) =>
+          Text(name, style: const TextStyle(fontSize: 13)),
+    ));
   }
 }
 
@@ -266,19 +238,18 @@ class MovePin extends Pin {
   String get sqlStatement => "move_id = ?";
   @override
   Widget getChip() {
-    return UniversalChip(
-        text: "",
-        avatar: TextWithLoaderBuffer(
-          future: PokeAPI.fetchString(LanguageBinding(
-            table: "move_names",
-            idColumn: "move_id",
-            stringColumn: "name",
-            id: compare,
-            isNameTable: true,
-          )),
-          builder: (context, name) =>
-              Text(name, style: const TextStyle(fontSize: 13)),
-        ));
+    return Chip(
+        label: TextWithLoaderBuffer(
+      future: PokeAPI.fetchString(LanguageBinding(
+        table: "move_names",
+        idColumn: "move_id",
+        stringColumn: "name",
+        id: compare,
+        isNameTable: true,
+      )),
+      builder: (context, name) =>
+          Text(name, style: const TextStyle(fontSize: 13)),
+    ));
   }
 }
 
@@ -287,7 +258,8 @@ class KnownMovePin extends MovePin {
   bool get isForUserPokemon => true;
   KnownMovePin(super.compare, super.pachinkoMachine);
   @override
-  String get sqlStatement => "move1 = ? OR move2 = ? OR move3 = ? OR move4 = ?";
+  String get sqlStatement =>
+      "move1ID = ? OR move2ID = ? OR move3ID = ? OR move4ID = ?";
 }
 
 class LearnableMovePin extends MovePin {

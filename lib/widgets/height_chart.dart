@@ -99,10 +99,7 @@ class _HeightIndicatorState extends State<HeightIndicator> {
                       ? Colors.white
                       : Colors.black,
                   textStyle: TextStyle(
-                    color: themeManager.themeMode == ThemeMode.dark
-                        ? Colors.white
-                        : Colors.black,
-                  ),
+                      color: Theme.of(context).textTheme.labelMedium?.color),
                   rulerPosition: RulerPosition.right,
                   // showSecondaryRulers: false,
                 ),

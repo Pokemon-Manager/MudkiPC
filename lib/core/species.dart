@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/mudkipc.dart';
 
 /// # `Class` Species
@@ -85,6 +86,10 @@ class Species {
         idColumn: "species_id",
         stringColumn: "flavor_text",
         isNameTable: false));
+  }
+
+  AssetImage getSprite() {
+    return AssetImage(getFrontImageUrl());
   }
 }
 

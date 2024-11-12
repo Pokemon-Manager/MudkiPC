@@ -1,8 +1,8 @@
-# MudkiPC
+<h1 align="center">MudkiPC</h1>
+<h2 align="center">The easy to use, feature-rich, cross-platform Pokémon app.</h2>
 
-  <img src="https://wiki.pokemon3d.net/images/a/ae/Mudkip.png" width="256" height="256" border="0"/>
 
-### The easy to use, feature-rich, cross-platform Pokémon app.
+<img src="https://wiki.pokemon3d.net/images/a/ae/Mudkip.png" width="256" height="256" border="0"/>
 
 > [!Warning]
 > This is still in alpha.
@@ -34,20 +34,6 @@ MudkiPC is built using Dart & Flutter, which in layman's terms mean that it can 
 
 (MacOS and iOS versions are currently impossible for me to compile, as I do not have a Mac system. Looking into getting one though!)
 
-## Native Look & Feel 🖱️
-
-Every operating system has their own unique look and feel, so why not talor MudkiPC to the OS itself? MudkiPC will look, feel, and act like it was made specifically for your device, leaning into the strengths of your OS. If you prefer different look or want your phone and desktop to look the same, you can change it on the fly.
-
-### Windows
-
-![image](https://github.com/user-attachments/assets/54670f90-dabe-4163-86d5-69393fad08c6)
-
-### Android
-
-![Screenshot 2024-07-14 134209](https://github.com/user-attachments/assets/a328fd94-92f7-4a53-84d0-d0155af42fb3)
-
-### And more to come...
-
 ## Blazingly Fast 🚀
 
 With SQLite at its core, MudkiPC is bar none the fastest way to search and find your Pokémon... or anything for that matter.
@@ -78,7 +64,7 @@ It does not matter, choose one or the other.
 
 # Consider Sponsoring ❤️
 
-I would love to continue working on this for the foreseeable future, however, I am currently in school and this project is a lot of work. Consider sponsoring me on GitHub so I can continue working on this project! If you can't, no worries, you can spread the word about this project instead. Thanks!
+I would love to continue working on this for the foreseeable future, however, for me to do that I need support. Consider sponsoring me on GitHub so I can continue working on this project! If you can't, no worries, you can spread the word about this project instead. Thanks!
 
 ## Credits
 

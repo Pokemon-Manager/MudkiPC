@@ -1,42 +1,17 @@
-import 'package:flutter/material.dart' as material;
-import 'package:fluent_ui/fluent_ui.dart' as fluent;
-import 'package:macos_ui/macos_ui.dart' as macos;
-import 'package:flutter/widgets.dart';
-
-import 'package:mudkip_frontend/universal_builder.dart';
+import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/main.dart';
 import 'package:markdown_widget/markdown_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AboutScreen extends StatelessWidget with UniversalBuilder {
+class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
   @override
-  Widget buildAndroid(BuildContext context) {
-    return material.Scaffold(
-        appBar: material.AppBar(
-          title: const Text("About"),
-        ),
-        body: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: buildMarkdown(),
-        ));
-  }
-
-  @override
-  Widget buildWindows(BuildContext context) {
-    return fluent.ScaffoldPage(
-        header: const Text("About"),
-        content: material.Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: buildMarkdown(),
-        ));
-  }
-
-  @override
-  Widget buildMacOS(BuildContext context) {
-    return macos.MacosScaffold(children: [buildMarkdown()]);
-  }
+  Widget build(BuildContext context) => Scaffold(
+      appBar: AppBar(
+        title: const Text("About"),
+      ),
+      body: buildMarkdown());
 
   Widget buildMarkdown() => MarkdownWidget(
         data: """
@@ -46,8 +21,6 @@ class AboutScreen extends StatelessWidget with UniversalBuilder {
 ---
 ##### Developed with Flutter:
 Flutter is an open-source UI toolkit for building beautiful, natively compiled, multi-platform applications on the web, desktop, iOS, and Android.
-
-##### Currently Supported File Formats:
 
 ##### Credits:
 - [Flutter](https://flutter.dev/)

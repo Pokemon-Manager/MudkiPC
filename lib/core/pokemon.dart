@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:mudkip_frontend/mudkipc.dart';
 
 /// # `Class` Pokémon
@@ -199,5 +200,9 @@ class Pokemon {
         move2ID: result['move2'],
         move3ID: result['move3'],
         move4ID: result['move4']);
+  }
+
+  AssetImage getSprite() {
+    return AssetImage("assets/images/sprites/$speciesID.png");
   }
 }

@@ -55,8 +55,6 @@ dependencies:
   introduction_screen: ^3.1.14
   geekyants_flutter_gauges: ^1.0.4
   converter: ^0.4.0
-  fluent_ui: ^4.9.0
-  macos_ui: ^2.0.7
 
 dev_dependencies:
   flutter_test:

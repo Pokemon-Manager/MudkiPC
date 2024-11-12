@@ -1,10 +1,7 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:mudkip_frontend/mudkipc.dart';
 import 'package:mudkip_frontend/widgets/async_placeholder.dart';
 
-/// # `Class` ElementBar extends `StatelessWidget`
-/// ## A widget that displays the element types of a pokemon.
-/// Shows each type as a chip.
 class ElementBar extends StatelessWidget {
   final Future<Typing> typing;
   const ElementBar({super.key, required this.typing});
